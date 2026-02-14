@@ -1,0 +1,302 @@
+{
+  "vehicles": [
+    {
+      "id": "cmifzi41h0000tqtiaimgd314",
+      "make": "Mercedes-Benz",
+      "model": "GLC",
+      "year": 2024,
+      "mileage": 900,
+      "price": 75000,
+      "condition": "Used",
+      "status": "Available",
+      "vin": null,
+      "description": "Mercedes-Benz GLC 300 4MATIC – Hybrid Benzin/E – 300 PS – EZ 2024 – Schwarz – Euro 6 WLTP\r\nNeues GLC-Modell mit 2.0-Liter Turbo-Hybridmotor (221 kW / 300 PS) und 4MATIC Allrad.\r\nHochwertige Ausstattung, MBUX System, Assistenzpakete, 19-Zoll Felgen (235/55 vorn, 255/50 hinten).\r\nAHK ab Werk, gebremste Anhängelast 2400 kg, Tempo-100-Zulassung.\r\nEuro 6 WLTP, Typgenehmigung e12018/85800186*04.",
+      "descriptionEn": null,
+      "color": null,
+      "fuelType": "Petrol",
+      "transmission": "Automatic",
+      "articleNumber": "mer-c---class-2025-1",
+      "createdAt": "2025-11-26T12:31:56.405Z",
+      "updatedAt": "2025-12-10T13:55:57.125Z",
+      "images": [
+        {
+          "id": "cmifzi41h0001tqtikilygadz",
+          "url": "/uploads/c8ba96a1-8544-4e6a-bfbf-a448afb030d2-WhatsAppImage2025-11-25at19.48.31.jpeg",
+          "sortOrder": 1,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmifzl1ae0004tqti7hd07684",
+          "url": "/uploads/dfbb7804-f0e2-4c31-a2c7-a2960ee65b85-WhatsAppImage2025-11-10at23.55.462.jpeg",
+          "sortOrder": 2,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijdw8470002izwkuod76c7w",
+          "url": "/uploads/ddd9d94e-1d60-4a9f-bf07-01c3d0c81bdb-WhatsAppImage2025-11-10at23.55.474.jpeg",
+          "sortOrder": 3,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijdw8470003izwk3m6pgp9p",
+          "url": "/uploads/db9bbd85-cdd5-4b21-8a62-18ddf3e2d9a7-WhatsAppImage2025-11-10at23.55.473.jpeg",
+          "sortOrder": 4,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijedllr0005izwktbw6e84l",
+          "url": "/uploads/f8e46bf5-f87d-4438-a361-41bdf46dabd8-WhatsAppImage2025-11-10at23.55.472.jpeg",
+          "sortOrder": 5,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijedllr0006izwks5mee55w",
+          "url": "/uploads/01b110aa-a9c2-4c54-97fc-220b11e4f98c-WhatsAppImage2025-11-10at23.55.471.jpeg",
+          "sortOrder": 6,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijedllr0007izwkjjv3nc95",
+          "url": "/uploads/daf2c630-d1ce-4076-9ea5-f2f4e3617474-WhatsAppImage2025-11-10at23.55.47.jpeg",
+          "sortOrder": 7,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijfecus000aizwkmpegipsr",
+          "url": "/uploads/8b831b20-8a64-4649-992d-24ba39c0f33f-WhatsAppImage2025-11-10at23.55.464.jpeg",
+          "sortOrder": 8,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijfecus000bizwkso00lhwa",
+          "url": "/uploads/32e1c360-279b-4afb-8335-38ca324be13d-WhatsAppImage2025-11-10at23.55.463.jpeg",
+          "sortOrder": 9,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijff9wb000dizwks7j7y7yq",
+          "url": "/uploads/94ba33e4-3597-42b9-909c-768f07da4662-WhatsAppImage2025-11-10at23.55.461.jpeg",
+          "sortOrder": 10,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijfgdjb000fizwki6zhcoz2",
+          "url": "/uploads/ac9791a1-ade4-4fea-a7ce-984ff8ecc5ba-WhatsAppImage2025-11-10at23.55.46.jpeg",
+          "sortOrder": 11,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijfgdjb000gizwkewkkj7nd",
+          "url": "/uploads/beac86da-fcac-46d4-a0bc-00ebc70e0eba-WhatsAppImage2025-11-10at23.55.452.jpeg",
+          "sortOrder": 12,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        },
+        {
+          "id": "cmijfgwmx000iizwkfadmrr19",
+          "url": "/uploads/fbb971df-1970-4267-bd32-833d50b45e76-WhatsAppImage2025-11-10at23.55.451.jpeg",
+          "sortOrder": 13,
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        }
+      ],
+      "equipment": [
+        {
+          "id": "cmj02o2tq000dt8cc40g9tdu4",
+          "name": "AUSSTATTUNGSKATEGORIE (ABLEITBAR) Serienausstattung (GLC 300 4MATIC – neuere Generation): •\tMBUX Infotainmentsystem •\tLED High Performance Scheinwerfer •\tKeyless Start •\tVerkehrszeichenerkennung •\tAktiver Spurhalte-Assistent •\tTempomat •\tMultikontur-Sportsitze •\tRückfahrkamera •\t19-Zoll Felgen (hier eingetragen) •\t4MATIC Allrad •\t9G-Tronic Automatik •\t48V-Mild-Hybrid oder PHEV-System •\tDynamic Select Fahrmodi Aus den Scheinangaben hervorgehoben: •\tHybrid Benzin/E •\tSpezielles ESP für Anhängerbetrieb •\tAHK ab Werk •\tTempo-100 Anhängerfreigabe •\tDämmung / Schrägheckbauform •\tM1 PKW Klassifizierung",
+          "vehicleId": "cmifzi41h0000tqtiaimgd314"
+        }
+      ]
+    },
+    {
+      "id": "cmijl0j4a000mizwkgb74jrlq",
+      "make": "Mercedes-Benz",
+      "model": "C-Klasse",
+      "year": 2010,
+      "mileage": 218000,
+      "price": 4900,
+      "condition": "Used",
+      "status": "Available",
+      "vin": null,
+      "description": "Mercedes-Benz C 180 Kompressor (W204) – 156 PS – Benzin – EZ 2009/2010 – Euro 4 – Schwarz\r\nElegante Limousine mit 1.6-Liter Kompressormotor (115 kW / 156 PS).\r\nSchwarze Lackierung, 225/45 R17 Reifen, klassischer Hinterradantrieb.\r\nEmissionsklasse Euro 4, Typgenehmigung e12001/1160431*14.\r\nTypischer Komfort der C-Klasse inkl. Klima, ESP, Airbags, elektrischen Fensterhebern.\r\nAHK-Vorbereitung laut Eintragung vorhanden.",
+      "descriptionEn": null,
+      "color": null,
+      "fuelType": "Petrol",
+      "transmission": "Manual",
+      "articleNumber": "mer-c-klasse-2025-2",
+      "createdAt": "2025-11-29T00:57:26.218Z",
+      "updatedAt": "2025-12-10T13:54:21.418Z",
+      "images": [
+        {
+          "id": "cmijl0j4a000nizwk3k86zsci",
+          "url": "/uploads/9b445106-c986-4eed-8832-7df3d6cd3245-WhatsAppImage2025-11-25at19.47.488.jpeg",
+          "sortOrder": 1,
+          "vehicleId": "cmijl0j4a000mizwkgb74jrlq"
+        },
+        {
+          "id": "cmijl13up000oizwkeovab1se",
+          "url": "/uploads/70ff5ee4-9ab9-49ef-8980-caadd7fde09f-WhatsAppImage2025-11-25at19.47.489.jpeg",
+          "sortOrder": 2,
+          "vehicleId": "cmijl0j4a000mizwkgb74jrlq"
+        },
+        {
+          "id": "cmijl26er000pizwktpaqn3zb",
+          "url": "/uploads/2e87948c-d15c-4489-b701-ba235244ea47-WhatsAppImage2025-11-25at19.47.4810.jpeg",
+          "sortOrder": 3,
+          "vehicleId": "cmijl0j4a000mizwkgb74jrlq"
+        },
+        {
+          "id": "cmijl26er000qizwkq9lvawgo",
+          "url": "/uploads/70b331d5-60c1-4a6b-acab-c6dcb94255ed-WhatsAppImage2025-11-25at19.47.4811.jpeg",
+          "sortOrder": 4,
+          "vehicleId": "cmijl0j4a000mizwkgb74jrlq"
+        },
+        {
+          "id": "cmijl26er000rizwkdcx9eghr",
+          "url": "/uploads/90907255-062d-425e-8f82-b23c19218426-WhatsAppImage2025-11-25at19.47.4812.jpeg",
+          "sortOrder": 5,
+          "vehicleId": "cmijl0j4a000mizwkgb74jrlq"
+        }
+      ],
+      "equipment": [
+        {
+          "id": "cmj02m0z70009t8ccglr4w4uy",
+          "name": "•\tKlimaanlage •\tFahrer- & Beifahrerairbag •\tESP / ABS •\tServolenkung •\tZentralverriegelung mit Funk •\tElektrische Fensterheber •\tMultifunktionslenkrad •\tBordcomputer •\t6-Gang Schaltgetriebe oder 5-Gang Automatik •\tStoff oder optional Kunstleder •\tLichtpaket optional •\t225/45 R17 Alufelgen (gehobene Ausstattungslinie) Aus deinem Schein ableitbar: •\tLimousine •\tEuro 4 •\tAHK-Vorbereitung lt. EGTG •\t17-Zoll Sportbereifung •\tBIS 8 Sitzplätze zugelassen (normale PKW-Einstufung",
+          "vehicleId": "cmijl0j4a000mizwkgb74jrlq"
+        },
+        {
+          "id": "cmj02m0z7000at8ccm05fqwlg",
+          "name": "real 5 Sitze)",
+          "vehicleId": "cmijl0j4a000mizwkgb74jrlq"
+        }
+      ]
+    },
+    {
+      "id": "cmijltj2m000uizwk6ocprbc2",
+      "make": "Volkswagen",
+      "model": "Krankenwagen",
+      "year": 2005,
+      "mileage": 239000,
+      "price": 3950,
+      "condition": "Used",
+      "status": "Available",
+      "vin": null,
+      "description": "Volkswagen T5 Transporter – Krankenwagen (KTW) – 2.0 TDI – 102 PS – Diesel – EZ 11/2005\r\nSonderfahrzeug für Krankentransport gemäß DIN EN 1789.\r\nAusbau mit zusätzlichem Liegeplatz, Klappsitz mit 3-Punkt-Gurt (gegen Fahrtrichtung), Tragestuhlverankerung, medizinischem Innenraum, Mietwagenzulassung.\r\nReifen: 215/65R16C 106T.\r\nZul. Gesamtgewicht 3200 kg, ungebremst 750 kg Anhängelast.",
+      "descriptionEn": null,
+      "color": null,
+      "fuelType": "Diesel",
+      "transmission": "Manual",
+      "articleNumber": "vol-krankenwagen-2025-3",
+      "createdAt": "2025-11-29T01:19:59.183Z",
+      "updatedAt": "2025-12-10T13:53:44.320Z",
+      "images": [
+        {
+          "id": "cmijlv91n000wizwkg4ywnkvx",
+          "url": "/uploads/10779418-c891-43e5-9268-8a86827b9500-WhatsAppImage2025-11-26at17.19.52.jpeg",
+          "sortOrder": 1,
+          "vehicleId": "cmijltj2m000uizwk6ocprbc2"
+        }
+      ],
+      "equipment": [
+        {
+          "id": "cmj02l8cu0008t8cczwt1jh9b",
+          "name": "•\tLiegeplatz für Patient •\tzusätzlicher Liegeplatz gemäß DIN EN 1789 •\tKlappsitz entgegen der Fahrtrichtung •\t3-Punkt-Gurt für Begleitperson •\tBodenverankerung für Kranken-Tragestuhl •\tNotfallarbeitsplatz •\tAufbewahrungsmöglichkeiten für medizinisches Material •\tInnenbeleuchtung für Behandlung •\tVerstärkte Energieversorgung im Innenraum •\tSoundschutz & Hygieneausbau  •\t„FZ IST AUSGERÜSTET F. NICHTQUALIFIZIERT. KRANKENTRANSPORT“ •\t„Zus. Liegeplatz nach DIN EN 1789“ •\t„Klappsitz m. 3-Punkt-Gurt entgegen d. Fahrtrichtung“ •\t„Kranken-Tragestuhl m. Bodenverankerung“ •\t„Einrichtungen mit vorgesehenen Verriegelungen zu sichern lt. TÜV Hessen“",
+          "vehicleId": "cmijltj2m000uizwk6ocprbc2"
+        }
+      ]
+    },
+    {
+      "id": "cmijm0u0i000yizwkr1xr5opt",
+      "make": "Volkswagen",
+      "model": "T4 Transporter",
+      "year": 2001,
+      "mileage": 22500,
+      "price": 4500,
+      "condition": "Used",
+      "status": "Available",
+      "vin": null,
+      "description": "Volkswagen T4 Transporter – Krankentransportwagen (KTW)\r\nEZ 06/2001 · Diesel · 72 kW (98 PS) · 2.0 L · Euro 3/98/69/EG\r\nZul. Gesamtgewicht 2890 kg, Anhängelast gesamt 4500 kg.\r\nAusbau gemäß DIN EN 1789 für Krankentransportfahrzeuge:\r\nLiegeplatz, Klappsitz entgegen Fahrtrichtung, Tragestuhl-Aufnahmen, medizinische Innenausstattung, Spezialausbau.\r\nReifen: 205/65R15C 100T.\r\nZugelassen als Mietwagen.",
+      "descriptionEn": null,
+      "color": null,
+      "fuelType": "Diesel",
+      "transmission": "Manual",
+      "articleNumber": "vol-t4-transporter-2025-4",
+      "createdAt": "2025-11-29T01:25:39.954Z",
+      "updatedAt": "2025-12-10T13:49:49.634Z",
+      "images": [
+        {
+          "id": "cmijm0u0i000zizwks8zncll4",
+          "url": "/uploads/490a84dd-7426-4294-815f-1eecb42631cd-WhatsAppImage2025-11-26at17.19.51.jpeg",
+          "sortOrder": 1,
+          "vehicleId": "cmijm0u0i000yizwkr1xr5opt"
+        }
+      ],
+      "equipment": [
+        {
+          "id": "cmj02g79q0003t8ccqcches74",
+          "name": "•\t„KFZ KRANKENKRAFTWAG.“ •\t„Fahrzeug ist ausgerüstet für nichtqualifizierten Krankentransport“ •\t„Liegemöglichkeit / Krankenliegeplatz“ •\t„2. Sitz entgegen der Fahrtrichtung für Begleitpersonal“ •\t„Einrichtungen nach DIN EN 1789 vorhanden“ •\t„Vorgesehene Verriegelungen / Sicherungen gemäß TÜV“ •\t„Fortsetzung auf Beiblatt“ (normal bei Rettungsfahrzeugen)  •\tKranken-Liegeplatz •\tTragestuhlverankerungen •\tSitz für Begleitperson entgegen der Fahrtrichtung •\tInnenbeleuchtung für Notfallarbeit •\tHalterungen für medizinisches Equipment •\tVersorgungsschrank •\tGurt- & Fixierungssysteme nach EN-1789 •\tZusätzliche Elektrik (230V / 12V) möglich •\tHygienetauglicher Innenausbau",
+          "vehicleId": "cmijm0u0i000yizwkr1xr5opt"
+        }
+      ]
+    },
+    {
+      "id": "cmijm6gts0011izwk51kje27x",
+      "make": "Volkswagen",
+      "model": "Caddy",
+      "year": 2009,
+      "mileage": 225000,
+      "price": 3300,
+      "condition": "Used",
+      "status": "Available",
+      "vin": null,
+      "description": "Volkswagen Caddy 2.0 TDI (2K), 102 PS, Diesel, EZ 02/2009, Euro 4\r\nWeiß, Kombilimousine mit bis zu 8 Sitzen.\r\nWerksseitige Anhängerkupplung, gebremst 1500 kg, ungebremst 750 kg, Tempo-100-Freigabe.\r\nReifen 205/55R16 94H.\r\nMotor: 2.0 TDI, 75 kW (102 PS).\r\nTypgenehmigung e12001/1160252*20.",
+      "descriptionEn": null,
+      "color": null,
+      "fuelType": "Diesel",
+      "transmission": "Manual",
+      "articleNumber": "vol-caddy-2025-5",
+      "createdAt": "2025-11-29T01:30:02.800Z",
+      "updatedAt": "2026-01-16T00:35:33.089Z",
+      "images": [
+        {
+          "id": "cmijm6gts0012izwkhy511926",
+          "url": "/uploads/9ccf1fcf-41cb-46c9-87ce-8a600a158529-WhatsAppImage2025-11-25at19.47.48.jpeg",
+          "sortOrder": 1,
+          "vehicleId": "cmijm6gts0011izwk51kje27x"
+        },
+        {
+          "id": "cmijm70e30014izwk7yzey6wi",
+          "url": "/uploads/8063536b-18ea-4e18-b58c-093e3ed370bd-WhatsAppImage2025-11-25at19.47.483.jpeg",
+          "sortOrder": 2,
+          "vehicleId": "cmijm6gts0011izwk51kje27x"
+        },
+        {
+          "id": "cmijm7dus0016izwkqsj7koin",
+          "url": "/uploads/5c323352-a8fc-4f05-b66c-c6a9645f68c6-WhatsAppImage2025-11-25at19.47.481.jpeg",
+          "sortOrder": 3,
+          "vehicleId": "cmijm6gts0011izwk51kje27x"
+        },
+        {
+          "id": "cmijm8nqz0018izwkw0t8135j",
+          "url": "/uploads/3de69567-24dd-453c-b44e-ea8d57564725-WhatsAppImage2025-11-25at19.47.482.jpeg",
+          "sortOrder": 4,
+          "vehicleId": "cmijm6gts0011izwk51kje27x"
+        }
+      ],
+      "equipment": [
+        {
+          "id": "cmkg5d9ws0007kvuyqcxoukvn",
+          "name": "•\tFrontantrieb •\tABS •\tESP / ASR •\tElektronisches Stabilisierungsprogramm (steht im Dokument: „Fahrdyn. Stabi. Syst.“) •\tAirbags Fahrer/Beifahrer •\tServolenkung •\tHeizbare Rückscheibe •\tZentralverriegelung •\tManuelle Klimaanlage (meist Serie bei 2009) •\tSchiebeschiebetüren seitlich •\t5-Gang-Schaltgetriebe •\tBordcomputer einfach •\tRadiovorbereitung •\t12V-Anschluss vorn Zusätzlich aus dem Dokument ersichtlich: •\twerkseitige Anhängerkupplung (AHK) •\tStabilitätssystem speziell für Anhängerbetrieb •\tZulassung für Tempo 100 km/h Anhänger •\tKombilimousinen-Ausführung (nicht Kastenwagen) •\t8-Sitzer möglich (je nach Ausführung)",
+          "vehicleId": "cmijm6gts0011izwk51kje27x"
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "cmllmobsr0000mlvspdtctla7",
+      "email": "info@mato-automobile.de",
+      "password": "$2b$10$KZboW9C9d9Tm/tFUJ48Y6e/Wuh9Z/kaK2XWnexOw2PEl2udhJd19y",
+      "name": "Admin"
+    }
+  ],
+  "exportedAt": "2026-02-14T22:15:50.616Z"
+}

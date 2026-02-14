@@ -1,0 +1,266 @@
+'use server'
+
+import { prisma } from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+import { z } from 'zod'
+import { uploadImage } from '@/lib/upload'
+import { unlink } from 'fs/promises'
+import { join } from 'path'
+
+const VehicleSchema = z.object({
+    make: z.string().min(1, "Make is required"),
+    model: z.string().min(1, "Model is required"),
+    year: z.coerce.number().min(1900).max(new Date().getFullYear() + 1),
+    mileage: z.coerce.number().min(0),
+    price: z.coerce.number().min(0),
+    condition: z.string().min(1),
+    status: z.string().min(1),
+    description: z.string().optional(),
+    descriptionEn: z.string().optional(),
+    fuelType: z.string().optional(),
+    transmission: z.string().optional(),
+    imageUrl: z.string().url().optional().or(z.literal('')),
+    equipment: z.string().optional(),
+})
+
+export async function createVehicle(formData: FormData) {
+    const rawData = {
+        make: formData.get('make'),
+        model: formData.get('model'),
+        year: formData.get('year'),
+        mileage: formData.get('mileage'),
+        price: formData.get('price'),
+        condition: formData.get('condition'),
+        status: formData.get('status'),
+        description: formData.get('description'),
+        descriptionEn: formData.get('descriptionEn'),
+        fuelType: formData.get('fuelType'),
+        transmission: formData.get('transmission'),
+        equipment: formData.get('equipment'),
+    }
+
+    const validatedFields = VehicleSchema.omit({ imageUrl: true }).safeParse(rawData)
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+
+    const { equipment, ...vehicleData } = validatedFields.data
+
+    // Generate Article Number
+    const prefix = vehicleData.make.substring(0, 3).toLowerCase()
+    const modelStr = vehicleData.model.toLowerCase().replace(/\s+/g, '-')
+    const yearStr = new Date().getFullYear()
+    const baseArticleNumber = `${prefix}-${modelStr}-${yearStr}`
+
+    const existingVehicles = await prisma.vehicle.findMany({
+        select: {
+            articleNumber: true
+        }
+    })
+
+    let maxSequence = 0
+    existingVehicles.forEach(v => {
+        if (v.articleNumber) {
+            const parts = v.articleNumber.split('-')
+            const seq = parseInt(parts[parts.length - 1])
+            if (!isNaN(seq) && seq > maxSequence) {
+                maxSequence = seq
+            }
+        }
+    })
+
+    const articleNumber = `${baseArticleNumber}-${maxSequence + 1}`
+
+    // Handle Multiple Image Uploads
+    const imageFiles = formData.getAll('images') as File[]
+    const newImageUrls: string[] = []
+
+    for (const file of imageFiles) {
+        if (file.size > 0) {
+            try {
+                const url = await uploadImage(file)
+                newImageUrls.push(url)
+            } catch (e) {
+                console.error('Upload failed for file', file.name, e)
+            }
+        }
+    }
+
+    try {
+        await prisma.vehicle.create({
+            data: {
+                ...vehicleData,
+                articleNumber,
+                images: {
+                    create: newImageUrls.map((url, index) => ({
+                        url,
+                        sortOrder: index + 1
+                    }))
+                },
+                equipment: equipment ? {
+                    create: equipment.split(',').map(e => ({ name: e.trim() })).filter(e => e.name)
+                } : undefined
+            }
+        })
+    } catch (error) {
+        console.error('Database Error:', error)
+        return {
+            message: 'Database Error: Failed to create vehicle.',
+        }
+    }
+
+    revalidatePath('/admin')
+    revalidatePath('/')
+    redirect('/admin')
+}
+
+export async function updateVehicle(id: string, formData: FormData) {
+    const rawData = {
+        make: formData.get('make'),
+        model: formData.get('model'),
+        year: formData.get('year'),
+        mileage: formData.get('mileage'),
+        price: formData.get('price'),
+        condition: formData.get('condition'),
+        status: formData.get('status'),
+        description: formData.get('description'),
+        descriptionEn: formData.get('descriptionEn'),
+        fuelType: formData.get('fuelType'),
+        transmission: formData.get('transmission'),
+        equipment: formData.get('equipment'),
+    }
+
+    const validatedFields = VehicleSchema.omit({ imageUrl: true }).safeParse(rawData)
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+
+    const { equipment, ...vehicleData } = validatedFields.data
+
+    // Handle Multiple Image Uploads
+    const imageFiles = formData.getAll('images') as File[]
+    const newImageUrls: string[] = []
+
+    for (const file of imageFiles) {
+        if (file.size > 0) {
+            try {
+                const url = await uploadImage(file)
+                newImageUrls.push(url)
+            } catch (e) {
+                console.error('Upload failed for file', file.name, e)
+            }
+        }
+    }
+
+    try {
+        // Update basic info
+        await prisma.vehicle.update({
+            where: { id },
+            data: vehicleData,
+        })
+
+        // Handle image update (Add new ones)
+        if (newImageUrls.length > 0) {
+            // Get current max sort order
+            const currentImages = await prisma.image.findMany({ where: { vehicleId: id } })
+            const maxSortOrder = currentImages.reduce((max, img) => Math.max(max, img.sortOrder), 0)
+
+            await prisma.image.createMany({
+                data: newImageUrls.map((url, index) => ({
+                    url,
+                    vehicleId: id,
+                    sortOrder: maxSortOrder + index + 1
+                }))
+            })
+        }
+
+        // Handle equipment update
+        if (equipment !== undefined) {
+            await prisma.equipment.deleteMany({ where: { vehicleId: id } })
+            if (equipment.length > 0) {
+                await prisma.equipment.createMany({
+                    data: equipment.split(',').map(e => ({ name: e.trim(), vehicleId: id })).filter(e => e.name)
+                })
+            }
+        }
+
+    } catch (error) {
+        console.error('Database Error:', error)
+        return {
+            message: 'Database Error: Failed to update vehicle.',
+        }
+    }
+
+    revalidatePath('/admin')
+    revalidatePath('/')
+    redirect('/admin')
+}
+
+export async function deleteVehicle(id: string) {
+    try {
+        // Also delete images from filesystem
+        const vehicle = await prisma.vehicle.findUnique({
+            where: { id },
+            include: { images: true }
+        })
+
+        if (vehicle) {
+            for (const image of vehicle.images) {
+                try {
+                    const filePath = join(process.cwd(), 'public', image.url)
+                    await unlink(filePath)
+                } catch (e) {
+                    console.error('Failed to delete file', image.url, e)
+                }
+            }
+        }
+
+        await prisma.vehicle.delete({
+            where: { id },
+        })
+        revalidatePath('/admin')
+        revalidatePath('/')
+        return { message: 'Deleted Vehicle' }
+    } catch (error) {
+        return { message: 'Database Error: Failed to delete vehicle.' }
+    }
+}
+
+export async function deleteImage(imageId: string) {
+    try {
+        const image = await prisma.image.findUnique({
+            where: { id: imageId }
+        })
+
+        if (!image) {
+            return { message: 'Image not found' }
+        }
+
+        // Delete from filesystem
+        try {
+            const filePath = join(process.cwd(), 'public', image.url)
+            await unlink(filePath)
+        } catch (e) {
+            console.error('Failed to delete file', image.url, e)
+        }
+
+        // Delete from database
+        await prisma.image.delete({
+            where: { id: imageId }
+        })
+
+        revalidatePath('/admin')
+        revalidatePath('/')
+        return { message: 'Deleted Image' }
+    } catch (error) {
+        console.error('Database Error:', error)
+        return { message: 'Database Error: Failed to delete image.' }
+    }
+}
