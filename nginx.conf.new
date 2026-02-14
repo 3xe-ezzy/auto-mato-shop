@@ -12,7 +12,7 @@ http {
 
     server {
         listen 80 default_server;
-        server_name _;
+        server_name mato-automobile.de www.mato-automobile.de;
 
         location / {
             proxy_pass http://localhost:3000;

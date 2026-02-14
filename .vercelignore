@@ -1,0 +1,13 @@
+# Vercel Ignore
+.env
+.env.*
+!.env.example
+target/
+.git
+.next
+node_modules
+prisma/dev.db
+prisma/migrations
+scripts/export-data.ts
+data-export.json
+*.log
