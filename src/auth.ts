@@ -22,17 +22,31 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
     providers: [
         Credentials({
             async authorize(credentials) {
+                console.log('Authorize called');
                 const parsedCredentials = z
                     .object({ email: z.string().email(), password: z.string().min(6) })
                     .safeParse(credentials);
 
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
-                    const user = await getUser(email);
-                    if (!user) return null;
-                    const passwordsMatch = await bcrypt.compare(password, user.password);
+                    console.log('Credentials parsed for:', email);
 
-                    if (passwordsMatch) return user;
+                    const user = await getUser(email);
+                    if (!user) {
+                        console.log('User not found');
+                        return null;
+                    }
+                    console.log('User found:', user.email);
+
+                    const passwordsMatch = await bcrypt.compare(password, user.password);
+                    if (passwordsMatch) {
+                        console.log('Password match!');
+                        return user;
+                    } else {
+                        console.log('Password mismatch');
+                    }
+                } else {
+                    console.log('Invalid credentials format');
                 }
 
                 return null;
