@@ -2,9 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // output: "standalone", // Removed for Vercel
-  devIndicators: false as any,
-
-
 };
 
 export default nextConfig;
