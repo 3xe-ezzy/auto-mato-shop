@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
         <div style="text-align: center; margin-bottom: 20px;">
-          <img src="https://mato-automobile.de/logo.png" alt="Mato Automobile Logo" style="max-width: 200px;">
+          <img src="https://auto-mato-shop-yy1a.vercel.app/logo.png" alt="Mato Automobile Logo" style="max-width: 200px;">
         </div>
         <h2 style="color: #ed1c24;">Vielen Dank für Ihre Anfrage!</h2>
         <p>Sehr geehrte(r) <strong>${name}</strong>,</p>
