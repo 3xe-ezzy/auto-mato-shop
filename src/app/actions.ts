@@ -5,8 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { uploadImage } from '@/lib/upload'
-import { unlink } from 'fs/promises'
-import { join } from 'path'
+import { del } from '@vercel/blob'
 
 const VehicleSchema = z.object({
     make: z.string().min(1, "Make is required"),
@@ -214,10 +213,9 @@ export async function deleteVehicle(id: string) {
         if (vehicle) {
             for (const image of vehicle.images) {
                 try {
-                    const filePath = join(process.cwd(), 'public', image.url)
-                    await unlink(filePath)
+                    await del(image.url)
                 } catch (e) {
-                    console.error('Failed to delete file', image.url, e)
+                    console.error('Failed to delete blob', image.url, e)
                 }
             }
         }
@@ -243,12 +241,11 @@ export async function deleteImage(imageId: string) {
             return { message: 'Image not found' }
         }
 
-        // Delete from filesystem
+        // Delete from Vercel Blob
         try {
-            const filePath = join(process.cwd(), 'public', image.url)
-            await unlink(filePath)
+            await del(image.url)
         } catch (e) {
-            console.error('Failed to delete file', image.url, e)
+            console.error('Failed to delete blob', image.url, e)
         }
 
         // Delete from database
