@@ -70,7 +70,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
         <form onSubmit={handleSubmit} className="space-y-8 divide-y divide-gray-200">
             <div className="space-y-8 divide-y divide-gray-200">
                 <div>
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    <h3 className="text-lg leading-6 font-medium text-black">
                         {isEdit ? t.actions.edit : t.actions.addVehicle}
                     </h3>
                     <p className="mt-1 text-sm text-gray-500">
@@ -89,7 +89,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     value={selectedMake}
                                     onChange={(e) => setSelectedMake(e.target.value)}
                                     required
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 >
                                     <option value="">Select a Make</option>
                                     {Object.keys(carData).map((make) => (
@@ -109,7 +109,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     name="model"
                                     defaultValue={vehicle?.model}
                                     required
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 >
                                     <option value="">Select a Model</option>
                                     {availableModels.map((model) => (
@@ -130,7 +130,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     id="year"
                                     defaultValue={vehicle?.year}
                                     required
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 />
                             </div>
                         </div>
@@ -146,7 +146,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     id="mileage"
                                     defaultValue={vehicle?.mileage}
                                     required
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 />
                             </div>
                         </div>
@@ -162,7 +162,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     id="price"
                                     defaultValue={vehicle?.price}
                                     required
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 />
                             </div>
                         </div>
@@ -176,7 +176,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     id="condition"
                                     name="condition"
                                     defaultValue={vehicle?.condition || 'Used'}
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 >
                                     <option value="New">{t.values.new}</option>
                                     <option value="Used">{t.values.used}</option>
@@ -193,7 +193,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     id="status"
                                     name="status"
                                     defaultValue={vehicle?.status || 'Available'}
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 >
                                     <option value="Available">{t.values.available}</option>
                                     <option value="Sold">{t.values.sold}</option>
@@ -211,7 +211,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     id="fuelType"
                                     name="fuelType"
                                     defaultValue={vehicle?.fuelType || 'Petrol'}
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 >
                                     <option value="Petrol">{t.values.petrol}</option>
                                     <option value="Diesel">{t.values.diesel}</option>
@@ -230,7 +230,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     id="transmission"
                                     name="transmission"
                                     defaultValue={vehicle?.transmission || 'Manual'}
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 >
                                     <option value="Manual">{t.values.manual}</option>
                                     <option value="Automatic">{t.values.automatic}</option>
@@ -344,7 +344,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     id="equipment"
                                     defaultValue={equipmentString}
                                     placeholder="Navigation, Heated Seats, Sunroof"
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 />
                             </div>
                         </div>
@@ -359,7 +359,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     name="description"
                                     rows={3}
                                     defaultValue={vehicle?.description || ''}
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 />
                             </div>
                         </div>
@@ -375,7 +375,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     rows={3}
                                     defaultValue={(vehicle as any)?.descriptionEn || ''}
                                     placeholder="Enter English description here..."
-                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                                 />
                             </div>
                         </div>

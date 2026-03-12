@@ -82,7 +82,7 @@ export default function ContactForm() {
                         id="refNumber"
                         value={refNumber}
                         onChange={(e) => setRefNumber(e.target.value)}
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border bg-gray-50"
+                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border bg-gray-50 text-black"
                         readOnly={!!searchParams.get('ref')}
                     />
                 </div>
@@ -98,7 +98,7 @@ export default function ContactForm() {
                         name="name"
                         id="name"
                         required
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                     />
                 </div>
             </div>
@@ -113,7 +113,7 @@ export default function ContactForm() {
                         name="email"
                         id="email"
                         required
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                     />
                 </div>
             </div>
@@ -127,7 +127,7 @@ export default function ContactForm() {
                         type="tel"
                         name="phone"
                         id="phone"
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                     />
                 </div>
             </div>
@@ -142,7 +142,7 @@ export default function ContactForm() {
                         name="message"
                         rows={4}
                         required
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border"
+                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
                     />
                 </div>
             </div>

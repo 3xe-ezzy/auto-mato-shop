@@ -60,7 +60,7 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                         type="text"
                         name="search"
                         id="search"
-                        className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 pr-12 sm:text-sm border-gray-300 rounded-md py-2 border"
+                        className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 pr-12 sm:text-sm border-gray-300 rounded-md py-2 border text-black"
                         placeholder="Suche nach Artikelnummer, Marke oder Modell..."
                         value={searchTerm}
                         onChange={(e) => handleSearchChange(e.target.value)}

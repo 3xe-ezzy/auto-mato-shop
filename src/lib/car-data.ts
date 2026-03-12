@@ -14,7 +14,9 @@ export const carData: Record<string, string[]> = {
     "Mercedes-Benz": [
         "A-Klasse", "B-Klasse", "C-Klasse", "E-Klasse", "S-Klasse",
         "CLA", "CLS", "GLA", "GLB", "GLC", "GLE", "GLS",
-        "G-Klasse", "V-Klasse", "EQB", "EQC", "EQE", "EQS"
+        "G-Klasse", "V-Klasse", "EQA", "EQB", "EQC", "EQE", "EQS", "EQV",
+        "EQE SUV", "EQS SUV", "AMG GT", "SL", "SLC", "SLK", "SLR", "SLS",
+        "Citan", "Vito", "Sprinter", "T-Klasse", "CLC", "CLK", "Maybach S"
     ],
 
     "Volkswagen": [
