@@ -29,6 +29,23 @@ model Vehicle {
   transmission String? // "Manual", "Automatic"
   articleNumber String? // Generated Article Number
   
+  // Technical Specs for Portals
+  power           Int? // in kW
+  engineCapacity  Int? // in ccm
+  doors           Int?
+  seats           Int?
+  emissionClass   String? // e.g., "Euro 6"
+  exteriorColor   String?
+  interiorType    String? // e.g., "Leather", "Cloth"
+  interiorColor   String?
+  owners          Int?
+  nonSmoker       Boolean @default(false)
+  fullServiceHistory Boolean @default(false)
+
+  // Portal Export Flags
+  syncAutoScout24 Boolean @default(false)
+  syncMobileDe    Boolean @default(false)
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
@@ -56,4 +73,14 @@ model User {
   email     String @unique
   password  String
   name      String?
+}
+
+model PortalSettings {
+  id              String   @id @default(cuid())
+  portalName      String   @unique // "AutoScout24" or "Mobile.de"
+  customerNumber  String?
+  apiKey          String?
+  apiSecret       String?
+  isActive        Boolean  @default(false)
+  updatedAt       DateTime @updatedAt
 }

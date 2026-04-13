@@ -7,7 +7,7 @@ import { Vehicle, Image } from '@prisma/client'
 import DeleteVehicleButton from '@/components/DeleteVehicleButton'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
-type VehicleWithImages = Vehicle & { images: Image[] }
+type VehicleWithImages = Vehicle & { images: Image[], vin?: string | null }
 
 export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImages[] }) {
     const { t } = useLanguage()
@@ -44,6 +44,22 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                 </div>
                 <div className="flex items-center gap-4">
                     <LanguageSwitcher />
+                    <div className="flex gap-2">
+                        <a
+                            href="/api/feed/mobile-de"
+                            target="_blank"
+                            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        >
+                            {t.actions.downloadMobile}
+                        </a>
+                        <a
+                            href="/api/feed/autoscout24"
+                            target="_blank"
+                            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        >
+                            {t.actions.downloadAutoscout}
+                        </a>
+                    </div>
                     <Link
                         href="/admin/vehicles/new"
                         className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

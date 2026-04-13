@@ -10,6 +10,8 @@ export const dictionary = {
             login: 'Dealer Login',
             logout: 'Logout',
             contact: 'Contact',
+            settings: 'Settings',
+            portals: 'Portal Integration',
         },
         vehicle: {
             make: 'Make',
@@ -28,6 +30,17 @@ export const dictionary = {
             currentImage: 'Current Image',
             upload: 'Upload',
             articleNumber: 'Article Number',
+            power: 'Power (kW)',
+            engineCapacity: 'Engine Capacity (ccm)',
+            doors: 'Doors',
+            seats: 'Seats',
+            emissionClass: 'Emission Class',
+            exteriorColor: 'Exterior Color',
+            interiorType: 'Interior Type',
+            interiorColor: 'Interior Color',
+            owners: 'Previous Owners',
+            nonSmoker: 'Non-smoker',
+            fullServiceHistory: 'Service History',
         },
         actions: {
             addVehicle: 'Add Vehicle',
@@ -67,6 +80,15 @@ export const dictionary = {
             message: 'Message',
             submit: 'Send Request',
             success: 'Your request has been sent successfully!',
+        },
+        portals: {
+            title: 'Portal Connections',
+            subtitle: 'Manage your connections to AutoScout24 and Mobile.de.',
+            dealerId: 'Dealer/Customer ID',
+            active: 'Active',
+            feedUrl: 'Feed URL',
+            instructions: 'Copy this URL and enter it in your dealer portal settings.',
+            saveSuccess: 'Portal settings updated successfully.',
         }
     },
     de: {
@@ -78,6 +100,8 @@ export const dictionary = {
             login: 'Händler Login',
             logout: 'Abmelden',
             contact: 'Kontakt',
+            settings: 'Einstellungen',
+            portals: 'Portal-Anbindung',
         },
         vehicle: {
             make: 'Marke',
@@ -96,6 +120,17 @@ export const dictionary = {
             currentImage: 'Aktuelles Bild',
             upload: 'Hochladen',
             articleNumber: 'Artikelnummer',
+            power: 'Leistung (kW)',
+            engineCapacity: 'Hubraum (ccm)',
+            doors: 'Türen',
+            seats: 'Sitze',
+            emissionClass: 'Schadstoffklasse',
+            exteriorColor: 'Außenfarbe',
+            interiorType: 'Innenausstattung',
+            interiorColor: 'Innenfarbe',
+            owners: 'Vorbesitzer',
+            nonSmoker: 'Nichtraucher',
+            fullServiceHistory: 'Scheckheftgepflegt',
         },
         actions: {
             addVehicle: 'Auto hinzufügen',
@@ -135,6 +170,15 @@ export const dictionary = {
             message: 'Nachricht',
             submit: 'Anfrage senden',
             success: 'Ihre Anfrage wurde erfolgreich versendet!',
+        },
+        portals: {
+            title: 'Portal-Verbindungen',
+            subtitle: 'Verwalten Sie Ihre Verbindungen zu AutoScout24 und Mobile.de.',
+            dealerId: 'Händler-/Kundennummer',
+            active: 'Aktiv',
+            feedUrl: 'Feed-URL',
+            instructions: 'Kopieren Sie diese URL und geben Sie sie in Ihren Händler-Portal-Einstellungen ein.',
+            saveSuccess: 'Portal-Einstellungen erfolgreich aktualisiert.',
         }
     }
 }

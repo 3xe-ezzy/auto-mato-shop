@@ -21,6 +21,20 @@ const VehicleSchema = z.object({
     transmission: z.string().optional(),
     imageUrl: z.string().url().optional().or(z.literal('')),
     equipment: z.string().optional(),
+    vin: z.string().optional(),
+    power: z.coerce.number().optional().nullable(),
+    engineCapacity: z.coerce.number().optional().nullable(),
+    doors: z.coerce.number().optional().nullable(),
+    seats: z.coerce.number().optional().nullable(),
+    emissionClass: z.string().optional().nullable(),
+    exteriorColor: z.string().optional().nullable(),
+    interiorType: z.string().optional().nullable(),
+    interiorColor: z.string().optional().nullable(),
+    owners: z.coerce.number().optional().nullable(),
+    nonSmoker: z.preprocess((val) => val === 'on' || val === 'true', z.boolean()).optional().default(false),
+    fullServiceHistory: z.preprocess((val) => val === 'on' || val === 'true', z.boolean()).optional().default(false),
+    syncAutoScout24: z.preprocess((val) => val === 'on' || val === 'true', z.boolean()).optional().default(false),
+    syncMobileDe: z.preprocess((val) => val === 'on' || val === 'true', z.boolean()).optional().default(false),
 })
 
 export async function createVehicle(formData: FormData) {
@@ -37,6 +51,20 @@ export async function createVehicle(formData: FormData) {
         fuelType: formData.get('fuelType'),
         transmission: formData.get('transmission'),
         equipment: formData.get('equipment'),
+        vin: formData.get('vin'),
+        power: formData.get('power'),
+        engineCapacity: formData.get('engineCapacity'),
+        doors: formData.get('doors'),
+        seats: formData.get('seats'),
+        emissionClass: formData.get('emissionClass'),
+        exteriorColor: formData.get('exteriorColor'),
+        interiorType: formData.get('interiorType'),
+        interiorColor: formData.get('interiorColor'),
+        owners: formData.get('owners'),
+        nonSmoker: formData.get('nonSmoker'),
+        fullServiceHistory: formData.get('fullServiceHistory'),
+        syncAutoScout24: formData.get('syncAutoScout24'),
+        syncMobileDe: formData.get('syncMobileDe'),
     }
 
     const validatedFields = VehicleSchema.omit({ imageUrl: true }).safeParse(rawData)
@@ -131,6 +159,20 @@ export async function updateVehicle(id: string, formData: FormData) {
         fuelType: formData.get('fuelType'),
         transmission: formData.get('transmission'),
         equipment: formData.get('equipment'),
+        vin: formData.get('vin'),
+        power: formData.get('power'),
+        engineCapacity: formData.get('engineCapacity'),
+        doors: formData.get('doors'),
+        seats: formData.get('seats'),
+        emissionClass: formData.get('emissionClass'),
+        exteriorColor: formData.get('exteriorColor'),
+        interiorType: formData.get('interiorType'),
+        interiorColor: formData.get('interiorColor'),
+        owners: formData.get('owners'),
+        nonSmoker: formData.get('nonSmoker'),
+        fullServiceHistory: formData.get('fullServiceHistory'),
+        syncAutoScout24: formData.get('syncAutoScout24'),
+        syncMobileDe: formData.get('syncMobileDe'),
     }
 
     const validatedFields = VehicleSchema.omit({ imageUrl: true }).safeParse(rawData)

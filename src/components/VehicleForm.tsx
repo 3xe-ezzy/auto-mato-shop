@@ -9,6 +9,20 @@ import { useLanguage } from '@/components/LanguageContext'
 type VehicleWithRelations = Vehicle & {
     images: Image[]
     equipment: Equipment[]
+    vin?: string | null
+    power?: number | null
+    engineCapacity?: number | null
+    doors?: number | null
+    seats?: number | null
+    emissionClass?: string | null
+    exteriorColor?: string | null
+    interiorType?: string | null
+    interiorColor?: string | null
+    owners?: number | null
+    nonSmoker?: boolean
+    fullServiceHistory?: boolean
+    syncAutoScout24?: boolean
+    syncMobileDe?: boolean
 }
 
 export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelations }) {
@@ -236,6 +250,225 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                     <option value="Automatic">{t.values.automatic}</option>
                                 </select>
                             </div>
+                        </div>
+
+                        {/* Portal specific fields */}
+                        <div className="sm:col-span-6 border-t border-gray-200 pt-6">
+                            <h4 className="text-sm font-medium text-gray-900 mb-4">Portal Details (Required for mobile.de / AutoScout24)</h4>
+                        </div>
+
+                        <div className="sm:col-span-3">
+                            <label htmlFor="vin" className="block text-sm font-medium text-gray-700">
+                                VIN
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="text"
+                                    name="vin"
+                                    id="vin"
+                                    defaultValue={vehicle?.vin || ''}
+                                    placeholder="WBA..."
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-3">
+                            <label htmlFor="power" className="block text-sm font-medium text-gray-700">
+                                {t.vehicle.power}
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="number"
+                                    name="power"
+                                    id="power"
+                                    defaultValue={vehicle?.power || ''}
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                            <label htmlFor="engineCapacity" className="block text-sm font-medium text-gray-700">
+                                {t.vehicle.engineCapacity}
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="number"
+                                    name="engineCapacity"
+                                    id="engineCapacity"
+                                    defaultValue={vehicle?.engineCapacity || ''}
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                            <label htmlFor="doors" className="block text-sm font-medium text-gray-700">
+                                {t.vehicle.doors}
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="number"
+                                    name="doors"
+                                    id="doors"
+                                    defaultValue={vehicle?.doors || ''}
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                            <label htmlFor="seats" className="block text-sm font-medium text-gray-700">
+                                {t.vehicle.seats}
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="number"
+                                    name="seats"
+                                    id="seats"
+                                    defaultValue={vehicle?.seats || ''}
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-3">
+                            <label htmlFor="emissionClass" className="block text-sm font-medium text-gray-700">
+                                {t.vehicle.emissionClass}
+                            </label>
+                            <div className="mt-1">
+                                <select
+                                    id="emissionClass"
+                                    name="emissionClass"
+                                    defaultValue={vehicle?.emissionClass || ''}
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                >
+                                    <option value="">Select</option>
+                                    <option value="Euro 6">Euro 6</option>
+                                    <option value="Euro 5">Euro 5</option>
+                                    <option value="Euro 4">Euro 4</option>
+                                    <option value="Euro 3">Euro 3</option>
+                                    <option value="Euro 2">Euro 2</option>
+                                    <option value="Euro 1">Euro 1</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-3">
+                            <label htmlFor="exteriorColor" className="block text-sm font-medium text-gray-700">
+                                {t.vehicle.exteriorColor}
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="text"
+                                    name="exteriorColor"
+                                    id="exteriorColor"
+                                    defaultValue={vehicle?.exteriorColor || ''}
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                            <label htmlFor="interiorType" className="block text-sm font-medium text-gray-700">
+                                {t.vehicle.interiorType}
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="text"
+                                    name="interiorType"
+                                    id="interiorType"
+                                    defaultValue={vehicle?.interiorType || ''}
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                            <label htmlFor="interiorColor" className="block text-sm font-medium text-gray-700">
+                                {t.vehicle.interiorColor}
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="text"
+                                    name="interiorColor"
+                                    id="interiorColor"
+                                    defaultValue={vehicle?.interiorColor || ''}
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                            <label htmlFor="owners" className="block text-sm font-medium text-gray-700">
+                                {t.vehicle.owners}
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="number"
+                                    name="owners"
+                                    id="owners"
+                                    defaultValue={vehicle?.owners || ''}
+                                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-3 flex items-center">
+                            <input
+                                id="nonSmoker"
+                                name="nonSmoker"
+                                type="checkbox"
+                                defaultChecked={vehicle?.nonSmoker}
+                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="nonSmoker" className="ml-2 block text-sm text-gray-900">
+                                {t.vehicle.nonSmoker}
+                            </label>
+                        </div>
+
+                        <div className="sm:col-span-3 flex items-center">
+                            <input
+                                id="fullServiceHistory"
+                                name="fullServiceHistory"
+                                type="checkbox"
+                                defaultChecked={vehicle?.fullServiceHistory}
+                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="fullServiceHistory" className="ml-2 block text-sm text-gray-900">
+                                {t.vehicle.fullServiceHistory}
+                            </label>
+                        </div>
+
+                        <div className="sm:col-span-6 border-t border-gray-100 mt-4 pt-4">
+                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Portal-Export</h4>
+                        </div>
+
+                        <div className="sm:col-span-3 flex items-center">
+                            <input
+                                id="syncAutoScout24"
+                                name="syncAutoScout24"
+                                type="checkbox"
+                                defaultChecked={vehicle?.syncAutoScout24}
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="syncAutoScout24" className="ml-2 block text-sm font-medium text-blue-700">
+                                Zu AutoScout24 übertragen
+                            </label>
+                        </div>
+
+                        <div className="sm:col-span-3 flex items-center">
+                            <input
+                                id="syncMobileDe"
+                                name="syncMobileDe"
+                                type="checkbox"
+                                defaultChecked={vehicle?.syncMobileDe}
+                                className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="syncMobileDe" className="ml-2 block text-sm font-medium text-orange-700">
+                                Zu mobile.de übertragen
+                            </label>
                         </div>
 
                         <div className="sm:col-span-6">
