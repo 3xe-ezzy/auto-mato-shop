@@ -7,7 +7,6 @@ import Footer from '@/components/Footer'
 import { 
     CheckCircle, 
     Truck, 
-    Global, 
     Users, 
     ShieldCheck, 
     Phone, 
