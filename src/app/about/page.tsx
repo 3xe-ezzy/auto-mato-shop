@@ -19,7 +19,16 @@ export default function AboutPage() {
     const { t } = useLanguage()
 
     return (
-        <div className="min-h-screen bg-white flex flex-col">
+        <div className="min-h-screen bg-white flex flex-col relative overflow-hidden">
+            {/* Background Watermark */}
+            <div className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center opacity-[0.03] select-none">
+                <img 
+                    src="/logo.png" 
+                    alt="" 
+                    className="w-[150%] max-w-none transform -rotate-[45deg]"
+                />
+            </div>
+
             {/* Header */}
             <header className="bg-black shadow sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
