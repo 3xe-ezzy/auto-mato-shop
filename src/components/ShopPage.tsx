@@ -43,10 +43,10 @@ export default function ShopPage({ vehicles }: { vehicles: VehicleWithImages[] }
         <div className="min-h-screen bg-gray-50 flex flex-col">
             <header className="bg-black shadow">
                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                    <div className="flex items-center gap-4">
+                    <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
                         <img src="/logo.png" alt="Logo" className="h-24 w-auto object-contain" />
                         <h1 className="text-3xl font-bold text-white">Mato-Automobile</h1>
-                    </div>
+                    </Link>
                     <div className="flex items-center space-x-4 uppercase text-xs sm:text-sm font-semibold tracking-wider">
                         <Link href="/" className="text-gray-300 hover:text-white transition-colors">Startseite</Link>
                         <LanguageSwitcher />
