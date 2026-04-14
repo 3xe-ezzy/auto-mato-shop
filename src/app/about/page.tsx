@@ -87,10 +87,23 @@ export default function AboutPage() {
                     <div className="max-w-7xl mx-auto px-6 lg:px-8">
                         <div className="text-center mb-16">
                             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl uppercase">
-                                {t.about.servicesTitle}
+                                Fahrzeug-Impressionen
                             </h2>
+                            <p className="mt-4 text-lg text-gray-600">Qualität, die man sieht – von jedem Winkel.</p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="rounded-2xl overflow-hidden shadow-lg h-80">
+                                <img src="/mato_about_car_front_view_1776184011421.png" alt="Front View" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                            </div>
+                            <div className="rounded-2xl overflow-hidden shadow-lg h-80">
+                                <img src="/uploads/c8ba96a1-8544-4e6a-bfbf-a448afb030d2-WhatsAppImage2025-11-25at19.48.31.jpeg" alt="Side View" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Services Grid (previous) */}
+                <section className="py-24 sm:py-32">
                             {[
                                 { icon: CheckCircle, text: t.about.service1 },
                                 { icon: Truck, text: t.about.service2 },
