@@ -220,6 +220,31 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                     </div>
                 </div>
             </div>
+
+            {/* AutoScout24 External View */}
+            <div className="mt-12 bg-white shadow sm:rounded-lg overflow-hidden border border-gray-200">
+                <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900 flex items-center gap-2">
+                        <svg className="w-5 h-5 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                        </svg>
+                        AutoScout24 Live Ansicht
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                        Dies zeigt Ihre aktuellen Inserate direkt von AutoScout24.
+                    </p>
+                </div>
+                <div className="bg-white p-0">
+                    <iframe 
+                        src="https://www.autoscout24.de/haendler/embedded-list/ahmed-abdalla-firma-mato?preview=false" 
+                        scrolling="auto" 
+                        className="w-full border-none shadow-inner"
+                        style={{ height: '1024px' }}
+                    >
+                        Ihr Browser unterstützt keine iframes
+                    </iframe>
+                </div>
+            </div>
         </div>
     )
 }
