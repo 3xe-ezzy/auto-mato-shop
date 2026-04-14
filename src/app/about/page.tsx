@@ -21,11 +21,11 @@ export default function AboutPage() {
     return (
         <div className="min-h-screen bg-white flex flex-col relative overflow-hidden">
             {/* Background Watermark */}
-            <div className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center opacity-[0.03] select-none">
+            <div className="fixed inset-0 pointer-events-none z-[1] flex items-center justify-center opacity-[0.06] select-none">
                 <img 
                     src="/logo.png" 
                     alt="" 
-                    className="w-[150%] max-w-none transform -rotate-[45deg]"
+                    className="w-[120%] max-w-none transform -rotate-[45deg] filter grayscale"
                 />
             </div>
 
