@@ -26,28 +26,38 @@ export async function GET() {
     xml += '  </header>\n'
     xml += '  <vehicles>\n'
 
+    const escapeXml = (unsafe: string | number | null | undefined) => {
+        if (unsafe === null || unsafe === undefined) return '';
+        return unsafe.toString()
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+    }
+
     vehicles.forEach(v => {
         xml += `    <vehicle>
-      <id>${v.articleNumber || v.id}</id>
-      <make>${v.make}</make>
-      <model>${v.model}</model>
+      <id>${escapeXml(v.articleNumber || v.id)}</id>
+      <make>${escapeXml(v.make)}</make>
+      <model>${escapeXml(v.model)}</model>
       <year>${v.year}</year>
       <mileage>${v.mileage}</mileage>
       <price>${v.price}</price>
-      <fuel_type>${v.fuelType || ''}</fuel_type>
-      <transmission>${v.transmission || ''}</transmission>
-      <power_kw>${(v as any).power || ''}</power_kw>
-      <engine_capacity_ccm>${(v as any).engineCapacity || ''}</engine_capacity_ccm>
-      <doors>${(v as any).doors || ''}</doors>
-      <seats>${(v as any).seats || ''}</seats>
-      <emission_class>${(v as any).emissionClass || ''}</emission_class>
-      <body_color>${(v as any).exteriorColor || ''}</body_color>
-      <description>${(v.description || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</description>
+      <fuel_type>${escapeXml(v.fuelType || '')}</fuel_type>
+      <transmission>${escapeXml(v.transmission || '')}</transmission>
+      <power_kw>${escapeXml((v as any).power || '')}</power_kw>
+      <engine_capacity_ccm>${escapeXml((v as any).engineCapacity || '')}</engine_capacity_ccm>
+      <doors>${escapeXml((v as any).doors || '')}</doors>
+      <seats>${escapeXml((v as any).seats || '')}</seats>
+      <emission_class>${escapeXml((v as any).emissionClass || '')}</emission_class>
+      <body_color>${escapeXml((v as any).exteriorColor || '')}</body_color>
+      <description>${escapeXml(v.description || '')}</description>
       <equipment_list>
-        ${v.equipment.map(e => `<equipment>${e.name}</equipment>`).join('\n        ')}
+        ${v.equipment.map(e => `<equipment>${escapeXml(e.name)}</equipment>`).join('\n        ')}
       </equipment_list>
       <images>
-        ${v.images.map(img => `<image_url>${img.url}</image_url>`).join('\n        ')}
+        ${v.images.map(img => `<image_url>${escapeXml(img.url)}</image_url>`).join('\n        ')}
       </images>
     </vehicle>\n`
     })
