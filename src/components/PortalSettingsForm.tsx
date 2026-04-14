@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLanguage } from '@/components/LanguageContext'
 import { updatePortalSettings } from '@/app/actions/portal-actions'
 
@@ -16,8 +16,13 @@ export default function PortalSettingsForm({ portalName, initialData }: PortalSe
     const { t } = useLanguage()
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
+    const [origin, setOrigin] = useState('')
 
-    const feedUrl = `${window.location.origin}/api/feed/${portalName.toLowerCase().replace('.', '-')}`
+    useEffect(() => {
+        setOrigin(window.location.origin)
+    }, [])
+
+    const feedUrl = `${origin}/api/feed/${portalName.toLowerCase().replace('.', '-')}`
 
     async function handleSubmit(formData: FormData) {
         setLoading(true)
