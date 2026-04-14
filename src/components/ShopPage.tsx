@@ -184,53 +184,71 @@ export default function ShopPage({ vehicles }: { vehicles: VehicleWithImages[] }
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredVehicles.map((vehicle) => (
-                            <div key={vehicle.id} className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow">
-                                <div className="relative h-80 w-full bg-gray-200">
-                                    {vehicle.images[0] ? (
-                                        <img
-                                            src={vehicle.images[0].url}
-                                            alt={`${vehicle.make} ${vehicle.model}`}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="flex items-center justify-center h-full text-gray-400">{t.messages.noImages}</div>
-                                    )}
-                                    <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 text-xs font-bold rounded">
-                                        {vehicle.price.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}
-                                    </div>
-                                </div>
-                                <div className="p-4">
-                                    <h3 className="text-xl font-bold text-blue-600">{vehicle.make} {vehicle.model}</h3>
-                                    <div className="mt-2 text-sm text-gray-500 flex justify-between">
-                                        <span>{vehicle.year}</span>
-                                        <span>{vehicle.mileage.toLocaleString('de-DE')} km</span>
-                                    </div>
-                                    <div className="mt-2 text-sm text-gray-500 flex justify-between">
-                                        {/* Translate Fuel and Transmission if possible, or just display raw if it matches key */}
-                                        <span>{t.values[vehicle.fuelType?.toLowerCase() as keyof typeof t.values] || vehicle.fuelType}</span>
-                                        <span>{t.values[vehicle.transmission?.toLowerCase() as keyof typeof t.values] || vehicle.transmission}</span>
-                                    </div>
-                                    {vehicle.articleNumber && (
-                                        <div
-                                            className="mt-2 text-sm font-bold text-gray-900 select-all cursor-pointer"
-                                            title="Klicken zum Markieren"
-                                        >
-                                            Art.Nr.: {vehicle.articleNumber}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {filteredVehicles
+                            .sort((a, b) => (b.syncAutoScout24 ? 1 : 0) - (a.syncAutoScout24 ? 1 : 0))
+                            .map((vehicle) => {
+                                const isFeatured = vehicle.syncAutoScout24;
+                                return (
+                                    <Link 
+                                        href={`/vehicles/${vehicle.id}`} 
+                                        key={vehicle.id} 
+                                        className={`group bg-white overflow-hidden shadow-sm rounded-2xl hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col ${
+                                            isFeatured ? 'md:col-span-2 lg:col-span-2' : 'col-span-1'
+                                        }`}
+                                    >
+                                        <div className={`relative w-full bg-gray-200 overflow-hidden ${isFeatured ? 'h-96' : 'h-64'}`}>
+                                            {vehicle.images[0] ? (
+                                                <img
+                                                    src={vehicle.images[0].url}
+                                                    alt={`${vehicle.make} ${vehicle.model}`}
+                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                />
+                                            ) : (
+                                                <div className="flex items-center justify-center h-full text-gray-400">{t.messages.noImages}</div>
+                                            )}
+                                            <div className="absolute top-4 left-4 flex flex-col gap-2">
+                                                <div className="bg-green-600 text-white px-3 py-1 text-sm font-bold rounded-full shadow-lg">
+                                                    {vehicle.price.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}
+                                                </div>
+                                                {isFeatured && (
+                                                    <div className="bg-blue-600 text-white px-3 py-1 text-xs font-black uppercase tracking-widest rounded-full shadow-lg animate-pulse">
+                                                        Top Angebot
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                    )}
-                                    <p className="mt-2 text-gray-600 text-sm line-clamp-2">
-                                        {language === 'en' && (vehicle as any).descriptionEn ? (vehicle as any).descriptionEn : vehicle.description}
-                                    </p>
-                                    <div className="mt-4">
-                                        <Link href={`/vehicles/${vehicle.id}`} className="block w-full text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors">
-                                            {t.actions.details}
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                                        <div className={`p-6 flex flex-col flex-grow ${isFeatured ? 'space-y-4' : 'space-y-2'}`}>
+                                            <h3 className={`font-bold text-blue-600 group-hover:text-blue-700 transition-colors uppercase tracking-tight ${isFeatured ? 'text-2xl' : 'text-lg'}`}>
+                                                {vehicle.make} {vehicle.model}
+                                            </h3>
+                                            
+                                            <div className="flex justify-between items-center text-sm font-medium text-gray-500">
+                                                <div className="flex items-center gap-1">
+                                                    <span className="bg-gray-100 px-2 py-1 rounded text-gray-700">{vehicle.year}</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <span className="bg-gray-100 px-2 py-1 rounded text-gray-700">{vehicle.mileage.toLocaleString('de-DE')} km</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                                                <span>{t.values[vehicle.fuelType?.toLowerCase() as keyof typeof t.values] || vehicle.fuelType}</span>
+                                                <span className="text-right">{t.values[vehicle.transmission?.toLowerCase() as keyof typeof t.values] || vehicle.transmission}</span>
+                                            </div>
+
+                                            <div className="pt-4 mt-auto border-t border-gray-50 flex justify-between items-center">
+                                                <span className="text-blue-600 font-bold text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-2">
+                                                    {t.actions.details} <span className="text-lg">→</span>
+                                                </span>
+                                                {vehicle.articleNumber && (
+                                                    <span className="text-[10px] text-gray-300">#{vehicle.articleNumber}</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </Link>
+                                );
+                            })}
                     </div>
                 </div>
             </main>
