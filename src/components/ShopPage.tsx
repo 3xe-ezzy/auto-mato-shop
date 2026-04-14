@@ -48,9 +48,9 @@ export default function ShopPage({ vehicles }: { vehicles: VehicleWithImages[] }
                         <h1 className="text-3xl font-bold text-white">Mato-Automobile</h1>
                     </div>
                     <div className="flex items-center space-x-4 uppercase text-xs sm:text-sm font-semibold tracking-wider">
-                        <Link href="/about" className="text-gray-300 hover:text-white transition-colors">{t.nav.about}</Link>
+                        <Link href="/" className="text-gray-300 hover:text-white transition-colors">Startseite</Link>
                         <LanguageSwitcher />
-                        <Link href="/admin" className="text-blue-400 hover:text-blue-300 transition-colors">{t.nav.login}</Link>
+                        <Link href="/admin" className="text-blue-400 hover:text-blue-300 transition-colors uppercase text-xs sm:text-sm font-semibold tracking-wider font-montserrat">{t.nav.login}</Link>
                     </div>
                 </div>
             </header>
