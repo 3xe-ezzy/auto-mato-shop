@@ -73,8 +73,8 @@ export default function AboutPage() {
                             </div>
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl h-96 lg:h-full min-h-[400px]">
                                 <img 
-                                    src="https://images.unsplash.com/photo-1562141989-c5c79ac8f576?q=80&w=2070&auto=format&fit=crop" 
-                                    alt="Modern car showroom" 
+                                    src="/mato_automobile_about_car_1776172049760.png" 
+                                    alt="Mato Automobile Premium Car" 
                                     className="absolute inset-0 w-full h-full object-cover"
                                 />
                             </div>
