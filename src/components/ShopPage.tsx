@@ -41,16 +41,16 @@ export default function ShopPage({ vehicles }: { vehicles: VehicleWithImages[] }
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
-            <header className="bg-black shadow">
-                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                    <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
-                        <img src="/logo.png" alt="Logo" className="h-24 w-auto object-contain" />
-                        <h1 className="text-3xl font-bold text-white">Mato-Automobile</h1>
+            <header className="bg-black/90 backdrop-blur-md border-b border-white/10 shadow-lg sticky top-0 z-50 transition-all">
+                <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+                    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                        <img src="/logo.png" alt="Logo" className="h-12 sm:h-16 w-auto object-contain" />
+                        <h1 className="text-xl sm:text-2xl font-bold text-white hidden sm:block tracking-tight">Mato-Automobile</h1>
                     </Link>
-                    <div className="flex items-center space-x-4 uppercase text-xs sm:text-sm font-semibold tracking-wider">
-                        <Link href="/" className="text-gray-300 hover:text-white transition-colors">Startseite</Link>
+                    <div className="flex items-center space-x-4 sm:space-x-6 bg-white/5 px-4 py-2 rounded-full border border-white/10">
+                        <Link href="/" className="text-gray-300 hover:text-white transition-colors uppercase text-[10px] sm:text-sm font-semibold tracking-wider font-montserrat">Startseite</Link>
                         <LanguageSwitcher />
-                        <Link href="/admin" className="text-blue-400 hover:text-blue-300 transition-colors uppercase text-xs sm:text-sm font-semibold tracking-wider font-montserrat">{t.nav.login}</Link>
+                        <Link href="/admin" className="text-blue-400 hover:text-blue-300 transition-colors uppercase text-[10px] sm:text-sm font-semibold tracking-wider font-montserrat">{t.nav.login}</Link>
                     </div>
                 </div>
             </header>

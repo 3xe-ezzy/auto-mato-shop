@@ -122,7 +122,7 @@ export const dictionary = {
             admin: 'Verwaltung',
             shop: 'Zum Shop',
             dashboard: 'Übersicht',
-            login: 'Händler Login',
+            login: 'Admin',
             logout: 'Abmelden',
             contact: 'Kontakt',
             settings: 'Einstellungen',
