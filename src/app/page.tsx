@@ -22,7 +22,7 @@ export default function Home() {
     return (
         <div className="min-h-screen bg-white flex flex-col relative overflow-hidden">
             {/* Background Watermark */}
-            <div className="fixed inset-0 pointer-events-none z-[1] flex items-center justify-center opacity-[0.06] select-none">
+            <div className="fixed inset-0 pointer-events-none z-[1] hidden landscape:flex sm:flex items-center justify-center opacity-[0.06] select-none">
                 <img 
                     src="/logo.png" 
                     alt="" 
