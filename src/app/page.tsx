@@ -31,41 +31,41 @@ export default function Home() {
             </div>
 
             {/* Header */}
-            <header className="bg-black shadow sticky top-0 z-50">
+            <header className="bg-black/90 backdrop-blur-md border-b border-white/10 shadow-lg sticky top-0 z-50 transition-all">
                 <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                    <Link href="/" className="flex items-center gap-4">
-                        <img src="/logo.png" alt="Logo" className="h-16 w-auto object-contain" />
-                        <h1 className="text-2xl font-bold text-white hidden sm:block">Mato-Automobile</h1>
+                    <Link href="/" className="flex items-center gap-3">
+                        <img src="/logo.png" alt="Logo" className="h-12 sm:h-16 w-auto object-contain" />
+                        <h1 className="text-xl sm:text-2xl font-bold text-white hidden sm:block tracking-tight">Mato-Automobile</h1>
                     </Link>
-                    <div className="flex items-center space-x-6">
-                        <Link href="/vehicles" className="text-gray-300 hover:text-white transition-colors uppercase text-xs sm:text-sm font-semibold tracking-wider font-montserrat">{t.nav.shop}</Link>
+                    <div className="flex items-center space-x-4 sm:space-x-6 bg-white/5 px-4 py-2 rounded-full border border-white/10">
+                        <Link href="/vehicles" className="text-gray-300 hover:text-white transition-colors uppercase text-[10px] sm:text-sm font-semibold tracking-wider font-montserrat">{t.nav.shop}</Link>
                         <LanguageSwitcher />
-                        <Link href="/admin" className="text-blue-400 hover:text-blue-300 transition-colors uppercase text-xs sm:text-sm font-semibold tracking-wider font-montserrat">{t.nav.login}</Link>
+                        <Link href="/admin" className="text-blue-400 hover:text-blue-300 transition-colors uppercase text-[10px] sm:text-sm font-semibold tracking-wider font-montserrat">{t.nav.login}</Link>
                     </div>
                 </div>
             </header>
 
             <main className="flex-grow">
                 {/* Hero Section */}
-                <section className="relative bg-gray-900 py-24 sm:py-32 overflow-hidden">
+                <section className="relative bg-gray-950 py-16 sm:py-24 lg:py-32 overflow-hidden border-b border-gray-900">
                     <div className="absolute inset-0 overflow-hidden opacity-30">
                         <div className="absolute -right-20 -top-20 w-96 h-96 bg-blue-600 rounded-full blur-3xl opacity-20"></div>
                         <div className="absolute -left-20 -bottom-20 w-96 h-96 bg-blue-900 rounded-full blur-3xl opacity-20"></div>
                     </div>
-                    <div className="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
-                        <h2 className="text-base font-semibold leading-7 text-blue-400 uppercase tracking-widest">
+                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-8 sm:pt-0">
+                        <h2 className="text-sm sm:text-base font-semibold leading-7 text-blue-500 uppercase tracking-[0.2em] mb-4">
                             Mato Automobile
                         </h2>
-                        <h1 className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-6xl">
+                        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500 pb-2 drop-shadow-sm">
                             {t.about.title}
                         </h1>
-                        <p className="mt-6 text-lg leading-8 text-gray-300 max-w-2xl mx-auto">
+                        <p className="mt-6 text-base sm:text-lg lg:text-xl leading-8 text-gray-400 max-w-2xl mx-auto font-light">
                             {t.about.subtitle}
                         </p>
-                        <div className="mt-10 flex items-center justify-center gap-x-6">
+                        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 px-4 sm:px-0">
                             <Link
                                 href="/vehicles"
-                                className="rounded-full bg-blue-600 px-8 py-4 text-sm font-bold text-white shadow-xl hover:bg-blue-500 hover:scale-105 transform transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest"
+                                className="w-full sm:w-auto rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-4 text-sm sm:text-base font-bold text-white shadow-lg hover:shadow-blue-500/30 hover:to-indigo-500 transform transition-all active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest border border-blue-500/50"
                             >
                                 <Car className="h-5 w-5" />
                                 Fahrzeuge ansehen
@@ -75,11 +75,11 @@ export default function Home() {
                 </section>
 
                 {/* Intro Section */}
-                <section className="py-24 sm:py-32">
-                    <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                            <div>
-                                <h3 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">
+                <section className="py-16 sm:py-24 lg:py-32">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+                            <div className="order-2 lg:order-1">
+                                <h3 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-gray-900 mb-6 leading-tight">
                                     {t.about.intro}
                                 </h3>
                                 <p className="text-lg leading-8 text-gray-600 mb-8">
@@ -92,13 +92,13 @@ export default function Home() {
                                 </div>
                                 <Link
                                     href="/vehicles"
-                                    className="inline-flex items-center gap-2 text-blue-600 font-bold hover:text-blue-700 hover:gap-3 transition-all text-lg group uppercase tracking-wider"
+                                    className="inline-flex w-full sm:w-auto items-center justify-center sm:justify-start gap-2 text-blue-600 font-bold hover:text-blue-800 transition-all text-base sm:text-lg group uppercase tracking-widest bg-blue-50 sm:bg-transparent py-4 sm:py-0 rounded-xl"
                                 >
                                     Direkt zu unseren Angeboten 
-                                    <ArrowRight className="h-5 w-5" />
+                                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                                 </Link>
                             </div>
-                            <div className="relative rounded-3xl overflow-hidden shadow-2xl h-96 lg:h-full min-h-[450px] group">
+                            <div className="order-1 lg:order-2 relative rounded-3xl overflow-hidden shadow-2xl h-64 sm:h-96 lg:h-full min-h-[300px] sm:min-h-[450px] group border-4 border-white/50 ring-1 ring-black/5">
                                 <Link href="/vehicles" className="block w-full h-full relative cursor-pointer">
                                     <img 
                                         src="/mato_automobile_about_highlight_composite_1776182370450.png" 
@@ -117,16 +117,16 @@ export default function Home() {
                 </section>
 
                 {/* Fahrzeug-Impressionen */}
-                <section className="bg-gray-50 py-24 sm:py-32">
-                    <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                        <div className="text-center mb-16">
-                            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl uppercase">
+                <section className="bg-gray-50 py-16 sm:py-24 lg:py-32">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-10 sm:mb-16">
+                            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-gray-900 uppercase">
                                 Fahrzeug-Impressionen
                             </h2>
-                            <p className="mt-4 text-lg text-gray-600 italic font-medium">Klicken Sie auf ein Bild, um unseren Bestand zu sehen.</p>
+                            <p className="mt-4 text-base sm:text-lg text-gray-500 font-medium tracking-wide">Klicken Sie auf ein Bild, um unseren Bestand zu sehen.</p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <Link href="/vehicles" className="relative rounded-3xl overflow-hidden shadow-2xl h-96 group cursor-pointer">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                            <Link href="/vehicles" className="relative rounded-3xl overflow-hidden shadow-2xl h-64 sm:h-96 group cursor-pointer border-4 border-white">
                                 <img src="/mato_about_car_front_view_1776184011421.png" alt="Front View" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
                                     <span className="text-white font-bold text-xl flex items-center gap-2">
@@ -134,7 +134,7 @@ export default function Home() {
                                     </span>
                                 </div>
                             </Link>
-                            <Link href="/vehicles" className="relative rounded-3xl overflow-hidden shadow-2xl h-96 group cursor-pointer">
+                            <Link href="/vehicles" className="relative rounded-3xl overflow-hidden shadow-2xl h-64 sm:h-96 group cursor-pointer border-4 border-white">
                                 <img src="/uploads/c8ba96a1-8544-4e6a-bfbf-a448afb030d2-WhatsAppImage2025-11-25at19.48.31.jpeg" alt="Side View" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
                                     <span className="text-white font-bold text-xl flex items-center gap-2">
@@ -147,14 +147,14 @@ export default function Home() {
                 </section>
 
                 {/* Services Grid */}
-                <section className="py-24 sm:py-32">
-                    <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                        <div className="text-center mb-16">
-                            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl uppercase">
+                <section className="py-16 sm:py-24 lg:py-32 bg-white">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-12 sm:mb-16">
+                            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-gray-900 uppercase">
                                 {t.about.servicesTitle}
                             </h2>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
                             {[
                                 { icon: CheckCircle, text: t.about.service1 },
                                 { icon: Truck, text: t.about.service2 },
@@ -178,15 +178,15 @@ export default function Home() {
                 </section>
 
                 {/* Why Us Section */}
-                <section className="py-24 sm:py-32 bg-gray-900 text-white">
-                    <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                        <div className="lg:text-center mb-20 text-center">
-                            <h2 className="text-base font-semibold leading-7 text-blue-400 uppercase tracking-widest">{t.about.whyTitle}</h2>
-                            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                <section className="py-16 sm:py-24 lg:py-32 bg-gray-900 text-white border-y border-gray-800">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="lg:text-center mb-12 sm:mb-20 text-center">
+                            <h2 className="text-xs sm:text-sm font-bold leading-7 text-blue-500 uppercase tracking-widest">{t.about.whyTitle}</h2>
+                            <p className="mt-2 text-2xl sm:text-4xl font-extrabold tracking-tight text-white mb-6">
                                 {t.about.whySubtitle}
                             </p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
                             {[
                                 { text: t.about.why1, icon: CheckCircle },
                                 { text: t.about.why2, icon: CheckCircle },
@@ -209,32 +209,32 @@ export default function Home() {
                 </section>
 
                 {/* Promise Section */}
-                <section className="bg-blue-600 py-24 sm:py-32 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-                    <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10">
-                        <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-8">
+                <section className="bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 py-16 sm:py-24 lg:py-32 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]"></div>
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                        <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mb-6 sm:mb-8 drop-shadow-md">
                             {t.about.promiseTitle}
                         </h2>
-                        <p className="text-xl leading-8 text-blue-100 max-w-3xl mx-auto mb-12">
+                        <p className="text-base sm:text-xl leading-relaxed text-blue-50 max-w-3xl mx-auto mb-10 sm:mb-12 font-medium">
                             {t.about.promiseText}
                         </p>
                         <Link
                             href="/vehicles"
-                            className="inline-flex items-center gap-2 bg-white text-blue-600 px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 shadow-2xl transition-all"
+                            className="inline-flex w-full sm:w-auto justify-center items-center gap-2 bg-white text-blue-700 px-10 py-4 sm:py-5 rounded-full font-extrabold text-base sm:text-lg hover:bg-gray-50 shadow-2xl hover:shadow-white/20 transition-all uppercase tracking-widest border border-transparent hover:border-blue-100 transform active:scale-95"
                         >
                             Unsere Fahrzeuge entdecken
-                            <ArrowRight className="h-6 w-6" />
+                            <ArrowRight className="h-5 w-5" />
                         </Link>
                     </div>
                 </section>
 
                 {/* Contact Section */}
-                <section id="contact" className="py-24 sm:py-32">
-                    <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                            <div>
-                                <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-8">{t.about.contactTitle}</h2>
-                                <div className="space-y-6 text-lg">
+                <section id="contact" className="py-16 sm:py-24 lg:py-32 bg-gray-50 border-t border-gray-100">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12">
+                            <div className="order-2 lg:order-1">
+                                <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-gray-900 mb-8 uppercase">{t.about.contactTitle}</h2>
+                                <div className="space-y-6 text-base sm:text-lg">
                                     <div className="flex items-center gap-4">
                                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg">
                                             <MapPin className="h-6 w-6" />
@@ -265,7 +265,7 @@ export default function Home() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-96 rounded-3xl overflow-hidden shadow-2xl border-4 border-white grayscale hover:grayscale-0 transition-all duration-700">
+                            <div className="order-1 lg:order-2 h-64 sm:h-96 rounded-3xl overflow-hidden shadow-xl border-4 border-white lg:grayscale hover:grayscale-0 transition-all duration-700 ring-1 ring-black/5">
                                 <img 
                                     src="https://images.unsplash.com/photo-1582139329536-e7284fece509?q=80&w=2080&auto=format&fit=crop" 
                                     className="w-full h-full object-cover"
