@@ -7,50 +7,52 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model Vehicle {
-  id          String   @id @default(cuid())
-  make        String
-  model       String
-  year        Int
-  mileage     Int
-  price       Float
-  condition   String   // "New", "Used"
-  status      String   // "Available", "Sold", "Reserved"
-  vin         String?
-  description String?
+  id            String  @id @default(cuid())
+  make          String
+  model         String
+  year          Int
+  mileage       Int
+  price         Float
+  condition     String // "New", "Used"
+  status        String // "Available", "Sold", "Reserved"
+  vin           String?
+  description   String?
   descriptionEn String?
-  color       String?
-  fuelType    String?  // "Petrol", "Diesel", "Electric", "Hybrid"
-  transmission String? // "Manual", "Automatic"
+  color         String?
+  fuelType      String? // "Petrol", "Diesel", "Electric", "Hybrid"
+  transmission  String? // "Manual", "Automatic"
   articleNumber String? // Generated Article Number
-  
+
   // Technical Specs for Portals
-  power           Int? // in kW
-  engineCapacity  Int? // in ccm
-  doors           Int?
-  seats           Int?
-  emissionClass   String? // e.g., "Euro 6"
-  exteriorColor   String?
-  interiorType    String? // e.g., "Leather", "Cloth"
-  interiorColor   String?
-  owners          Int?
-  nonSmoker       Boolean @default(false)
+  power              Int? // in kW
+  engineCapacity     Int? // in ccm
+  doors              Int?
+  seats              Int?
+  emissionClass      String? // e.g., "Euro 6"
+  exteriorColor      String?
+  interiorType       String? // e.g., "Leather", "Cloth"
+  interiorColor      String?
+  owners             Int?
+  nonSmoker          Boolean @default(false)
   fullServiceHistory Boolean @default(false)
 
   // Portal Export Flags
   syncAutoScout24 Boolean @default(false)
   syncMobileDe    Boolean @default(false)
+  syncEbay        Boolean @default(false)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  images      Image[]
-  equipment   Equipment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  images         Image[]
+  equipment      Equipment[]
+  VehicleListing VehicleListing[]
 }
 
 model Image {
@@ -69,18 +71,31 @@ model Equipment {
 }
 
 model User {
-  id        String @id @default(cuid())
-  email     String @unique
-  password  String
-  name      String?
+  id       String  @id @default(cuid())
+  email    String  @unique
+  password String
+  name     String?
 }
 
 model PortalSettings {
-  id              String   @id @default(cuid())
-  portalName      String   @unique // "AutoScout24" or "Mobile.de"
-  customerNumber  String?
-  apiKey          String?
-  apiSecret       String?
-  isActive        Boolean  @default(false)
-  updatedAt       DateTime @updatedAt
+  id             String   @id @default(cuid())
+  portalName     String   @unique // "AutoScout24" or "Mobile.de"
+  customerNumber String?
+  apiKey         String?
+  apiSecret      String?
+  isActive       Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+}
+
+model VehicleListing {
+  id           String   @id @default(cuid())
+  vehicleId    String
+  portalName   String // "AutoScout24", "Mobile.de", "eBay"
+  externalId   String? // The ID assigned by the external portal
+  status       String // "PENDING", "PUBLISHED", "FAILED"
+  errorMessage String?  @db.Text
+  lastSync     DateTime @default(now())
+  vehicle      Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@unique([vehicleId, portalName])
 }

@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 const PortalSettingsSchema = z.object({
-    portalName: z.enum(['AutoScout24', 'Mobile.de']),
+    portalName: z.enum(['AutoScout24', 'Mobile.de', 'eBay']),
     customerNumber: z.string().optional().nullable(),
     apiKey: z.string().optional().nullable(),
     apiSecret: z.string().optional().nullable(),

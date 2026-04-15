@@ -3,8 +3,9 @@ import PortalSettingsForm from '@/components/PortalSettingsForm'
 import Link from 'next/link'
 
 export default async function PortalsSettingsPage() {
-    const as24Settings = await getPortalSettings('AutoScout24') || { customerNumber: '', isActive: false }
-    const mobileSettings = await getPortalSettings('Mobile.de') || { customerNumber: '', isActive: false }
+    const as24Settings = await getPortalSettings('AutoScout24') || { customerNumber: '', apiKey: '', apiSecret: '', isActive: false }
+    const mobileSettings = await getPortalSettings('Mobile.de') || { customerNumber: '', apiKey: '', apiSecret: '', isActive: false }
+    const ebaySettings = await getPortalSettings('eBay') || { customerNumber: '', apiKey: '', apiSecret: '', isActive: false }
 
     return (
         <div className="space-y-6">
@@ -28,6 +29,8 @@ export default async function PortalsSettingsPage() {
                     portalName="AutoScout24" 
                     initialData={{
                         customerNumber: as24Settings.customerNumber,
+                        apiKey: as24Settings.apiKey,
+                        apiSecret: as24Settings.apiSecret,
                         isActive: as24Settings.isActive
                     }}
                 />
@@ -36,7 +39,19 @@ export default async function PortalsSettingsPage() {
                     portalName="Mobile.de" 
                     initialData={{
                         customerNumber: mobileSettings.customerNumber,
+                        apiKey: mobileSettings.apiKey,
+                        apiSecret: mobileSettings.apiSecret,
                         isActive: mobileSettings.isActive
+                    }}
+                />
+
+                <PortalSettingsForm 
+                    portalName="eBay" 
+                    initialData={{
+                        customerNumber: ebaySettings.customerNumber,
+                        apiKey: ebaySettings.apiKey,
+                        apiSecret: ebaySettings.apiSecret,
+                        isActive: ebaySettings.isActive
                     }}
                 />
             </div>
@@ -50,10 +65,10 @@ export default async function PortalsSettingsPage() {
                     </div>
                     <div className="ml-3">
                         <p className="text-sm text-blue-700 font-medium">
-                            Hinweis zur Einrichtung
+                            Hinweis zur API-Anbindung (DMS)
                         </p>
                         <p className="text-sm text-blue-600 mt-1">
-                            Nachdem Sie Ihre Händlernummer eingegeben und die Verbindung aktiviert haben, müssen Sie die oben angezeigte Feed-URL einmalig bei Ihrem Ansprechpartner bei AutoScout24 bzw. mobile.de hinterlegen lassen. Danach erfolgt die Synchronisation vollautomatisch.
+                            Sobald Sie die API-Zugangsdaten (Key/Secret) Ihrer Portale in den jeweiligen Formularfeldern oben hinterlegt und auf "Aktiv" gesetzt haben, pusht unser System die Fahrzeuge via Direkt-Schnittstelle (Push) automatisch hinauf.
                         </p>
                     </div>
                 </div>

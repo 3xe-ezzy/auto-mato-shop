@@ -8,6 +8,8 @@ interface PortalSettingsFormProps {
     portalName: string
     initialData: {
         customerNumber?: string | null
+        apiKey?: string | null
+        apiSecret?: string | null
         isActive: boolean
     }
 }
@@ -53,13 +55,35 @@ export default function PortalSettingsForm({ portalName, initialData }: PortalSe
 
             <form action={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">{t.portals.dealerId}</label>
+                    <label className="block text-sm font-medium text-gray-700">{t.portals.dealerId || 'Händlernummer / Client ID'}</label>
                     <input
                         type="text"
                         name="customerNumber"
                         defaultValue={initialData.customerNumber || ''}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         placeholder="e.g. 12345678"
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">API Key / Benutzername</label>
+                    <input
+                        type="text"
+                        name="apiKey"
+                        defaultValue={initialData.apiKey || ''}
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="API Key or Username"
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">API Secret / Passwort</label>
+                    <input
+                        type="password"
+                        name="apiSecret"
+                        defaultValue={initialData.apiSecret || ''}
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="API Secret or Password"
                     />
                 </div>
 
@@ -94,18 +118,8 @@ export default function PortalSettingsForm({ portalName, initialData }: PortalSe
             </form>
 
             <div className="mt-6 pt-6 border-t border-gray-100">
-                <h4 className="text-sm font-semibold text-gray-900 mb-2">{t.portals.feedUrl}</h4>
-                <div className="bg-gray-50 p-3 rounded-md border border-gray-200 flex items-center justify-between">
-                    <code className="text-xs text-blue-600 break-all">{feedUrl}</code>
-                    <button 
-                        onClick={() => navigator.clipboard.writeText(feedUrl)}
-                        className="ml-2 text-xs text-gray-500 hover:text-blue-600 font-medium"
-                    >
-                        Copy
-                    </button>
-                </div>
-                <p className="mt-2 text-xs text-gray-500 italic">
-                    {t.portals.instructions}
+                <p className="text-xs text-gray-500 italic">
+                    Geben Sie hier Ihre API-Zugangsdaten ein. Sobald diese hinterlegt sind und der Status auf "Aktiv" gesetzt wurde, wird das System Fahrzeuge aktiv zu diesem Portal übertragen (Push-API).
                 </p>
             </div>
         </div>
