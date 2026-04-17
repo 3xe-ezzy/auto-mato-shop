@@ -23,6 +23,7 @@ type VehicleWithRelations = Vehicle & {
     fullServiceHistory?: boolean
     syncAutoScout24?: boolean
     syncMobileDe?: boolean
+    syncEbay?: boolean
 }
 
 export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelations }) {
@@ -468,6 +469,19 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                             />
                             <label htmlFor="syncMobileDe" className="ml-2 block text-sm font-medium text-orange-700">
                                 Zu mobile.de übertragen
+                            </label>
+                        </div>
+
+                        <div className="sm:col-span-3 flex items-center">
+                            <input
+                                id="syncEbay"
+                                name="syncEbay"
+                                type="checkbox"
+                                defaultChecked={vehicle?.syncEbay}
+                                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="syncEbay" className="ml-2 block text-sm font-medium text-green-700">
+                                Zu eBay übertragen
                             </label>
                         </div>
 

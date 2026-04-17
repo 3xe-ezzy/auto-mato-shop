@@ -65,10 +65,12 @@ export default async function PortalsSettingsPage() {
                     </div>
                     <div className="ml-3">
                         <p className="text-sm text-blue-700 font-medium">
-                            Hinweis zur API-Anbindung (DMS)
+                            Hinweis zur Anbindung (DMS & Marktplatz-Import)
                         </p>
                         <p className="text-sm text-blue-600 mt-1">
-                            Sobald Sie die API-Zugangsdaten (Key/Secret) Ihrer Portale in den jeweiligen Formularfeldern oben hinterlegt und auf "Aktiv" gesetzt haben, pusht unser System die Fahrzeuge via Direkt-Schnittstelle (Push) automatisch hinauf.
+                            Wir unterstützen zwei Verfahren: <br />
+                            1. <strong>Push-API (Empfohlen):</strong> Tragen Sie oben API-Key/Secret ein. Unser System schickt Daten aktiv hoch.<br />
+                            2. <strong>Pull-Feed (Fallback):</strong> Falls Portale den API-Zugang verweigern, nutzen Sie den "Marktplatz-Import". Kopieren Sie dazu die unten angezeigten Feed-URLs und geben Sie diese dem Portal-Support.
                         </p>
                     </div>
                 </div>

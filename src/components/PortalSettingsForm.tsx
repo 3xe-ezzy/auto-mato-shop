@@ -117,9 +117,30 @@ export default function PortalSettingsForm({ portalName, initialData }: PortalSe
                 )}
             </form>
 
-            <div className="mt-6 pt-6 border-t border-gray-100">
-                <p className="text-xs text-gray-500 italic">
-                    Geben Sie hier Ihre API-Zugangsdaten ein. Sobald diese hinterlegt sind und der Status auf "Aktiv" gesetzt wurde, wird das System Fahrzeuge aktiv zu diesem Portal übertragen (Push-API).
+            <div className="mt-8 pt-6 border-t border-gray-100">
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <h4 className="text-sm font-semibold text-gray-900 mb-2">Alternative: Pull-Feed (Marktplatz-Import)</h4>
+                    <p className="text-xs text-gray-600 mb-3">
+                        Falls der Portal-Support die Direkt-Anbindung (API) verweigert (z.B. "Liste der akzeptierten Anbieter"), können Sie stattdessen den klassischen XML-Feed-Import nutzen. Geben Sie dazu dem Mitarbeiter einfach folgende URL:
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <input 
+                            type="text" 
+                            readOnly 
+                            value={feedUrl} 
+                            className="bg-gray-100 border border-gray-300 text-gray-500 text-[10px] rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2 font-mono"
+                        />
+                        <button 
+                            onClick={() => navigator.clipboard.writeText(feedUrl)}
+                            className="p-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 text-xs text-blue-600 font-medium"
+                        >
+                            Kopieren
+                        </button>
+                    </div>
+                </div>
+
+                <p className="mt-4 text-xs text-gray-500 italic">
+                    Hinweis: Die Push-API (Felder oben) ist schneller und moderner. Verwenden Sie den Pull-Feed nur, wenn die API-Zugangsdaten nicht funktionieren oder verweigert werden.
                 </p>
             </div>
         </div>
