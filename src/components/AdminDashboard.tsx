@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Vehicle, Image } from '@prisma/client'
 import DeleteVehicleButton from '@/components/DeleteVehicleButton'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import ManualSyncButton from '@/components/ManualSyncButton'
 
 type VehicleWithImages = Vehicle & { images: Image[], vin?: string | null }
 
@@ -59,6 +60,7 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                         >
                             {t.actions.downloadAutoscout}
                         </a>
+                        <ManualSyncButton />
                     </div>
                     <Link
                         href="/admin/vehicles/new"

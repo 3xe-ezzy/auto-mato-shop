@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
+import { syncVehicleToPortals } from '@/lib/portals/sync-service'
+
 const PortalSettingsSchema = z.object({
     portalName: z.enum(['AutoScout24', 'Mobile.de', 'eBay']),
     customerNumber: z.string().optional().nullable(),
@@ -60,6 +62,46 @@ export async function updatePortalSettings(formData: FormData) {
     revalidatePath('/admin/settings/portals')
     revalidatePath('/')
     return { success: true }
+}
+
+export async function manualSyncAllVehicles() {
+    // Only fetch vehicles that have at least one sync flag enabled
+    const vehicles = await prisma.vehicle.findMany({
+        where: {
+            OR: [
+                { syncAutoScout24: true },
+                { syncMobileDe: true },
+                { syncEbay: true }
+            ]
+        },
+        select: { id: true }
+    });
+
+    if (vehicles.length === 0) {
+        return { success: true, count: 0, message: 'No vehicles to sync' };
+    }
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const vehicle of vehicles) {
+        try {
+            const results = await syncVehicleToPortals(vehicle.id);
+            const hasError = results.some(result => result.status === 'FAILED');
+            if (hasError) errorCount++;
+            else successCount++;
+        } catch (e) {
+            errorCount++;
+        }
+    }
+
+    revalidatePath('/admin');
+    return { 
+        success: true, 
+        count: vehicles.length, 
+        successCount, 
+        errorCount 
+    };
 }
 
 export async function getPortalSettings(portalName: string) {

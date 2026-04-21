@@ -92,6 +92,10 @@ export const dictionary = {
             feedUrl: 'Feed URL',
             instructions: 'Copy this URL and enter it in your dealer portal settings.',
             saveSuccess: 'Portal settings updated successfully.',
+            manualSync: 'Sync to Portals Now',
+            syncing: 'Syncing...',
+            syncSuccess: 'Export completed successfully!',
+            syncError: 'Error during export.',
         },
         about: {
             title: 'About MATO AUTOMOBILE',
@@ -209,6 +213,10 @@ export const dictionary = {
             feedUrl: 'Feed-URL',
             instructions: 'Kopieren Sie diese URL und geben Sie sie in Ihren Händler-Portal-Einstellungen ein.',
             saveSuccess: 'Portal-Einstellungen erfolgreich aktualisiert.',
+            manualSync: 'Daten jetzt exportieren',
+            syncing: 'Synchronisierung läuft...',
+            syncSuccess: 'Export erfolgreich abgeschlossen!',
+            syncError: 'Fehler beim Export.',
         },
         about: {
             title: 'Über MATO AUTOMOBILE',
