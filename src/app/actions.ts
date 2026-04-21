@@ -119,8 +119,9 @@ export async function createVehicle(formData: FormData) {
         }
     }
 
+    let vehicle;
     try {
-        await prisma.vehicle.create({
+        vehicle = await prisma.vehicle.create({
             data: {
                 ...vehicleData,
                 articleNumber,
@@ -140,6 +141,13 @@ export async function createVehicle(formData: FormData) {
         return {
             message: 'Database Error: Failed to create vehicle.',
         }
+    }
+
+    // Trigger Portal Sync (Async)
+    if (vehicle) {
+        import('@/lib/portals/sync-service').then(({ syncVehicleToPortals }) => {
+            syncVehicleToPortals(vehicle.id).catch(err => console.error('Portal Sync Error:', err))
+        }).catch(e => console.error('Failed to load sync service:', e))
     }
 
     revalidatePath('/admin')
@@ -241,6 +249,11 @@ export async function updateVehicle(id: string, formData: FormData) {
             message: 'Database Error: Failed to update vehicle.',
         }
     }
+
+    // Trigger Portal Sync (Async)
+    import('@/lib/portals/sync-service').then(({ syncVehicleToPortals }) => {
+        syncVehicleToPortals(id).catch(err => console.error('Portal Sync Error:', err))
+    }).catch(e => console.error('Failed to load sync service:', e))
 
     revalidatePath('/admin')
     revalidatePath('/')
