@@ -106,17 +106,17 @@ export class MobileDeAdapter implements PortalAdapter {
     }
 
     private buildVehicleXml(v: any, customerNumber: string): string {
-        const escape = (s: any) => s ? s.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+        const escape = (s: any) => s ? s.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') : '';
         const baseUrl = 'https://mato-automobile.de';
         
-        // Final structure found via bruteforce: root <ad> MUST have NO namespace prefix or URI.
-        // Child elements like vehicle and price MUST have their respective namespaces.
-        // Important: Tags like class and category expect content, not attributes.
+        // Strict mobile.de XML structure (Seller API 1.1)
+        // Root element <ad> in default namespace, no prefix.
+        // Elements MUST follow this exact sequence: vehicle, price, images.
         return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ad>
-    <vehicle xmlns:vehicle="http://services.mobile.de/schema/vehicle">
-        <vehicle:class>Car</vehicle:class>
-        <vehicle:category>EstateCar</vehicle:category> 
+<ad xmlns="http://services.mobile.de/schema/ad" 
+    xmlns:vehicle="http://services.mobile.de/schema/vehicle" 
+    xmlns:seller="http://services.mobile.de/schema/seller">
+    <vehicle>
         <vehicle:make-label>${escape(v.make)}</vehicle:make-label>
         <vehicle:model-label>${escape(v.model)}</vehicle:model-label>
         <vehicle:specifics>
@@ -131,14 +131,14 @@ export class MobileDeAdapter implements PortalAdapter {
         </vehicle:features>
         <vehicle:description>${escape(v.description || '')}</vehicle:description>
     </vehicle>
-    <price value="${v.price}" xmlns:ad="http://services.mobile.de/schema/ad">
-        <ad:currency>EUR</ad:currency>
-        <ad:vat-rate-fraction>0.19</ad:vat-rate-fraction>
+    <price value="${v.price}">
+        <currency>EUR</currency>
+        <vat-rate-fraction>0.19</vat-rate-fraction>
     </price>
-    <images xmlns:ad="http://services.mobile.de/schema/ad">
+    <images>
         ${v.images?.map((img: any) => {
             const fullUrl = img.url.startsWith('http') ? img.url : `${baseUrl}${img.url}`;
-            return `<ad:image url="${escape(fullUrl)}" />`;
+            return `<image url="${escape(fullUrl)}" />`;
         }).join('\n        ') || ''}
     </images>
 </ad>`;
