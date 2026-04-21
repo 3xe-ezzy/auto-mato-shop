@@ -200,7 +200,7 @@ export const dictionary = {
         portals: {
             title: 'Portal-Verbindungen',
             subtitle: 'Verwalten Sie Ihre Verbindungen zu AutoScout24 und Mobile.de.',
-            dealerId: 'Händler-/Kundennummer',
+            dealerId: 'Händler-Nummer (Seller-ID)',
             active: 'Aktiv',
             feedUrl: 'Feed-URL',
             instructions: 'Kopieren Sie diese URL und geben Sie sie in Ihren Händler-Portal-Einstellungen ein.',
