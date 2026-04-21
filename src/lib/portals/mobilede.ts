@@ -113,8 +113,7 @@ export class MobileDeAdapter implements PortalAdapter {
         // Root element <ad> in default namespace, no prefix.
         // Elements MUST follow this exact sequence: vehicle, price, images.
         return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ad xmlns="http://services.mobile.de/schema/ad" 
-    xmlns:vehicle="http://services.mobile.de/schema/vehicle" 
+<ad xmlns:vehicle="http://services.mobile.de/schema/vehicle" 
     xmlns:seller="http://services.mobile.de/schema/seller">
     <vehicle>
         <vehicle:make-label>${escape(v.make)}</vehicle:make-label>
