@@ -55,35 +55,46 @@ export default function PortalSettingsForm({ portalName, initialData }: PortalSe
 
             <form action={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">{t.portals.dealerId || 'Händlernummer / Client ID'}</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                        {portalName === 'Mobile.de' ? 'Seller-ID (mobile.de)' : t.portals.dealerId}
+                    </label>
                     <input
                         type="text"
                         name="customerNumber"
                         defaultValue={initialData.customerNumber || ''}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        placeholder="e.g. 12345678"
+                        placeholder={portalName === 'Mobile.de' ? 'z.B. 46761516' : 'e.g. 12345678'}
                     />
+                    {portalName === 'Mobile.de' && (
+                        <p className="mt-1 text-[10px] text-orange-600 font-medium italic">
+                            ⚠️ Nicht die Kundennummer (876407) verwenden! Bitte nutzen Sie hier die Seller-ID (46761516).
+                        </p>
+                    )}
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">API Key / Benutzername</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                        {portalName === 'Mobile.de' ? 'API-Benutzername' : t.portals.apiKey}
+                    </label>
                     <input
                         type="text"
                         name="apiKey"
                         defaultValue={initialData.apiKey || ''}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        placeholder="API Key or Username"
+                        placeholder={portalName === 'Mobile.de' ? 'Oft Ihre E-Mail Adresse' : 'API Key or Username'}
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">API Secret / Passwort</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                        {portalName === 'Mobile.de' ? 'API-Passwort' : t.portals.apiSecret}
+                    </label>
                     <input
                         type="password"
                         name="apiSecret"
                         defaultValue={initialData.apiSecret || ''}
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        placeholder="API Secret or Password"
+                        placeholder="••••••••"
                     />
                 </div>
 

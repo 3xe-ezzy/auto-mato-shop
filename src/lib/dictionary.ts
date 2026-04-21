@@ -85,7 +85,9 @@ export const dictionary = {
         portals: {
             title: 'Portal Connections',
             subtitle: 'Manage your connections to AutoScout24 and Mobile.de.',
-            dealerId: 'Dealer/Customer ID',
+            dealerId: 'Seller-ID',
+            apiKey: 'Username (API)',
+            apiSecret: 'Password (API)',
             active: 'Active',
             feedUrl: 'Feed URL',
             instructions: 'Copy this URL and enter it in your dealer portal settings.',
@@ -200,7 +202,9 @@ export const dictionary = {
         portals: {
             title: 'Portal-Verbindungen',
             subtitle: 'Verwalten Sie Ihre Verbindungen zu AutoScout24 und Mobile.de.',
-            dealerId: 'Händler-Nummer (Seller-ID)',
+            dealerId: 'Seller-ID (mobile.de)',
+            apiKey: 'API-Benutzername',
+            apiSecret: 'API-Passwort',
             active: 'Aktiv',
             feedUrl: 'Feed-URL',
             instructions: 'Kopieren Sie diese URL und geben Sie sie in Ihren Händler-Portal-Einstellungen ein.',
