@@ -109,35 +109,39 @@ export class MobileDeAdapter implements PortalAdapter {
         const escape = (s: any) => s ? s.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') : '';
         const baseUrl = 'https://mato-automobile.de';
         
-        // Strict mobile.de XML structure (Seller API 1.1)
-        // Root element <ad> in default namespace, no prefix.
-        // Elements MUST follow this exact sequence: vehicle, price, images.
-        return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ad xmlns:vehicle="http://services.mobile.de/schema/vehicle" 
-    xmlns:seller="http://services.mobile.de/schema/seller">
+        const monthStr = '01'; // Defaulting to January if no month is provided
+        const yearStr = v.year || new Date().getFullYear();
+        const firstReg = `${yearStr}-${monthStr}`;
+        
+        // Use flat XML structure as expected by mobile.de Seller API 1.1 reference validation
+        return `<?xml version="1.0" encoding="UTF-8"?>
+<ad>
+    <vehicleClass>Car</vehicleClass>
+    <category>Limousine</category>
     <vehicle>
-        <vehicle:make-label>${escape(v.make)}</vehicle:make-label>
-        <vehicle:model-label>${escape(v.model)}</vehicle:model-label>
-        <vehicle:specifics>
-            <vehicle:mileage value="${v.mileage}" />
-            <vehicle:first-registration>${v.year}-01</vehicle:first-registration>
-            <vehicle:fuel>${mapToMobileValue('fuel', v.fuelType)}</vehicle:fuel>
-            <vehicle:transmission>${mapToMobileValue('transmission', v.transmission)}</vehicle:transmission>
-            <vehicle:power value="${v.power || 100}" unit="KW" />
-        </vehicle:specifics>
-        <vehicle:features>
-            ${v.equipment?.map((e: any) => `<vehicle:feature name="${escape(e.name)}" />`).join('\n            ') || ''}
-        </vehicle:features>
-        <vehicle:description>${escape(v.description || '')}</vehicle:description>
+        <make>${escape(v.make)}</make>
+        <model>${escape(v.model)}</model>
+        <specifics>
+            <mileage>${v.mileage || 0}</mileage>
+            <firstRegistration>${firstReg}</firstRegistration>
+            <fuel>${mapToMobileValue('fuel', v.fuelType)}</fuel>
+            <gearbox>${mapToMobileValue('transmission', v.transmission)}</gearbox>
+            <power unit="KW">${v.power || 100}</power>
+            <condition>${mapToMobileValue('condition', v.condition) || 'USED'}</condition>
+        </specifics>
+        <descriptions>
+            <description>${escape(v.description || '')}</description>
+        </descriptions>
     </vehicle>
-    <price value="${v.price}">
+    <price>
+        <amount>${v.price || 0}</amount>
         <currency>EUR</currency>
-        <vat-rate-fraction>0.19</vat-rate-fraction>
+        <type>FIXED</type>
     </price>
     <images>
         ${v.images?.map((img: any) => {
             const fullUrl = img.url.startsWith('http') ? img.url : `${baseUrl}${img.url}`;
-            return `<image url="${escape(fullUrl)}" />`;
+            return `<image><url>${escape(fullUrl)}</url></image>`;
         }).join('\n        ') || ''}
     </images>
 </ad>`;

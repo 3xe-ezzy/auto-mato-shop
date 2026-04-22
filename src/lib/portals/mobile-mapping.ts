@@ -13,9 +13,9 @@ export const MOBILE_DE_MAPPING = {
         'CNG': 'CNG'
     },
     transmission: {
-        'Manual': 'MANUAL_GEAR',
-        'Automatic': 'AUTOMATIC_GEAR',
-        'Semi-Automatic': 'SEMIAUTOMATIC_GEAR'
+        'Manual': 'MANUAL_GEARBOX',
+        'Automatic': 'AUTOMATIC_GEARBOX',
+        'Semi-Automatic': 'SEMIAUTOMATIC_GEARBOX'
     },
     condition: {
         'New': 'NEW',
