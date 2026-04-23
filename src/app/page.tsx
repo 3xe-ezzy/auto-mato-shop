@@ -98,18 +98,13 @@ export default function Home() {
                                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                                 </Link>
                             </div>
-                            <div className="order-1 lg:order-2 relative rounded-3xl overflow-hidden shadow-2xl h-64 sm:h-96 lg:h-full min-h-[300px] sm:min-h-[450px] group border-4 border-white/50 ring-1 ring-black/5">
-                                <Link href="/vehicles" className="block w-full h-full relative cursor-pointer">
+                            <div className="order-1 lg:order-2 relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50 ring-1 ring-black/5">
+                                <Link href="/vehicles" className="block w-full relative cursor-pointer">
                                     <img 
-                                        src="/mato_automobile_about_highlight_composite_1776182370450.png" 
-                                        alt="Mato Automobile Premium Highlights" 
-                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                        src="/Mato_Elbrinz.png" 
+                                        alt="Mato Automobile" 
+                                        className="w-full h-auto block"
                                     />
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                                        <div className="bg-white/90 px-6 py-3 rounded-full font-bold text-black opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-2xl">
-                                            Fahrzeuge entdecken
-                                        </div>
-                                    </div>
                                 </Link>
                             </div>
                         </div>
