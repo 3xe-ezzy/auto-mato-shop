@@ -101,7 +101,7 @@ export default function Home() {
                             <div className="order-1 lg:order-2 relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50 ring-1 ring-black/5">
                                 <Link href="/vehicles" className="block w-full relative cursor-pointer">
                                     <img 
-                                        src="/Mato_Elbrinz.png" 
+                                        src="/mato_closed_door_final.jpg" 
                                         alt="Mato Automobile" 
                                         className="w-full h-auto block"
                                     />
