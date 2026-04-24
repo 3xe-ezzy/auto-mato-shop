@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import { useLanguage } from '@/components/LanguageContext'
 import Link from 'next/link'
-import { Vehicle, Image } from '@prisma/client'
+import { Vehicle, Image, VehicleListing } from '@prisma/client'
 import DeleteVehicleButton from '@/components/DeleteVehicleButton'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import ManualSyncButton from '@/components/ManualSyncButton'
+import { CheckCircle, XCircle, Clock } from 'lucide-react'
 
-type VehicleWithImages = Vehicle & { images: Image[], vin?: string | null }
+type VehicleWithImages = Vehicle & { images: Image[], vin?: string | null, VehicleListing?: VehicleListing[] }
 
 export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImages[] }) {
     const { t } = useLanguage()
@@ -106,6 +107,9 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {t.vehicle.status}
                                         </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Portale
+                                        </th>
                                         <th scope="col" className="relative px-6 py-3">
                                             <span className="sr-only">{t.actions.edit}</span>
                                         </th>
@@ -148,6 +152,19 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                                                     }`}>
                                                     {t.values[vehicle.status.toLowerCase() as keyof typeof t.values] || vehicle.status}
                                                 </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex flex-col gap-1 items-start">
+                                                    {vehicle.syncEbay || vehicle.VehicleListing?.some(l => l.portalName === 'eBay') ? (
+                                                        <PortalBadge vehicle={vehicle} portalName="eBay" isSyncEnabled={vehicle.syncEbay} />
+                                                    ) : null}
+                                                    {vehicle.syncMobileDe || vehicle.VehicleListing?.some(l => l.portalName === 'Mobile.de') ? (
+                                                        <PortalBadge vehicle={vehicle} portalName="Mobile.de" isSyncEnabled={vehicle.syncMobileDe} />
+                                                    ) : null}
+                                                    {vehicle.syncAutoScout24 || vehicle.VehicleListing?.some(l => l.portalName === 'AutoScout24') ? (
+                                                        <PortalBadge vehicle={vehicle} portalName="AutoScout24" isSyncEnabled={vehicle.syncAutoScout24} />
+                                                    ) : null}
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
                                                 <Link href={`/admin/vehicles/${vehicle.id}`} className="text-blue-600 hover:text-blue-900" title="Bearbeiten">
@@ -249,4 +266,46 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
             </div>
         </div>
     )
+}
+
+function PortalBadge({ vehicle, portalName, isSyncEnabled }: { vehicle: VehicleWithImages, portalName: string, isSyncEnabled: boolean }) {
+    const listing = vehicle.VehicleListing?.find(l => l.portalName === portalName)
+    
+    if (listing) {
+        if (listing.status === 'PUBLISHED') {
+            return (
+                <div className="flex items-center gap-2" title="Publiziert">
+                    <span className="text-[14px]">✅</span>
+                    <span className="text-xs font-medium text-gray-700">{portalName}</span>
+                </div>
+            )
+        }
+        if (listing.status === 'FAILED') {
+            return (
+                <div className="flex items-center gap-2" title={listing.errorMessage || 'Fehler beim Publizieren'}>
+                    <span className="text-[14px]">❌</span>
+                    <span className="text-xs font-medium text-gray-700">{portalName}</span>
+                </div>
+            )
+        }
+        if (listing.status === 'PENDING') {
+            return (
+                <div className="flex items-center gap-2" title="Wird verarbeitet">
+                    <span className="text-[14px]">⏳</span>
+                    <span className="text-xs font-medium text-gray-700">{portalName}</span>
+                </div>
+            )
+        }
+    }
+    
+    if (isSyncEnabled) {
+        return (
+            <div className="flex items-center gap-2" title="Bereit für die Publizierung">
+                <span className="text-[14px]">⏳</span>
+                <span className="text-xs font-medium text-gray-700">{portalName}</span>
+            </div>
+        )
+    }
+    
+    return null;
 }
