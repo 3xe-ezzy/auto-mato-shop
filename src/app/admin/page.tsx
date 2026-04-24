@@ -6,7 +6,10 @@ export const dynamic = 'force-dynamic'
 export default async function AdminPage() {
     const vehicles = await prisma.vehicle.findMany({
         orderBy: { createdAt: 'desc' },
-        include: { images: true }
+        include: { 
+            images: true,
+            VehicleListing: true
+        }
     })
 
     return (

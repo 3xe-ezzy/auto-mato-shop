@@ -113,9 +113,9 @@ export class MobileDeAdapter implements PortalAdapter {
         const yearStr = v.year || new Date().getFullYear();
         const firstReg = `${yearStr}-${monthStr}`;
         
-        // Use flat XML structure as expected by mobile.de Seller API 1.1 reference validation
+        // Use flat XML structure with seller namespace as expected by mobile.de Seller API
         return `<?xml version="1.0" encoding="UTF-8"?>
-<ad>
+<ad xmlns="http://services.mobile.de/schema/seller">
     <vehicleClass>Car</vehicleClass>
     <category>Limousine</category>
     <vehicle>
