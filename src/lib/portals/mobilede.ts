@@ -107,7 +107,6 @@ export class MobileDeAdapter implements PortalAdapter {
 
     private buildVehicleXml(v: any, customerNumber: string): string {
         const escape = (s: any) => s ? s.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') : '';
-        const baseUrl = 'https://mato-automobile.de';
         
         const monthStr = '01'; // Defaulting to January if no month is provided
         const yearStr = v.year || new Date().getFullYear();
@@ -125,20 +124,11 @@ export class MobileDeAdapter implements PortalAdapter {
     <gearbox>${mapToMobileValue('transmission', v.transmission)}</gearbox>
     <power unit="KW">${v.power || 100}</power>
     <condition>${mapToMobileValue('condition', v.condition) || 'USED'}</condition>
-    <descriptions>
-        <description>${escape(v.description || '')}</description>
-    </descriptions>
     <price>
         <amount>${v.price || 0}</amount>
         <currency>EUR</currency>
-        <vatRate>19.00</vatRate>
+        <taxDetail>GROSS</taxDetail>
     </price>
-    <images>
-        ${v.images?.map((img: any) => {
-            const fullUrl = img.url.startsWith('http') ? img.url : `${baseUrl}${img.url}`;
-            return `<image><url>${escape(fullUrl)}</url></image>`;
-        }).join('\n        ') || ''}
-    </images>
 </ad>`;
     }
 }
