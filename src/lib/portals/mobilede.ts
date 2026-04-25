@@ -132,13 +132,6 @@ export class MobileDeAdapter implements PortalAdapter {
         <currency>EUR</currency>
         <taxDetail>GROSS</taxDetail>
     </price>
-    <images>
-        ${v.images?.map((img: any) => {
-            const baseUrl = 'https://mato-automobile.de';
-            const fullUrl = img.url.startsWith('http') ? img.url : `${baseUrl}${img.url}`;
-            return `<image><url>${escape(fullUrl)}</url></image>`;
-        }).join('\n        ') || ''}
-    </images>
 </ad>`;
     }
 }
