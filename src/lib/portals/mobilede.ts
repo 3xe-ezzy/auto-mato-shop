@@ -108,16 +108,34 @@ export class MobileDeAdapter implements PortalAdapter {
     private buildVehicleXml(v: any, customerNumber: string): string {
         const escape = (s: any) => s ? s.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') : '';
         
-        const monthStr = '01'; // Defaulting to January if no month is provided
+        const monthStr = '01';
         const yearStr = v.year || new Date().getFullYear();
         const firstReg = `${yearStr}-${monthStr}`;
         
         const model = mapToMobileValue('models', v.model);
         
+        // Basic category mapping
+        let category = 'Limousine';
+        const modelLower = (v.model || '').toLowerCase();
+        const makeLower = (v.make || '').toLowerCase();
+
+        if (modelLower.includes('glc') || modelLower.includes('gle') || modelLower.includes('gls') || 
+            modelLower.includes('g-klasse') || modelLower.includes('g 500') || modelLower.includes('ml ') ||
+            modelLower.includes('tiguan') || modelLower.includes('touareg') || modelLower.includes('t-roc') ||
+            modelLower.includes('q3') || modelLower.includes('q5') || modelLower.includes('q7') || modelLower.includes('x3') || modelLower.includes('x5')) {
+            category = 'OffRoad';
+        } else if (modelLower.includes('eqv') || modelLower.includes('vito') || modelLower.includes('v-klasse') || 
+                   modelLower.includes('vaneo') || modelLower.includes('sharan') || modelLower.includes('touran') ||
+                   modelLower.includes('caddy') || modelLower.includes('multivan') || modelLower.includes('transporter')) {
+            category = 'Van';
+        } else if (modelLower.includes('kombi') || modelLower.includes('variant') || modelLower.includes('shooting brake') || modelLower.includes('avant')) {
+            category = 'EstateCar';
+        }
+
         return `<?xml version="1.0" encoding="UTF-8"?>
-<ad>
+<ad xmlns="http://services.mobile.de/schema/ad">
     <vehicleClass>Car</vehicleClass>
-    <category>Limousine</category>
+    <category>${category}</category>
     <make>${mapToMobileValue('makes', v.make)}</make>
     <model>${model || 'ANDERE'}</model>
     <mileage>${v.mileage || 0}</mileage>
@@ -130,9 +148,11 @@ export class MobileDeAdapter implements PortalAdapter {
         <description>${escape(v.description || '')}</description>
     </descriptions>
     <price>
-        <amount>${v.price || 0}</amount>
-        <currency>EUR</currency>
-        <taxDetail>GROSS</taxDetail>
+        <consumerValue>
+            <amount>${v.price || 0}</amount>
+            <currency>EUR</currency>
+            <taxDetail>GROSS</taxDetail>
+        </consumerValue>
     </price>
 </ad>`;
     }
