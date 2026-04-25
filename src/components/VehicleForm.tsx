@@ -446,29 +446,31 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                             <h4 className="text-sm font-semibold text-gray-900 mb-2">Portal-Export</h4>
                         </div>
 
-                        <div className="sm:col-span-3 flex items-center">
+                        <div className="sm:col-span-3 flex items-center p-4 bg-blue-50 rounded-lg border border-blue-100 transition-all hover:bg-blue-100 group">
                             <input
                                 id="syncAutoScout24"
                                 name="syncAutoScout24"
                                 type="checkbox"
                                 defaultChecked={vehicle?.syncAutoScout24}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
                             />
-                            <label htmlFor="syncAutoScout24" className="ml-2 block text-sm font-medium text-blue-700">
+                            <label htmlFor="syncAutoScout24" className="ml-3 block text-sm font-bold text-blue-900 cursor-pointer">
                                 Zu AutoScout24 übertragen
+                                <span className="block font-normal text-xs text-blue-600">Exportiert dieses Fahrzeug zu AS24</span>
                             </label>
                         </div>
 
-                        <div className="sm:col-span-3 flex items-center">
+                        <div className="sm:col-span-3 flex items-center p-4 bg-orange-50 rounded-lg border border-orange-100 transition-all hover:bg-orange-100 group">
                             <input
                                 id="syncMobileDe"
                                 name="syncMobileDe"
                                 type="checkbox"
                                 defaultChecked={vehicle?.syncMobileDe}
-                                className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                                className="h-5 w-5 text-orange-600 focus:ring-orange-500 border-gray-300 rounded cursor-pointer"
                             />
-                            <label htmlFor="syncMobileDe" className="ml-2 block text-sm font-medium text-orange-700">
+                            <label htmlFor="syncMobileDe" className="ml-3 block text-sm font-bold text-orange-900 cursor-pointer">
                                 Zu mobile.de übertragen
+                                <span className="block font-normal text-xs text-orange-600">Exportiert dieses Fahrzeug zu mobile.de</span>
                             </label>
                         </div>
 

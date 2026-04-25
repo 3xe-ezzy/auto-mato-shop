@@ -147,10 +147,8 @@ export class MobileDeAdapter implements PortalAdapter {
     <descriptions>
         <description>${escape(v.description || '')}</description>
     </descriptions>
-    <price currency="EUR" type="FIXED">
-        <gross-prices>
-            <consumer-price-gross>${Math.round(v.price || 0)}</consumer-price-gross>
-        </gross-prices>
+    <price>
+        <consumerValue amount="${(v.price || 0).toFixed(2)}" currency="EUR" taxDetail="GROSS" />
     </price>
 </ad>`;
     }
