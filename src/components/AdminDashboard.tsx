@@ -41,7 +41,7 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                 <div>
                     <h1 className="text-2xl font-semibold text-gray-900">{t.messages.adminTitle}</h1>
                     <p className="mt-1 text-sm text-gray-500">
-                        {t.messages.adminSubtitle} <span className="ml-2 font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs border border-blue-200 shadow-sm animate-pulse">Build: v1.1.2 (Integer Price Fix)</span>
+                        {t.messages.adminSubtitle} <span className="ml-2 font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs border border-blue-200 shadow-sm animate-pulse">Build: v1.1.3 (Selection logic fix)</span>
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -269,6 +269,9 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
 }
 
 function PortalBadge({ vehicle, portalName, isSyncEnabled }: { vehicle: VehicleWithImages, portalName: string, isSyncEnabled: boolean }) {
+    // If sync is not enabled for this portal, don't show anything (it's only on the website)
+    if (!isSyncEnabled) return null;
+
     const listing = vehicle.VehicleListing?.find(l => l.portalName === portalName)
     
     if (listing) {
@@ -288,24 +291,13 @@ function PortalBadge({ vehicle, portalName, isSyncEnabled }: { vehicle: VehicleW
                 </div>
             )
         }
-        if (listing.status === 'PENDING') {
-            return (
-                <div className="flex items-center gap-2" title="Wird verarbeitet">
-                    <span className="text-[14px]">⏳</span>
-                    <span className="text-xs font-medium text-gray-700">{portalName}</span>
-                </div>
-            )
-        }
     }
     
-    if (isSyncEnabled) {
-        return (
-            <div className="flex items-center gap-2" title="Bereit für die Publizierung">
-                <span className="text-[14px]">⏳</span>
-                <span className="text-xs font-medium text-gray-700">{portalName}</span>
-            </div>
-        )
-    }
-    
-    return null;
+    // Default for enabled sync: Show the hourglass (selected for this portal)
+    return (
+        <div className="flex items-center gap-2" title="Für dieses Portal selektiert">
+            <span className="text-[14px]">⏳</span>
+            <span className="text-xs font-medium text-gray-700">{portalName}</span>
+        </div>
+    )
 }
