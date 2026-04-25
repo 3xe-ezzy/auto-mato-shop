@@ -112,12 +112,14 @@ export class MobileDeAdapter implements PortalAdapter {
         const yearStr = v.year || new Date().getFullYear();
         const firstReg = `${yearStr}-${monthStr}`;
         
+        const model = mapToMobileValue('models', v.model);
+        
         return `<?xml version="1.0" encoding="UTF-8"?>
 <ad>
     <vehicleClass>Car</vehicleClass>
     <category>Limousine</category>
     <make>${mapToMobileValue('makes', v.make)}</make>
-    <model>${mapToMobileValue('models', v.model)}</model>
+    <model>${model || 'ANDERE'}</model>
     <mileage>${v.mileage || 0}</mileage>
     <first-registration>${firstReg}</first-registration>
     <fuel>${mapToMobileValue('fuel', v.fuelType)}</fuel>

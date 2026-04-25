@@ -30,18 +30,25 @@ export const MOBILE_DE_MAPPING = {
     },
     makes: {
         'Volkswagen': 'VW',
-        'Mercedes-Benz': 'MERCEDES-BENZ'
+        'Mercedes-Benz': 'MERCEDES-BENZ',
+        'Audi': 'AUDI',
+        'BMW': 'BMW'
     },
     models: {
-        'GLC': 'GLC 220',
-        'C-Klasse': 'C 220',
-        'E-Klasse': 'E 220',
-        'S-Klasse': 'S 350'
+        // Models are now selected from the official mobile.de list in the UI.
+        // We can add specific overrides here if needed.
     }
 };
 
 export function mapToMobileValue(category: keyof typeof MOBILE_DE_MAPPING, value: string | null | undefined): string {
     if (!value) return '';
     const categoryMap = MOBILE_DE_MAPPING[category];
-    return (categoryMap as any)[value] || value.toUpperCase().replace(/\s+/g, '_');
+    if ((categoryMap as any)[value]) {
+        return (categoryMap as any)[value];
+    }
+    // For models, we usually want to keep the name as is if we're using official names
+    if (category === 'models') {
+        return value;
+    }
+    return value.toUpperCase().replace(/\s+/g, '_');
 }
