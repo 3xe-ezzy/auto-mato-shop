@@ -29,7 +29,14 @@ export const MOBILE_DE_MAPPING = {
         'Euro 4': 'EURO4'
     },
     makes: {
-        'Volkswagen': 'VW'
+        'Volkswagen': 'VW',
+        'Mercedes-Benz': 'MERCEDES-BENZ'
+    },
+    models: {
+        'GLC': 'GLC 220',
+        'C-Klasse': 'C 220',
+        'E-Klasse': 'E 220',
+        'S-Klasse': 'S 350'
     }
 };
 

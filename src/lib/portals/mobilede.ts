@@ -117,18 +117,28 @@ export class MobileDeAdapter implements PortalAdapter {
     <vehicleClass>Car</vehicleClass>
     <category>Limousine</category>
     <make>${mapToMobileValue('makes', v.make)}</make>
-    <model>${escape(v.model)}</model>
+    <model>${mapToMobileValue('models', v.model)}</model>
     <mileage>${v.mileage || 0}</mileage>
     <first-registration>${firstReg}</first-registration>
     <fuel>${mapToMobileValue('fuel', v.fuelType)}</fuel>
     <gearbox>${mapToMobileValue('transmission', v.transmission)}</gearbox>
     <power unit="KW">${v.power || 100}</power>
     <condition>${mapToMobileValue('condition', v.condition) || 'USED'}</condition>
+    <descriptions>
+        <description>${escape(v.description || '')}</description>
+    </descriptions>
     <price>
         <amount>${v.price || 0}</amount>
         <currency>EUR</currency>
         <taxDetail>GROSS</taxDetail>
     </price>
+    <images>
+        ${v.images?.map((img: any) => {
+            const baseUrl = 'https://mato-automobile.de';
+            const fullUrl = img.url.startsWith('http') ? img.url : `${baseUrl}${img.url}`;
+            return `<image><url>${escape(fullUrl)}</url></image>`;
+        }).join('\n        ') || ''}
+    </images>
 </ad>`;
     }
 }
