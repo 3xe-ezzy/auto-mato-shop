@@ -28,7 +28,7 @@ export default function AdminLayout({
                                 <Link href="/admin/settings/portals" className="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                                     {t.nav.portals}
                                 </Link>
-                                <Link href="/" className="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                <Link href="/vehicles" className="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                                     {t.nav.shop}
                                 </Link>
                                 <button
