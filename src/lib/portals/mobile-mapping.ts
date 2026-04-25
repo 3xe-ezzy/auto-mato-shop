@@ -13,9 +13,9 @@ export const MOBILE_DE_MAPPING = {
         'CNG': 'CNG'
     },
     transmission: {
-        'Manual': 'MANUAL_GEARBOX',
-        'Automatic': 'AUTOMATIC_GEARBOX',
-        'Semi-Automatic': 'SEMIAUTOMATIC_GEARBOX'
+        'Manual': 'MANUAL_GEAR',
+        'Automatic': 'AUTOMATIC_GEAR',
+        'Semi-Automatic': 'SEMIAUTOMATIC_GEAR'
     },
     condition: {
         'New': 'NEW',
@@ -27,6 +27,9 @@ export const MOBILE_DE_MAPPING = {
         'Euro 6d-TEMP': 'EURO6D_TEMP',
         'Euro 5': 'EURO5',
         'Euro 4': 'EURO4'
+    },
+    makes: {
+        'Volkswagen': 'VW'
     }
 };
 

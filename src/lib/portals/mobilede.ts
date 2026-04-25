@@ -113,30 +113,25 @@ export class MobileDeAdapter implements PortalAdapter {
         const yearStr = v.year || new Date().getFullYear();
         const firstReg = `${yearStr}-${monthStr}`;
         
-        // Use flat XML structure with seller namespace as expected by mobile.de Seller API
         return `<?xml version="1.0" encoding="UTF-8"?>
-<ad xmlns="http://services.mobile.de/schema/seller">
+<ad>
     <vehicleClass>Car</vehicleClass>
     <category>Limousine</category>
-    <vehicle>
-        <make>${escape(v.make)}</make>
-        <model>${escape(v.model)}</model>
-        <specifics>
-            <mileage>${v.mileage || 0}</mileage>
-            <firstRegistration>${firstReg}</firstRegistration>
-            <fuel>${mapToMobileValue('fuel', v.fuelType)}</fuel>
-            <gearbox>${mapToMobileValue('transmission', v.transmission)}</gearbox>
-            <power unit="KW">${v.power || 100}</power>
-            <condition>${mapToMobileValue('condition', v.condition) || 'USED'}</condition>
-        </specifics>
-        <descriptions>
-            <description>${escape(v.description || '')}</description>
-        </descriptions>
-    </vehicle>
+    <make>${mapToMobileValue('makes', v.make)}</make>
+    <model>${escape(v.model)}</model>
+    <mileage>${v.mileage || 0}</mileage>
+    <first-registration>${firstReg}</first-registration>
+    <fuel>${mapToMobileValue('fuel', v.fuelType)}</fuel>
+    <gearbox>${mapToMobileValue('transmission', v.transmission)}</gearbox>
+    <power unit="KW">${v.power || 100}</power>
+    <condition>${mapToMobileValue('condition', v.condition) || 'USED'}</condition>
+    <descriptions>
+        <description>${escape(v.description || '')}</description>
+    </descriptions>
     <price>
         <amount>${v.price || 0}</amount>
         <currency>EUR</currency>
-        <type>FIXED</type>
+        <vatRate>19.00</vatRate>
     </price>
     <images>
         ${v.images?.map((img: any) => {
