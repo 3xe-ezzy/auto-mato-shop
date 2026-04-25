@@ -133,7 +133,7 @@ export class MobileDeAdapter implements PortalAdapter {
         }
 
         return `<?xml version="1.0" encoding="UTF-8"?>
-<ad xmlns="http://services.mobile.de/schema/ad">
+<ad>
     <vehicleClass>Car</vehicleClass>
     <category>${category}</category>
     <make>${mapToMobileValue('makes', v.make)}</make>
@@ -149,7 +149,7 @@ export class MobileDeAdapter implements PortalAdapter {
     </descriptions>
     <price>
         <consumerValue>
-            <amount>${v.price || 0}</amount>
+            <amount>${(v.price || 0).toFixed(2)}</amount>
             <currency>EUR</currency>
             <taxDetail>GROSS</taxDetail>
         </consumerValue>
