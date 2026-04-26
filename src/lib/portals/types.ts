@@ -16,8 +16,4 @@ export interface PortalAdapter {
     deleteVehicle(externalId: string, settings: PortalConfig): Promise<PortalResponse>;
 }
 
-export interface PortalListing {
-    vehicle: any;
-    portal: any;
-    externalId?: string;
-}
+

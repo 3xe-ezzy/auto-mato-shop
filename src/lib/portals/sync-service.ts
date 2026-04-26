@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { PortalAdapter, PortalListing } from './types';
+import { PortalAdapter } from './types';
 import { AutoScout24Adapter } from './autoscout24';
 import { MobileDeAdapter } from './mobilede';
 import { EbayAdapter } from './ebay';

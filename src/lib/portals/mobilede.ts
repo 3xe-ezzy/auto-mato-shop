@@ -1,18 +1,48 @@
-import { PortalListing } from './types';
+import { PortalAdapter, PortalConfig, PortalResponse } from './types';
 import { mapToMobileValue } from './mobile-mapping';
 
-export class MobileDeAdapter {
+export class MobileDeAdapter implements PortalAdapter {
     private baseUrl = 'https://services.mobile.de/seller-api/v1';
 
-    async sync(listing: PortalListing): Promise<{ externalId?: string; error?: string }> {
-        try {
-            const xml = this.buildVehicleXml(listing);
-            const auth = Buffer.from(`${listing.portal.apiKey}:${listing.portal.apiSecret}`).toString('base64');
+    async publishVehicle(vehicle: any, settings: PortalConfig): Promise<PortalResponse> {
+        return this.sync(vehicle, settings);
+    }
 
-            // If we have an externalId, it's an update (PUT), otherwise a create (POST)
-            const method = listing.externalId ? 'PUT' : 'POST';
-            const url = listing.externalId 
-                ? `${this.baseUrl}/ads/${listing.externalId}` 
+    async updateVehicle(vehicle: any, settings: PortalConfig, externalId: string): Promise<PortalResponse> {
+        return this.sync(vehicle, settings, externalId);
+    }
+
+    async deleteVehicle(externalId: string, settings: PortalConfig): Promise<PortalResponse> {
+        try {
+            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
+            const url = `${this.baseUrl}/ads/${externalId}`;
+
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Basic ${auth}`
+                }
+            });
+
+            if (!response.ok) {
+                const text = await response.text();
+                return { success: false, errorMessage: `Mobile.de Delete Error: ${response.status} - ${text}` };
+            }
+
+            return { success: true };
+        } catch (error: any) {
+            return { success: false, errorMessage: error.message };
+        }
+    }
+
+    private async sync(vehicle: any, settings: PortalConfig, externalId?: string): Promise<PortalResponse> {
+        try {
+            const xml = this.buildVehicleXml(vehicle);
+            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
+
+            const method = externalId ? 'PUT' : 'POST';
+            const url = externalId 
+                ? `${this.baseUrl}/ads/${externalId}` 
                 : `${this.baseUrl}/ads`;
 
             console.log(`Syncing to Mobile.de (${method}): ${url}`);
@@ -31,28 +61,26 @@ export class MobileDeAdapter {
 
             if (!response.ok) {
                 console.error('Mobile.de Sync Error:', response.status, responseText);
-                return { error: `Mobile.de API Error: ${response.status} - ${responseText}` };
+                return { success: false, errorMessage: `Mobile.de API Error: ${response.status} - ${responseText}` };
             }
 
-            // Extract externalId from response (Location header or body)
-            let externalId = listing.externalId;
+            let newExternalId = externalId;
             if (method === 'POST') {
                 const location = response.headers.get('Location');
                 if (location) {
-                    externalId = location.split('/').pop();
+                    newExternalId = location.split('/').pop();
                 }
             }
 
-            return { externalId };
+            return { success: true, externalId: newExternalId };
         } catch (error: any) {
             console.error('Mobile.de Portal Error:', error);
-            return { error: error.message };
+            return { success: false, errorMessage: error.message };
         }
     }
 
-    private buildVehicleXml(listing: PortalListing): string {
-        const v = listing.vehicle;
-        const escape = (str: string) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    private buildVehicleXml(v: any): string {
+        const escape = (str: string) => (str || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         
         // Format first registration to YYYY-MM
         const firstReg = v.year ? `${v.year}-01` : '2020-01';
