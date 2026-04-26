@@ -60,6 +60,13 @@ export class MobileDeAdapter implements PortalAdapter {
             const responseText = await response.text();
 
             if (!response.ok) {
+                // FALLBACK: If we get a 404 on PUT, it means the ad was not found.
+                // In this case, try to create it as a new ad (POST).
+                if (response.status === 404 && externalId) {
+                    console.log('Mobile.de ad not found (404), falling back to POST (Create)...');
+                    return this.sync(vehicle, settings); // Call sync again without externalId
+                }
+
                 console.error('Mobile.de Sync Error:', response.status, responseText);
                 return { success: false, errorMessage: `Mobile.de API Error: ${response.status} - ${responseText}` };
             }
