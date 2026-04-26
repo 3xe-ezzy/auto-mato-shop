@@ -37,6 +37,9 @@ export const MOBILE_DE_MAPPING = {
     models: {
         // Models are now selected from the official mobile.de list in the UI.
         // We can add specific overrides here if needed.
+    },
+    category: {
+        // We can add specific overrides here if needed.
     }
 };
 

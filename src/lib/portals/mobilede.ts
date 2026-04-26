@@ -109,8 +109,8 @@ export class MobileDeAdapter implements PortalAdapter {
         <vehicle:classification>
             <vehicle:vehicle-class key="Car"/>
             <vehicle:category key="${category}"/>
-            <vehicle:make key="${mapToMobileValue('make', v.make) || v.make}"/>
-            <vehicle:model key="${mapToMobileValue('model', v.model) || v.model}"/>
+            <vehicle:make key="${mapToMobileValue('makes', v.make) || v.make}"/>
+            <vehicle:model key="${mapToMobileValue('models', v.model) || v.model}"/>
         </vehicle:classification>
 
         <vehicle:model-description value="${escape(v.make + ' ' + v.model)}"/>
