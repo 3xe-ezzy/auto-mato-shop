@@ -1,156 +1,113 @@
-import { PortalAdapter, PortalConfig, PortalResponse } from './types';
+import { PortalListing } from './sync-service';
 import { mapToMobileValue } from './mobile-mapping';
 
-export class MobileDeAdapter implements PortalAdapter {
-    private baseUrl = 'https://services.mobile.de/seller-api';
+export class MobileDePortal {
+    private baseUrl = 'https://services.mobile.de/seller-api/v1';
 
-    async publishVehicle(vehicle: any, settings: PortalConfig): Promise<PortalResponse> {
-        console.log('Mobile.de Push API: Publishing vehicle', vehicle.id);
-        
-        if (!settings.apiKey || !settings.apiSecret || !settings.customerNumber) {
-            return { success: false, errorMessage: 'Missing API credentials (Key, Secret or SellerID)' };
-        }
-
+    async sync(listing: PortalListing): Promise<{ externalId?: string; error?: string }> {
         try {
-            const xml = this.buildVehicleXml(vehicle, settings.customerNumber);
+            const xml = this.buildVehicleXml(listing);
+            const auth = Buffer.from(`${listing.portal.apiKey}:${listing.portal.apiSecret}`).toString('base64');
+
+            // If we have an externalId, it's an update (PUT), otherwise a create (POST)
+            const method = listing.externalId ? 'PUT' : 'POST';
+            const url = listing.externalId 
+                ? `${this.baseUrl}/ads/${listing.externalId}` 
+                : `${this.baseUrl}/ads`;
+
+            console.log(`Syncing to Mobile.de (${method}): ${url}`);
             
-            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
-            const response = await fetch(`${this.baseUrl}/sellers/${settings.customerNumber}/ads`, {
-                method: 'POST',
+            const response = await fetch(url, {
+                method,
                 headers: {
                     'Authorization': `Basic ${auth}`,
-                    'Content-Type': 'application/vnd.de.mobile.api+xml',
-                    'Accept': 'application/vnd.de.mobile.api+xml'
+                    'Content-Type': 'application/xml',
+                    'Accept': 'application/xml'
                 },
                 body: xml
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                // Log the XML we sent for debugging
-                console.error('Mobile.de XML Sent:', xml);
-                console.error('Mobile.de API Error:', errorText);
-                return { success: false, errorMessage: `Mobile.de API Error: ${response.status} - ${errorText}` };
-            }
-
-            // The API returns 201 Created and the URL in the Location header
-            const location = response.headers.get('Location');
-            const externalId = location ? location.split('/').pop() || `MOB-${vehicle.id}` : `MOB-${vehicle.id}`;
-
-            return {
-                success: true,
-                externalId: externalId
-            };
-        } catch (error: any) {
-            console.error('Mobile.de Publish Exception:', error);
-            return { success: false, errorMessage: error.message };
-        }
-    }
-
-    async updateVehicle(vehicle: any, settings: PortalConfig, externalId: string): Promise<PortalResponse> {
-        console.log(`Mobile.de Push API: Updating MOB ID: ${externalId}`);
-        
-        if (!settings.apiKey || !settings.apiSecret || !settings.customerNumber) {
-            return { success: false, errorMessage: 'Missing API credentials' };
-        }
-
-        try {
-            const xml = this.buildVehicleXml(vehicle, settings.customerNumber);
-            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
-            
-            const response = await fetch(`${this.baseUrl}/sellers/${settings.customerNumber}/ads/${externalId}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Basic ${auth}`,
-                    'Content-Type': 'application/vnd.de.mobile.api+xml'
-                },
-                body: xml
-            });
+            const responseText = await response.text();
 
             if (!response.ok) {
-                const errorText = await response.text();
-                return { success: false, errorMessage: `Update Error: ${response.status} - ${errorText}` };
+                console.error('Mobile.de Sync Error:', response.status, responseText);
+                return { error: `Mobile.de API Error: ${response.status} - ${responseText}` };
             }
 
-            return { success: true, externalId };
-        } catch (error: any) {
-            return { success: false, errorMessage: error.message };
-        }
-    }
-
-    async deleteVehicle(externalId: string, settings: PortalConfig): Promise<PortalResponse> {
-        console.log(`Mobile.de Push API: Deleting MOB ID: ${externalId}`);
-        
-        if (!settings.apiKey || !settings.apiSecret || !settings.customerNumber) {
-            return { success: false, errorMessage: 'Missing API credentials' };
-        }
-
-        try {
-            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
-            const response = await fetch(`${this.baseUrl}/sellers/${settings.customerNumber}/ads/${externalId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Basic ${auth}`
+            // Extract externalId from response (Location header or body)
+            let externalId = listing.externalId;
+            if (method === 'POST') {
+                const location = response.headers.get('Location');
+                if (location) {
+                    externalId = location.split('/').pop();
                 }
-            });
-
-            if (!response.ok && response.status !== 404) {
-                const errorText = await response.text();
-                return { success: false, errorMessage: `Delete Error: ${response.status} - ${errorText}` };
             }
 
-            return { success: true };
+            return { externalId };
         } catch (error: any) {
-            return { success: false, errorMessage: error.message };
+            console.error('Mobile.de Portal Error:', error);
+            return { error: error.message };
         }
     }
 
-    private buildVehicleXml(v: any, customerNumber: string): string {
-        const escape = (s: any) => s ? s.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') : '';
+    private buildVehicleXml(listing: PortalListing): string {
+        const v = listing.vehicle;
+        const escape = (str: string) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         
-        const monthStr = '01';
-        const yearStr = v.year || new Date().getFullYear();
-        const firstReg = `${yearStr}-${monthStr}`;
-        
-        const model = mapToMobileValue('models', v.model);
-        
-        // Basic category mapping
-        let category = 'Limousine';
-        const modelLower = (v.model || '').toLowerCase();
-        const makeLower = (v.make || '').toLowerCase();
+        // Format first registration to YYYY-MM
+        const firstReg = v.year ? `${v.year}-01` : '2020-01';
 
-        if (modelLower.includes('glc') || modelLower.includes('gle') || modelLower.includes('gls') || 
-            modelLower.includes('g-klasse') || modelLower.includes('g 500') || modelLower.includes('ml ') ||
-            modelLower.includes('tiguan') || modelLower.includes('touareg') || modelLower.includes('t-roc') ||
-            modelLower.includes('q3') || modelLower.includes('q5') || modelLower.includes('q7') || modelLower.includes('x3') || modelLower.includes('x5')) {
+        // Map Category (SUV -> OffRoad, etc.)
+        let category = mapToMobileValue('category', v.model) || 'Limousine';
+        if (v.make === 'Mercedes-Benz' && (v.model.includes('GLC') || v.model.includes('GLE') || v.model.includes('GLA'))) {
             category = 'OffRoad';
-        } else if (modelLower.includes('eqv') || modelLower.includes('vito') || modelLower.includes('v-klasse') || 
-                   modelLower.includes('vaneo') || modelLower.includes('sharan') || modelLower.includes('touran') ||
-                   modelLower.includes('caddy') || modelLower.includes('multivan') || modelLower.includes('transporter')) {
+        }
+        if (v.make === 'Mercedes-Benz' && (v.model.includes('EQV') || v.model.includes('Vito') || v.model.includes('V-Klasse'))) {
             category = 'Van';
-        } else if (modelLower.includes('kombi') || modelLower.includes('variant') || modelLower.includes('shooting brake') || modelLower.includes('avant')) {
-            category = 'EstateCar';
         }
 
         return `<?xml version="1.0" encoding="UTF-8"?>
-<ad>
-    <vehicleClass>Car</vehicleClass>
-    <category>${category}</category>
-    <make>${mapToMobileValue('makes', v.make)}</make>
-    <model>${model || 'ANDERE'}</model>
-    <mileage>${v.mileage || 0}</mileage>
-    <first-registration>${firstReg}</first-registration>
-    <fuel>${mapToMobileValue('fuel', v.fuelType)}</fuel>
-    <gearbox>${mapToMobileValue('transmission', v.transmission)}</gearbox>
-    <power unit="KW">${v.power || 100}</power>
-    <condition>${mapToMobileValue('condition', v.condition) || 'USED'}</condition>
-    <descriptions>
-        <description>${escape(v.description || '')}</description>
-    </descriptions>
-    <price>
-        <consumerValue amount="${Math.round(v.price || 0)}" currency="EUR" taxDetail="GROSS" />
-        <vat>19.00</vat>
-    </price>
+<ad xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://services.mobile.de/schema/seller/seller-ad-1.1"
+    xmlns:vehicle="http://services.mobile.de/schema/seller/vehicle-1.0"
+    xmlns:site-specifics="http://services.mobile.de/schema/seller/site-specifics-1.0"
+    xmlns:price="http://services.mobile.de/schema/seller/price-1.0"
+    xsi:schemaLocation="http://services.mobile.de/schema/seller/seller-ad-1.1 http://services.mobile.de/schema/seller/seller-ad-1.1.xsd">
+
+    <seller-inventory-key value="${v.articleNumber || v.id}"/>
+    <description>${escape(v.description || '')}</description>
+
+    <vehicle:vehicle>
+        <vehicle:classification>
+            <vehicle:vehicle-class key="Car"/>
+            <vehicle:category key="${category}"/>
+            <vehicle:make key="${mapToMobileValue('make', v.make) || v.make}"/>
+            <vehicle:model key="${mapToMobileValue('model', v.model) || v.model}"/>
+        </vehicle:classification>
+
+        <vehicle:model-description value="${escape(v.make + ' ' + v.model)}"/>
+        <vehicle:damage-and-unrepaired value="false"/>
+        <vehicle:accident-damaged value="false"/>
+        <vehicle:roadworthy value="true"/>
+
+        <vehicle:specifics>
+            <vehicle:mileage value="${v.mileage || 0}"/>
+            <vehicle:fuel key="${(v.fuelType || 'PETROL').toUpperCase()}"/>
+            <vehicle:power value="${v.power || 100}"/>
+            <vehicle:gearbox key="${(v.transmission || 'MANUAL_GEAR').toUpperCase() === 'AUTOMATIC' ? 'AUTOMATIC_GEAR' : 'MANUAL_GEAR'}"/>
+            <vehicle:condition key="${v.condition === 'New' ? 'NEW' : 'USED'}"/>
+        </vehicle:specifics>
+
+        <vehicle:site-specifics>
+            <site-specifics:first-registration value="${firstReg}"/>
+        </vehicle:site-specifics>
+    </vehicle:vehicle>
+
+    <price:price type="FIXED" currency="EUR">
+        <price:gross-prices>
+            <price:consumer-price-amount value="${(v.price || 0).toFixed(2)}"/>
+        </price:gross-prices>
+    </price:price>
 </ad>`;
     }
 }
