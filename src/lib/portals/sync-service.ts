@@ -1,8 +1,10 @@
 import { prisma } from '@/lib/prisma';
-import { PortalAdapter } from './types';
+import { PortalAdapter, PortalListing } from './types';
 import { AutoScout24Adapter } from './autoscout24';
 import { MobileDeAdapter } from './mobilede';
 import { EbayAdapter } from './ebay';
+
+
 
 export async function syncVehicleToPortals(vehicleId: string) {
     const vehicle = await prisma.vehicle.findUnique({

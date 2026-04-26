@@ -1,4 +1,4 @@
-import { PortalListing } from './sync-service';
+import { PortalListing } from './types';
 import { mapToMobileValue } from './mobile-mapping';
 
 export class MobileDeAdapter {
