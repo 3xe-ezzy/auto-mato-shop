@@ -1,7 +1,7 @@
 import { PortalListing } from './sync-service';
 import { mapToMobileValue } from './mobile-mapping';
 
-export class MobileDePortal {
+export class MobileDeAdapter {
     private baseUrl = 'https://services.mobile.de/seller-api/v1';
 
     async sync(listing: PortalListing): Promise<{ externalId?: string; error?: string }> {
