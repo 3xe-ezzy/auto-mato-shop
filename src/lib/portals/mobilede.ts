@@ -2,7 +2,7 @@ import { PortalAdapter, PortalConfig, PortalResponse } from './types';
 import { mapToMobileValue } from './mobile-mapping';
 
 export class MobileDeAdapter implements PortalAdapter {
-    private baseUrl = 'https://services.mobile.de/seller-api/v1';
+    private baseUrl = 'https://services.mobile.de/sellerapi/v1';
 
     async publishVehicle(vehicle: any, settings: PortalConfig): Promise<PortalResponse> {
         return this.sync(vehicle, settings);
