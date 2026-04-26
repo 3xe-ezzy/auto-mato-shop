@@ -40,10 +40,12 @@ export class MobileDeAdapter implements PortalAdapter {
             const xml = this.buildVehicleXml(vehicle);
             const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
 
+            // Use seller-specific URL if customerNumber is present
+            const sellerPath = settings.customerNumber ? `/seller/${settings.customerNumber}` : '';
             const method = externalId ? 'PUT' : 'POST';
             const url = externalId 
-                ? `${this.baseUrl}/ads/${externalId}` 
-                : `${this.baseUrl}/ads`;
+                ? `${this.baseUrl}${sellerPath}/ads/${externalId}` 
+                : `${this.baseUrl}${sellerPath}/ads`;
 
             console.log(`Syncing to Mobile.de (${method}): ${url}`);
             
