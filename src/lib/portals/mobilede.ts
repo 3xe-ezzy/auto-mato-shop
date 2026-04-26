@@ -148,11 +148,7 @@ export class MobileDeAdapter implements PortalAdapter {
         <description>${escape(v.description || '')}</description>
     </descriptions>
     <price>
-        <consumerValue>
-            <amount>${Math.round(v.price || 0)}</amount>
-            <currency>EUR</currency>
-        </consumerValue>
-        <taxDetail>GROSS</taxDetail>
+        <consumerValue amount="${Math.round(v.price || 0)}" currency="EUR" taxDetail="GROSS" />
     </price>
 </ad>`;
     }
