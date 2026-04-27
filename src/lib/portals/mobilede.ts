@@ -14,8 +14,7 @@ export class MobileDeAdapter implements PortalAdapter {
 
     async deleteVehicle(externalId: string, settings: PortalConfig): Promise<PortalResponse> {
         try {
-            // Use customerNumber as username for Basic Auth in 1.1 API
-            const username = settings.customerNumber || settings.apiKey;
+            const username = settings.apiKey || settings.customerNumber;
             const auth = Buffer.from(`${username}:${settings.apiSecret}`).toString('base64');
             const url = `${this.baseUrl}/ads/${externalId}`;
 
@@ -41,18 +40,22 @@ export class MobileDeAdapter implements PortalAdapter {
         try {
             const xml = this.buildVehicleXml(vehicle);
             
-            // Use customerNumber as username for Basic Auth in 1.1 API
-            const username = settings.customerNumber || settings.apiKey;
-            const auth = Buffer.from(`${username}:${settings.apiSecret}`).toString('base64');
+            // Primary: ahmedabdalla, Fallback: 46761516
+            // Based on our probes, the server recognizes both at different paths, 
+            // but for /ads, the ID 46761516 was more consistent in returning 401 instead of 404.
+            const primaryUser = settings.apiKey || 'ahmedabdalla';
+            const fallbackUser = settings.customerNumber || '46761516';
+            
+            const auth = Buffer.from(`${primaryUser}:${settings.apiSecret}`).toString('base64');
 
             const method = externalId ? 'PUT' : 'POST';
             const url = externalId 
                 ? `${this.baseUrl}/ads/${externalId}` 
                 : `${this.baseUrl}/ads`;
 
-            console.log(`Syncing to Mobile.de (${method}): ${url} using user: ${username}`);
+            console.log(`Syncing to Mobile.de (${method}): ${url} using user: ${primaryUser}`);
             
-            const response = await fetch(url, {
+            let response = await fetch(url, {
                 method,
                 headers: {
                     'Authorization': `Basic ${auth}`,
@@ -61,6 +64,21 @@ export class MobileDeAdapter implements PortalAdapter {
                 },
                 body: xml
             });
+
+            // If 404 or 401 with primary, try fallback user (Seller API ID)
+            if ((response.status === 404 || response.status === 401) && primaryUser !== fallbackUser) {
+                console.log(`Retrying with fallback user: ${fallbackUser}`);
+                const fallbackAuth = Buffer.from(`${fallbackUser}:${settings.apiSecret}`).toString('base64');
+                response = await fetch(url, {
+                    method,
+                    headers: {
+                        'Authorization': `Basic ${fallbackAuth}`,
+                        'Content-Type': 'application/xml',
+                        'Accept': 'application/xml'
+                    },
+                    body: xml
+                });
+            }
 
             const responseText = await response.text();
 
