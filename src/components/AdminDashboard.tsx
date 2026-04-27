@@ -41,7 +41,7 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                 <div>
                     <h1 className="text-2xl font-semibold text-gray-900">{t.messages.adminTitle}</h1>
                     <p className="mt-1 text-sm text-gray-500">
-                        {t.messages.adminSubtitle} <span className="ml-2 font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs border border-blue-200 shadow-sm animate-pulse">Build: v1.1.25 (AutoScout24 & eBay Prep)</span>
+                        {t.messages.adminSubtitle} <span className="ml-2 font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs border border-blue-200 shadow-sm animate-pulse">Build: v1.1.27 (Mobile.de Live View)</span>
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -237,6 +237,29 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                             </div>
                         )}
                     </div>
+                </div>
+            </div>
+
+            {/* Mobile.de External View */}
+            <div className="mt-12 bg-white shadow sm:rounded-lg overflow-hidden border border-gray-200">
+                <div className="px-4 py-5 sm:px-6 bg-orange-50 border-b border-gray-200">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900 flex items-center gap-2">
+                        <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold">m</div>
+                        mobile.de Live Ansicht
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                        Zeigt Ihren aktuellen Fahrzeugbestand auf mobile.de.
+                    </p>
+                </div>
+                <div className="bg-white p-0">
+                    <iframe 
+                        src="https://home.mobile.de/home/index.html?partnerHead=false&customerId=46761516" 
+                        scrolling="auto" 
+                        className="w-full border-none shadow-inner"
+                        style={{ height: '800px' }}
+                    >
+                        Ihr Browser unterstützt keine iframes
+                    </iframe>
                 </div>
             </div>
 
