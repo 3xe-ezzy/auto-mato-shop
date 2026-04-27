@@ -14,7 +14,9 @@ export class MobileDeAdapter implements PortalAdapter {
 
     async deleteVehicle(externalId: string, settings: PortalConfig): Promise<PortalResponse> {
         try {
-            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
+            // Use customerNumber as username for Basic Auth in 1.1 API
+            const username = settings.customerNumber || settings.apiKey;
+            const auth = Buffer.from(`${username}:${settings.apiSecret}`).toString('base64');
             const url = `${this.baseUrl}/ads/${externalId}`;
 
             const response = await fetch(url, {
@@ -38,14 +40,17 @@ export class MobileDeAdapter implements PortalAdapter {
     private async sync(vehicle: any, settings: PortalConfig, externalId?: string): Promise<PortalResponse> {
         try {
             const xml = this.buildVehicleXml(vehicle);
-            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
+            
+            // Use customerNumber as username for Basic Auth in 1.1 API
+            const username = settings.customerNumber || settings.apiKey;
+            const auth = Buffer.from(`${username}:${settings.apiSecret}`).toString('base64');
 
             const method = externalId ? 'PUT' : 'POST';
             const url = externalId 
                 ? `${this.baseUrl}/ads/${externalId}` 
                 : `${this.baseUrl}/ads`;
 
-            console.log(`Syncing to Mobile.de (${method}): ${url}`);
+            console.log(`Syncing to Mobile.de (${method}): ${url} using user: ${username}`);
             
             const response = await fetch(url, {
                 method,
@@ -60,7 +65,6 @@ export class MobileDeAdapter implements PortalAdapter {
             const responseText = await response.text();
 
             if (!response.ok) {
-                // FALLBACK: If 404 on PUT, the ad doesn't exist anymore on their end. Try POST.
                 if (response.status === 404 && externalId) {
                     console.log('Mobile.de ad not found (404) during update, trying new creation (POST)...');
                     return this.sync(vehicle, settings);
