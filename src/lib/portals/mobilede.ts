@@ -48,7 +48,7 @@ export class MobileDeAdapter implements PortalAdapter {
             const auth = Buffer.from(`${primaryUser}:${settings.apiSecret}`).toString('base64');
 
             const method = externalId ? 'PUT' : 'POST';
-            const sellerId = settings.customerNumber || '46761516';
+            const sellerId = '46761516'; // Technical Seller ID from API probe
             const url = externalId 
                 ? `${this.baseUrl}/${sellerId}/ads/${externalId}` 
                 : `${this.baseUrl}/${sellerId}/ads`;

@@ -60,10 +60,11 @@ export function mapToMobileValue(category: string, value: string | null | undefi
         return mapping[value];
     }
 
-    // Default transformation for keys (Uppercase and underscore)
-    // Beispiel: "C 180" -> "C_180"
+    // Default transformation for keys (Uppercase)
+    // Mobile.de reference data often uses spaces (e.g. "C 180" or "Golf IV").
+    // We only remove special characters like dots and hyphens if necessary, 
+    // but we keep spaces as they are in the official reference data.
     return value.toString().trim().toUpperCase()
-        .replace(/\s+/g, '_')
-        .replace(/-/g, '_')
-        .replace(/\./g, '_');
+        .replace(/-/g, ' ') // Replace hyphen with space to match "MERCEDES-BENZ" -> "MERCEDES BENZ" ? No, keep hyphen for makes.
+        .replace(/\./g, '');
 }
