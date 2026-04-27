@@ -46,6 +46,9 @@ export const MOBILE_DE_MAPPING = {
         'Kleinwagen': 'SmallCar',
         'Sportwagen': 'SportsCar',
         'Van': 'Van'
+    },
+    models: {
+        // Hier können spezifische Overrides rein
     }
 };
 
@@ -58,7 +61,8 @@ export function mapToMobileValue(category: string, value: string | null | undefi
     }
 
     // Default transformation for keys (Uppercase and underscore)
-    return value.toString().toUpperCase()
+    // Beispiel: "C 180" -> "C_180"
+    return value.toString().trim().toUpperCase()
         .replace(/\s+/g, '_')
         .replace(/-/g, '_')
         .replace(/\./g, '_');
