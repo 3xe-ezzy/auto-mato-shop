@@ -60,7 +60,6 @@ export class MobileDeAdapter implements PortalAdapter {
             const responseText = await response.text();
 
             if (!response.ok) {
-                // FALLBACK: If 404 on PUT, try POST
                 if (response.status === 404 && externalId) {
                     console.log('Mobile.de ad not found (404), falling back to POST...');
                     return this.sync(vehicle, settings);
@@ -87,29 +86,22 @@ export class MobileDeAdapter implements PortalAdapter {
 
     private convertMobileDate(dateVal: any): string {
         if (!dateVal) return '2020-01';
-        const str = dateVal.toString();
+        const str = dateVal.toString().trim();
         
-        // Case 1: "1.201" or "01.2001" or "1.2001"
+        // Handle "12.010" or "1.201" logic
         if (str.includes('.')) {
             const parts = str.split('.');
             let month = parts[0].padStart(2, '0');
-            let year = parts[1];
+            let yearPart = parts[1];
             
-            if (year.length === 3) year = '20' + year; // "201" -> "20201" (Wait, 1.201 is likely 2001-01 or 2010-01?)
-            // If it's 1.201 and it means 2010...
-            if (year.length === 3 && year.startsWith('1')) year = '20' + year.substring(1); 
-            // Better: if it's 1.201 -> 01.2010? or 01.2001?
-            // Let's assume 1.201 -> 2010-01 based on user example
-            if (year.length === 3) year = '20' + year.substring(1, 3); // 201 -> 2001?
-            
-            // Let's use the user's logic: "1.201" -> 2001-01
-            if (parts[1].length === 3) {
-                year = "20" + parts[1].substring(1); 
-                month = parts[0].padStart(2, '0');
+            // User example: "1.201" -> 2001-01
+            // My inference: "12.010" -> 2010-12
+            // The last 2 digits of the second part are the year
+            if (yearPart.length >= 2) {
+                const yearDigits = yearPart.slice(-2);
+                const year = "20" + yearDigits;
+                return `${year}-${month}`;
             }
-            
-            // Final check: if year is 4 digits
-            if (year.length === 4) return `${year}-${month}`;
         }
 
         // Case 2: Already YYYY-MM
@@ -126,11 +118,11 @@ export class MobileDeAdapter implements PortalAdapter {
         
         const firstReg = this.convertMobileDate(v.year);
 
-        // Mapping values using the new mapping system
+        // Mapping values
         const makeKey = mapToMobileValue('makes', v.make);
         const modelKey = mapToMobileValue('models', v.model);
-        const fuelKey = mapToMobileValue('fuel', v.fuelType);
-        const gearboxKey = mapToMobileValue('transmission', v.transmission);
+        const fuelKey = mapToMobileValue('fuel', v.fuelType) || 'PETROL';
+        const gearboxKey = mapToMobileValue('transmission', v.transmission) || 'MANUAL_GEAR';
         const conditionKey = mapToMobileValue('condition', v.condition) || 'USED';
         
         let category = mapToMobileValue('category', v.model) || 'Limousine';
@@ -163,9 +155,9 @@ export class MobileDeAdapter implements PortalAdapter {
         <vehicle:roadworthy value="true"/>
 
         <vehicle:specifics>
-            <vehicle:mileage value="${v.mileage || 0}"/>
+            <vehicle:mileage value="${Math.round(v.mileage || 0)}"/>
             <vehicle:fuel key="${fuelKey}"/>
-            <vehicle:power value="${v.power || 100}"/>
+            <vehicle:power value="${Math.round(v.power || 100)}"/>
             <vehicle:gearbox key="${gearboxKey}"/>
             <vehicle:condition key="${conditionKey}"/>
         </vehicle:specifics>
