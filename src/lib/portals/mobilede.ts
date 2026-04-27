@@ -14,7 +14,7 @@ export class MobileDeAdapter implements PortalAdapter {
 
     async deleteVehicle(externalId: string, settings: PortalConfig): Promise<PortalResponse> {
         try {
-            const auth = Buffer.from(`${(settings.apiKey || '').trim()}:${(settings.apiSecret || '').trim()}`).toString('base64');
+            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
             const url = `${this.baseUrl}/ads/${externalId}`;
 
             const response = await fetch(url, {
@@ -38,7 +38,7 @@ export class MobileDeAdapter implements PortalAdapter {
     private async sync(vehicle: any, settings: PortalConfig, externalId?: string): Promise<PortalResponse> {
         try {
             const xml = this.buildVehicleXml(vehicle);
-            const auth = Buffer.from(`${(settings.apiKey || '').trim()}:${(settings.apiSecret || '').trim()}`).toString('base64');
+            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
 
             const method = externalId ? 'PUT' : 'POST';
             const url = externalId 
@@ -60,22 +60,24 @@ export class MobileDeAdapter implements PortalAdapter {
             const responseText = await response.text();
 
             if (!response.ok) {
-                // FALLBACK: If we get a 404 on PUT, it means the ad was not found.
-                // In this case, try to create it as a new ad (POST).
+                // FALLBACK: If 404 on PUT, the ad doesn't exist anymore on their end. Try POST.
                 if (response.status === 404 && externalId) {
-                    console.log('Mobile.de ad not found (404), falling back to POST (Create)...');
-                    return this.sync(vehicle, settings); // Call sync again without externalId
+                    console.log('Mobile.de ad not found (404) during update, trying new creation (POST)...');
+                    return this.sync(vehicle, settings);
                 }
 
                 console.error('Mobile.de Sync Error:', response.status, responseText);
-                return { success: false, errorMessage: `Mobile.de API Error: ${response.status} - ${responseText}` };
+                return { 
+                    success: false, 
+                    errorMessage: `Mobile.de API Error: ${response.status}. Details: ${responseText || 'No response body'}` 
+                };
             }
 
             let newExternalId = externalId;
             if (method === 'POST') {
                 const location = response.headers.get('Location');
                 if (location) {
-                    newExternalId = location.split('/').pop();
+                    newExternalId = location.split('/').pop() || undefined;
                 }
             }
 
@@ -90,7 +92,6 @@ export class MobileDeAdapter implements PortalAdapter {
         if (!dateVal) return '2020-01';
         const str = dateVal.toString().trim();
         
-        // Handle "12.010" or "1.201" logic
         if (str.includes('.')) {
             const parts = str.split('.');
             let month = parts[0].padStart(2, '0');
@@ -103,10 +104,7 @@ export class MobileDeAdapter implements PortalAdapter {
             }
         }
 
-        // Case 2: Already YYYY-MM
         if (/^\d{4}-\d{2}$/.test(str)) return str;
-
-        // Case 3: Just Year
         if (/^\d{4}$/.test(str)) return `${str}-01`;
 
         return '2020-01';
@@ -114,10 +112,8 @@ export class MobileDeAdapter implements PortalAdapter {
 
     private buildVehicleXml(v: any): string {
         const escape = (str: string) => (str || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        
         const firstReg = this.convertMobileDate(v.year);
 
-        // Mapping values
         const makeKey = mapToMobileValue('makes', v.make);
         const modelKey = mapToMobileValue('models', v.model);
         const fuelKey = mapToMobileValue('fuel', v.fuelType) || 'PETROL';
