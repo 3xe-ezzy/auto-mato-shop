@@ -19,11 +19,10 @@ export async function GET() {
     }
 
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
-    xml += '<transfer>\n'
-    xml += '  <header>\n'
-    xml += '    <version>1.0</version>\n'
-    xml += `    <customer_id>${settings.customerNumber || 'MISSING_ID'}</customer_id>\n`
-    xml += '  </header>\n'
+    xml += '<tis-xml-30 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'
+    xml += '  <authentication>\n'
+    xml += `    <customer-id>${escapeXml(settings.customerNumber || 'MISSING_ID')}</customer-id>\n`
+    xml += '  </authentication>\n'
     xml += '  <vehicles>\n'
 
     const escapeXml = (unsafe: string | number | null | undefined) => {
@@ -37,33 +36,43 @@ export async function GET() {
     }
 
     vehicles.forEach(v => {
-        xml += `    <vehicle>
-      <id>${escapeXml(v.articleNumber || v.id)}</id>
-      <make>${escapeXml(v.make)}</make>
-      <model>${escapeXml(v.model)}</model>
-      <year>${v.year}</year>
-      <mileage>${v.mileage}</mileage>
-      <price>${v.price}</price>
-      <fuel_type>${escapeXml(v.fuelType || '')}</fuel_type>
-      <transmission>${escapeXml(v.transmission || '')}</transmission>
-      <power_kw>${escapeXml((v as any).power || '')}</power_kw>
-      <engine_capacity_ccm>${escapeXml((v as any).engineCapacity || '')}</engine_capacity_ccm>
-      <doors>${escapeXml((v as any).doors || '')}</doors>
-      <seats>${escapeXml((v as any).seats || '')}</seats>
-      <emission_class>${escapeXml((v as any).emissionClass || '')}</emission_class>
-      <body_color>${escapeXml((v as any).exteriorColor || '')}</body_color>
-      <description>${escapeXml(v.description || '')}</description>
-      <equipment_list>
-        ${v.equipment.map(e => `<equipment>${escapeXml(e.name)}</equipment>`).join('\n        ')}
-      </equipment_list>
+        const firstRegMonth = v.year ? '01' : ''; 
+        const firstRegYear = v.year?.toString() || '';
+
+        xml += `    <vehicle id="${escapeXml(v.articleNumber || v.id)}" action="update">
+      <common>
+        <make>${escapeXml(v.make)}</make>
+        <model>${escapeXml(v.model)}</model>
+        <model-description>${escapeXml(`${v.make} ${v.model}`)}</model-description>
+        <price>${v.price}</price>
+        <vat-deductible>true</vat-deductible>
+        <mileage>${v.mileage}</mileage>
+        <first-registration>${firstRegMonth}-${firstRegYear}</first-registration>
+        <body-type>Limousine</body-type>
+        <fuel-type>${escapeXml(v.fuelType || 'Petrol')}</fuel-type>
+        <transmission>${escapeXml(v.transmission || 'Manual')}</transmission>
+      </common>
+      <technical>
+        <power-kw>${escapeXml((v as any).power || '')}</power-kw>
+        <engine-capacity-ccm>${escapeXml((v as any).engineCapacity || '')}</engine-capacity-ccm>
+        <doors>${escapeXml((v as any).doors || '')}</doors>
+        <seats>${escapeXml((v as any).seats || '')}</seats>
+        <emission-class>${escapeXml((v as any).emissionClass || 'EURO6')}</emission-class>
+      </technical>
+      <features>
+        ${v.equipment.map(e => `<feature name="${escapeXml(e.name)}"/>`).join('\n        ')}
+      </features>
+      <description>
+        <text lang="de">${escapeXml(v.description || '')}</text>
+      </description>
       <images>
-        ${v.images.map(img => `<image_url>${escapeXml(img.url)}</image_url>`).join('\n        ')}
+        ${v.images.map((img, index) => `<image url="${escapeXml(img.url)}" order="${index + 1}"/>`).join('\n        ')}
       </images>
     </vehicle>\n`
     })
 
     xml += '  </vehicles>\n'
-    xml += '</transfer>'
+    xml += '</tis-xml-30>'
 
     return new NextResponse(xml, {
         headers: {

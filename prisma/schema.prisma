@@ -46,6 +46,7 @@ model Vehicle {
   syncAutoScout24 Boolean @default(false)
   syncMobileDe    Boolean @default(false)
   syncEbay        Boolean @default(false)
+  syncKleinanzeigen Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

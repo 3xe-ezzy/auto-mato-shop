@@ -18,6 +18,7 @@ export async function syncVehicleToPortals(vehicleId: string) {
     if (vehicle.syncAutoScout24) portalsToSync.push('AutoScout24');
     if (vehicle.syncMobileDe) portalsToSync.push('Mobile.de');
     if (vehicle.syncEbay) portalsToSync.push('eBay');
+    if (vehicle.syncKleinanzeigen) portalsToSync.push('Kleinanzeigen');
 
     const results = [];
 
@@ -36,7 +37,7 @@ export async function syncVehicleToPortals(vehicleId: string) {
         let adapter: PortalAdapter;
         if (portalName === 'AutoScout24') adapter = new AutoScout24Adapter();
         else if (portalName === 'Mobile.de') adapter = new MobileDeAdapter();
-        else if (portalName === 'eBay') adapter = new EbayAdapter();
+        else if (portalName === 'eBay' || portalName === 'Kleinanzeigen') adapter = new EbayAdapter();
         else continue;
 
         try {

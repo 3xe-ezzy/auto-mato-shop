@@ -1,28 +1,30 @@
 import { PortalAdapter, PortalConfig, PortalResponse } from './types';
 
 export class EbayAdapter implements PortalAdapter {
+    // This adapter handles both eBay Motors and Kleinanzeigen.de (REST API)
+    
     async publishVehicle(vehicle: any, settings: PortalConfig): Promise<PortalResponse> {
-        console.log('eBay API: Mock publish for vehicle', vehicle.id);
-        if (!settings.apiSecret) return { success: false, errorMessage: 'Missing API Token/Secret' };
+        if (settings.portalName === 'eBay') {
+            console.log('eBay API: Mock publish for vehicle', vehicle.id);
+            if (!settings.apiSecret) return { success: false, errorMessage: 'Missing eBay API Token/Secret' };
+        } else if (settings.portalName === 'Kleinanzeigen') {
+            console.log('Kleinanzeigen REST API: Mock publish for vehicle', vehicle.id);
+            if (!settings.apiKey) return { success: false, errorMessage: 'Missing Kleinanzeigen API Key' };
+        }
         
-        // Mocking a successful API call
         return {
             success: true,
-            externalId: `EBAY-${vehicle.id}`
+            externalId: `${settings.portalName.toUpperCase()}-${vehicle.id}`
         };
     }
 
     async updateVehicle(vehicle: any, settings: PortalConfig, externalId: string): Promise<PortalResponse> {
-        console.log(`eBay API: Mock update for Ebay Item ID: ${externalId}`);
-        if (!settings.apiSecret) return { success: false, errorMessage: 'Missing API Token/Secret' };
-
+        console.log(`${settings.portalName} API: Mock update for ID: ${externalId}`);
         return { success: true, externalId };
     }
 
     async deleteVehicle(externalId: string, settings: PortalConfig): Promise<PortalResponse> {
-        console.log(`eBay API: Mock delete for Ebay Item ID: ${externalId}`);
-        if (!settings.apiSecret) return { success: false, errorMessage: 'Missing API Token/Secret' };
-
+        console.log(`${settings.portalName} API: Mock delete for ID: ${externalId}`);
         return { success: true };
     }
 }
