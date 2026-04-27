@@ -18,13 +18,6 @@ export async function GET() {
         return new NextResponse('AutoScout24 synchronization is not active.', { status: 403 })
     }
 
-    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
-    xml += '<tis-xml-30 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'
-    xml += '  <authentication>\n'
-    xml += `    <customer-id>${escapeXml(settings.customerNumber || 'MISSING_ID')}</customer-id>\n`
-    xml += '  </authentication>\n'
-    xml += '  <vehicles>\n'
-
     const escapeXml = (unsafe: string | number | null | undefined) => {
         if (unsafe === null || unsafe === undefined) return '';
         return unsafe.toString()
@@ -34,6 +27,13 @@ export async function GET() {
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&apos;');
     }
+
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml += '<tis-xml-30 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'
+    xml += '  <authentication>\n'
+    xml += `    <customer-id>${escapeXml(settings.customerNumber || 'MISSING_ID')}</customer-id>\n`
+    xml += '  </authentication>\n'
+    xml += '  <vehicles>\n'
 
     vehicles.forEach(v => {
         const firstRegMonth = v.year ? '01' : ''; 
