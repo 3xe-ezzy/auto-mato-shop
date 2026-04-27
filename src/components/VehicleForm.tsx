@@ -24,6 +24,7 @@ type VehicleWithRelations = Vehicle & {
     syncAutoScout24?: boolean
     syncMobileDe?: boolean
     syncEbay?: boolean
+    syncKleinanzeigen?: boolean
 }
 
 export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelations }) {
@@ -474,16 +475,31 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                             </label>
                         </div>
 
-                        <div className="sm:col-span-3 flex items-center">
+                        <div className="sm:col-span-3 flex items-center p-4 bg-green-50 rounded-lg border border-green-100 transition-all hover:bg-green-100 group">
                             <input
                                 id="syncEbay"
                                 name="syncEbay"
                                 type="checkbox"
                                 defaultChecked={vehicle?.syncEbay}
-                                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                                className="h-5 w-5 text-green-600 focus:ring-green-500 border-gray-300 rounded cursor-pointer"
                             />
-                            <label htmlFor="syncEbay" className="ml-2 block text-sm font-medium text-green-700">
+                            <label htmlFor="syncEbay" className="ml-3 block text-sm font-bold text-green-900 cursor-pointer">
                                 Zu eBay übertragen
+                                <span className="block font-normal text-xs text-green-600">Exportiert dieses Fahrzeug zu eBay</span>
+                            </label>
+                        </div>
+
+                        <div className="sm:col-span-3 flex items-center p-4 bg-indigo-50 rounded-lg border border-indigo-100 transition-all hover:bg-indigo-100 group">
+                            <input
+                                id="syncKleinanzeigen"
+                                name="syncKleinanzeigen"
+                                type="checkbox"
+                                defaultChecked={vehicle?.syncKleinanzeigen}
+                                className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
+                            />
+                            <label htmlFor="syncKleinanzeigen" className="ml-3 block text-sm font-bold text-indigo-900 cursor-pointer">
+                                Zu Kleinanzeigen übertragen
+                                <span className="block font-normal text-xs text-indigo-600">Exportiert dieses Fahrzeug zu Kleinanzeigen.de</span>
                             </label>
                         </div>
 

@@ -37,6 +37,7 @@ const VehicleSchema = z.object({
     syncAutoScout24: z.preprocess((val) => val === 'on' || val === 'true', z.boolean()).optional().default(false),
     syncMobileDe: z.preprocess((val) => val === 'on' || val === 'true', z.boolean()).optional().default(false),
     syncEbay: z.preprocess((val) => val === 'on' || val === 'true', z.boolean()).optional().default(false),
+    syncKleinanzeigen: z.preprocess((val) => val === 'on' || val === 'true', z.boolean()).optional().default(false),
 })
 
 export async function createVehicle(formData: FormData) {
@@ -68,6 +69,7 @@ export async function createVehicle(formData: FormData) {
         syncAutoScout24: formData.get('syncAutoScout24'),
         syncMobileDe: formData.get('syncMobileDe'),
         syncEbay: formData.get('syncEbay'),
+        syncKleinanzeigen: formData.get('syncKleinanzeigen'),
     }
 
     const validatedFields = VehicleSchema.omit({ imageUrl: true }).safeParse(rawData)
@@ -180,6 +182,7 @@ export async function updateVehicle(id: string, formData: FormData) {
         syncAutoScout24: formData.get('syncAutoScout24'),
         syncMobileDe: formData.get('syncMobileDe'),
         syncEbay: formData.get('syncEbay'),
+        syncKleinanzeigen: formData.get('syncKleinanzeigen'),
     }
 
     const validatedFields = VehicleSchema.omit({ imageUrl: true }).safeParse(rawData)
