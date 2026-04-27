@@ -104,10 +104,64 @@ export class MobileDeAdapter implements PortalAdapter {
                 }
             }
 
+            if (newExternalId) {
+                // Background image upload to not block the main response too much
+                // but we wait for it to ensure it's done for this test
+                await this.uploadImages(newExternalId, vehicle.images, settings);
+            }
+
             return { success: true, externalId: newExternalId };
         } catch (error: any) {
             console.error('Mobile.de Portal Error:', error);
             return { success: false, errorMessage: error.message };
+        }
+    }
+
+    private async uploadImages(adId: string, images: any[], settings: PortalConfig): Promise<void> {
+        if (!images || images.length === 0) {
+            console.log(`No images to upload for ad ${adId}`);
+            return;
+        }
+
+        const sellerId = '46761516';
+        const url = `${this.baseUrl}/${sellerId}/ads/${adId}/images`;
+        const primaryUser = settings.apiKey || 'ahmedabdalla';
+        const auth = Buffer.from(`${primaryUser}:${settings.apiSecret}`).toString('base64');
+
+        try {
+            const formData = new FormData();
+            
+            console.log(`Preparing to upload ${images.length} images for ad ${adId}`);
+            
+            for (let i = 0; i < images.length; i++) {
+                const img = images[i];
+                try {
+                    const imgRes = await fetch(img.url);
+                    if (!imgRes.ok) throw new Error(`Fetch failed with ${imgRes.status}`);
+                    const blob = await imgRes.blob();
+                    formData.append('image', blob, `image_${i}.jpg`);
+                } catch (err) {
+                    console.error(`Failed to fetch image ${img.url}:`, err);
+                }
+            }
+
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Basic ${auth}`,
+                    'Accept': 'application/vnd.de.mobile.api+json'
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                const text = await response.text();
+                console.error(`Mobile.de Image Upload Error: ${response.status} - ${text}`);
+            } else {
+                console.log(`Successfully uploaded images to Mobile.de ad ${adId}`);
+            }
+        } catch (error) {
+            console.error(`Fatal error during image upload for ad ${adId}:`, error);
         }
     }
 
