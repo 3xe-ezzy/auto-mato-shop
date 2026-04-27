@@ -15,7 +15,7 @@ export class MobileDeAdapter implements PortalAdapter {
     async deleteVehicle(externalId: string, settings: PortalConfig): Promise<PortalResponse> {
         try {
             const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
-            const url = `${this.baseUrl}/ads/${externalId}`;
+            const url = `${this.baseUrl}/ad/${externalId}`;
 
             const response = await fetch(url, {
                 method: 'DELETE',
@@ -40,7 +40,6 @@ export class MobileDeAdapter implements PortalAdapter {
             const xml = this.buildVehicleXml(vehicle);
             const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
 
-            // Try singular /ad as some 1.1 schemas use it
             const method = externalId ? 'PUT' : 'POST';
             const url = externalId 
                 ? `${this.baseUrl}/ad/${externalId}` 
@@ -61,11 +60,10 @@ export class MobileDeAdapter implements PortalAdapter {
             const responseText = await response.text();
 
             if (!response.ok) {
-                // FALLBACK: If we get a 404 on PUT, it means the ad was not found.
-                // In this case, try to create it as a new ad (POST).
+                // FALLBACK: If 404 on PUT, try POST
                 if (response.status === 404 && externalId) {
-                    console.log('Mobile.de ad not found (404), falling back to POST (Create)...');
-                    return this.sync(vehicle, settings); // Call sync again without externalId
+                    console.log('Mobile.de ad not found (404), falling back to POST...');
+                    return this.sync(vehicle, settings);
                 }
 
                 console.error('Mobile.de Sync Error:', response.status, responseText);
@@ -87,19 +85,57 @@ export class MobileDeAdapter implements PortalAdapter {
         }
     }
 
+    private convertMobileDate(dateVal: any): string {
+        if (!dateVal) return '2020-01';
+        const str = dateVal.toString();
+        
+        // Case 1: "1.201" or "01.2001" or "1.2001"
+        if (str.includes('.')) {
+            const parts = str.split('.');
+            let month = parts[0].padStart(2, '0');
+            let year = parts[1];
+            
+            if (year.length === 3) year = '20' + year; // "201" -> "20201" (Wait, 1.201 is likely 2001-01 or 2010-01?)
+            // If it's 1.201 and it means 2010...
+            if (year.length === 3 && year.startsWith('1')) year = '20' + year.substring(1); 
+            // Better: if it's 1.201 -> 01.2010? or 01.2001?
+            // Let's assume 1.201 -> 2010-01 based on user example
+            if (year.length === 3) year = '20' + year.substring(1, 3); // 201 -> 2001?
+            
+            // Let's use the user's logic: "1.201" -> 2001-01
+            if (parts[1].length === 3) {
+                year = "20" + parts[1].substring(1); 
+                month = parts[0].padStart(2, '0');
+            }
+            
+            // Final check: if year is 4 digits
+            if (year.length === 4) return `${year}-${month}`;
+        }
+
+        // Case 2: Already YYYY-MM
+        if (/^\d{4}-\d{2}$/.test(str)) return str;
+
+        // Case 3: Just Year
+        if (/^\d{4}$/.test(str)) return `${str}-01`;
+
+        return '2020-01';
+    }
+
     private buildVehicleXml(v: any): string {
         const escape = (str: string) => (str || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         
-        // Format first registration to YYYY-MM
-        const firstReg = v.year ? `${v.year}-01` : '2020-01';
+        const firstReg = this.convertMobileDate(v.year);
 
-        // Map Category (SUV -> OffRoad, etc.)
+        // Mapping values using the new mapping system
+        const makeKey = mapToMobileValue('makes', v.make);
+        const modelKey = mapToMobileValue('models', v.model);
+        const fuelKey = mapToMobileValue('fuel', v.fuelType);
+        const gearboxKey = mapToMobileValue('transmission', v.transmission);
+        const conditionKey = mapToMobileValue('condition', v.condition) || 'USED';
+        
         let category = mapToMobileValue('category', v.model) || 'Limousine';
         if (v.make === 'Mercedes-Benz' && (v.model.includes('GLC') || v.model.includes('GLE') || v.model.includes('GLA'))) {
             category = 'OffRoad';
-        }
-        if (v.make === 'Mercedes-Benz' && (v.model.includes('EQV') || v.model.includes('Vito') || v.model.includes('V-Klasse'))) {
-            category = 'Van';
         }
 
         return `<?xml version="1.0" encoding="UTF-8"?>
@@ -117,8 +153,8 @@ export class MobileDeAdapter implements PortalAdapter {
         <vehicle:classification>
             <vehicle:vehicle-class key="Car"/>
             <vehicle:category key="${category}"/>
-            <vehicle:make key="${mapToMobileValue('makes', v.make) || v.make}"/>
-            <vehicle:model key="${mapToMobileValue('models', v.model) || v.model}"/>
+            <vehicle:make key="${makeKey}"/>
+            <vehicle:model key="${modelKey}"/>
         </vehicle:classification>
 
         <vehicle:model-description value="${escape(v.make + ' ' + v.model)}"/>
@@ -128,10 +164,10 @@ export class MobileDeAdapter implements PortalAdapter {
 
         <vehicle:specifics>
             <vehicle:mileage value="${v.mileage || 0}"/>
-            <vehicle:fuel key="${(v.fuelType || 'PETROL').toUpperCase()}"/>
+            <vehicle:fuel key="${fuelKey}"/>
             <vehicle:power value="${v.power || 100}"/>
-            <vehicle:gearbox key="${(v.transmission || 'MANUAL_GEAR').toUpperCase() === 'AUTOMATIC' ? 'AUTOMATIC_GEAR' : 'MANUAL_GEAR'}"/>
-            <vehicle:condition key="${v.condition === 'New' ? 'NEW' : 'USED'}"/>
+            <vehicle:gearbox key="${gearboxKey}"/>
+            <vehicle:condition key="${conditionKey}"/>
         </vehicle:specifics>
 
         <vehicle:site-specifics>

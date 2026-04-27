@@ -1,11 +1,12 @@
 /**
  * mobile.de API Value Mapping
- * Maps our internal database values to mobile.de XML schema values.
+ * Maps our internal database values to official mobile.de XML schema keys.
  */
 
 export const MOBILE_DE_MAPPING = {
     fuel: {
         'Petrol': 'PETROL',
+        'Benzin': 'PETROL',
         'Diesel': 'DIESEL',
         'Hybrid': 'HYBRID',
         'Electric': 'ELECTRICITY',
@@ -14,12 +15,16 @@ export const MOBILE_DE_MAPPING = {
     },
     transmission: {
         'Manual': 'MANUAL_GEAR',
+        'Schaltgetriebe': 'MANUAL_GEAR',
         'Automatic': 'AUTOMATIC_GEAR',
+        'Automatik': 'AUTOMATIC_GEAR',
         'Semi-Automatic': 'SEMIAUTOMATIC_GEAR'
     },
     condition: {
         'New': 'NEW',
-        'Used': 'USED'
+        'Neu': 'NEW',
+        'Used': 'USED',
+        'Gebraucht': 'USED'
     },
     emissionClass: {
         'Euro 6': 'EURO6',
@@ -30,28 +35,31 @@ export const MOBILE_DE_MAPPING = {
     },
     makes: {
         'Volkswagen': 'VW',
-        'Mercedes-Benz': 'MERCEDES-BENZ',
+        'Mercedes-Benz': 'MERCEDES_BENZ',
         'Audi': 'AUDI',
         'BMW': 'BMW'
     },
-    models: {
-        // Models are now selected from the official mobile.de list in the UI.
-        // We can add specific overrides here if needed.
-    },
     category: {
-        // We can add specific overrides here if needed.
+        'Limousine': 'Limousine',
+        'SUV': 'OffRoad',
+        'Kombi': 'EstateCar',
+        'Kleinwagen': 'SmallCar',
+        'Sportwagen': 'SportsCar',
+        'Van': 'Van'
     }
 };
 
-export function mapToMobileValue(category: keyof typeof MOBILE_DE_MAPPING, value: string | null | undefined): string {
+export function mapToMobileValue(category: string, value: string | null | undefined): string {
     if (!value) return '';
-    const categoryMap = MOBILE_DE_MAPPING[category];
-    if ((categoryMap as any)[value]) {
-        return (categoryMap as any)[value];
+    
+    const mapping = (MOBILE_DE_MAPPING as any)[category];
+    if (mapping && mapping[value]) {
+        return mapping[value];
     }
-    // For models, we usually want to keep the name as is if we're using official names
-    if (category === 'models') {
-        return value;
-    }
-    return value.toUpperCase().replace(/\s+/g, '_');
+
+    // Default transformation for keys (Uppercase and underscore)
+    return value.toString().toUpperCase()
+        .replace(/\s+/g, '_')
+        .replace(/-/g, '_')
+        .replace(/\./g, '_');
 }
