@@ -2,7 +2,7 @@ import { PortalAdapter, PortalConfig, PortalResponse } from './types';
 import { mapToMobileValue } from './mobile-mapping';
 
 export class MobileDeAdapter implements PortalAdapter {
-    private baseUrl = 'https://services.mobile.de/seller-api/v1';
+    private baseUrl = 'https://services.mobile.de/seller-api/sellers';
 
     async publishVehicle(vehicle: any, settings: PortalConfig): Promise<PortalResponse> {
         return this.sync(vehicle, settings);
@@ -16,7 +16,8 @@ export class MobileDeAdapter implements PortalAdapter {
         try {
             const username = settings.apiKey || settings.customerNumber;
             const auth = Buffer.from(`${username}:${settings.apiSecret}`).toString('base64');
-            const url = `${this.baseUrl}/ads/${externalId}`;
+            const sellerId = settings.customerNumber || '46761516';
+            const url = `${this.baseUrl}/${sellerId}/ads/${externalId}`;
 
             const response = await fetch(url, {
                 method: 'DELETE',
@@ -49,9 +50,10 @@ export class MobileDeAdapter implements PortalAdapter {
             const auth = Buffer.from(`${primaryUser}:${settings.apiSecret}`).toString('base64');
 
             const method = externalId ? 'PUT' : 'POST';
+            const sellerId = settings.customerNumber || '46761516';
             const url = externalId 
-                ? `${this.baseUrl}/ads/${externalId}` 
-                : `${this.baseUrl}/ads`;
+                ? `${this.baseUrl}/${sellerId}/ads/${externalId}` 
+                : `${this.baseUrl}/${sellerId}/ads`;
 
             console.log(`Syncing to Mobile.de (${method}): ${url} using user: ${primaryUser}`);
             
