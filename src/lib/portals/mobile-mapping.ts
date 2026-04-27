@@ -35,7 +35,7 @@ export const MOBILE_DE_MAPPING = {
     },
     makes: {
         'Volkswagen': 'VW',
-        'Mercedes-Benz': 'MERCEDES_BENZ',
+        'Mercedes-Benz': 'MERCEDES-BENZ',
         'Audi': 'AUDI',
         'BMW': 'BMW'
     },

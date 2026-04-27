@@ -152,9 +152,24 @@ export class MobileDeAdapter implements PortalAdapter {
         const gearboxKey = mapToMobileValue('transmission', v.transmission) || 'MANUAL_GEAR';
         const conditionKey = mapToMobileValue('condition', v.condition) || 'USED';
         
-        let category = mapToMobileValue('category', v.model) || 'Limousine';
-        if (v.make === 'Mercedes-Benz' && (v.model.includes('GLC') || v.model.includes('GLE') || v.model.includes('GLA'))) {
-            category = 'OffRoad';
+        let category = 'Limousine';
+        const modelUpper = v.model.toUpperCase();
+        if (v.make === 'Mercedes-Benz') {
+            if (modelUpper.startsWith('G') || modelUpper.includes('GLC') || modelUpper.includes('GLE') || modelUpper.includes('GLA') || modelUpper.includes('GLB') || modelUpper.includes('GLS') || modelUpper.includes('ML')) {
+                category = 'OffRoad';
+            }
+        } else if (v.make === 'BMW') {
+            if (modelUpper.startsWith('X')) {
+                category = 'OffRoad';
+            }
+        } else if (v.make === 'Audi') {
+            if (modelUpper.startsWith('Q')) {
+                category = 'OffRoad';
+            }
+        } else if (v.make === 'Volkswagen' || v.make === 'VW') {
+            if (modelUpper.includes('TIGUAN') || modelUpper.includes('TOUAREG') || modelUpper.includes('T-ROC') || modelUpper.includes('T-CROSS')) {
+                category = 'OffRoad';
+            }
         }
 
         // Base JSON structure following Mobile.de Seller API 1.1 Reference
