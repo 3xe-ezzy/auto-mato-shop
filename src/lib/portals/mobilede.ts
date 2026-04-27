@@ -39,11 +39,9 @@ export class MobileDeAdapter implements PortalAdapter {
 
     private async sync(vehicle: any, settings: PortalConfig, externalId?: string): Promise<PortalResponse> {
         try {
-            const xml = this.buildVehicleXml(vehicle);
+            const payload = this.buildVehicleJson(vehicle);
+            const jsonBody = JSON.stringify(payload);
             
-            // Primary: ahmedabdalla, Fallback: 46761516
-            // Based on our probes, the server recognizes both at different paths, 
-            // but for /ads, the ID 46761516 was more consistent in returning 401 instead of 404.
             const primaryUser = settings.apiKey || 'ahmedabdalla';
             const fallbackUser = settings.customerNumber || '46761516';
             
@@ -57,14 +55,16 @@ export class MobileDeAdapter implements PortalAdapter {
 
             console.log(`Syncing to Mobile.de (${method}): ${url} using user: ${primaryUser}`);
             
+            const vendorHeaders = {
+                'Authorization': `Basic ${auth}`,
+                'Content-Type': 'application/vnd.de.mobile.api+json',
+                'Accept': 'application/vnd.de.mobile.api+json'
+            };
+
             let response = await fetch(url, {
                 method,
-                headers: {
-                    'Authorization': `Basic ${auth}`,
-                    'Content-Type': 'application/xml',
-                    'Accept': 'application/xml'
-                },
-                body: xml
+                headers: vendorHeaders,
+                body: jsonBody
             });
 
             // If 404 or 401 with primary, try fallback user (Seller API ID)
@@ -74,11 +74,10 @@ export class MobileDeAdapter implements PortalAdapter {
                 response = await fetch(url, {
                     method,
                     headers: {
-                        'Authorization': `Basic ${fallbackAuth}`,
-                        'Content-Type': 'application/xml',
-                        'Accept': 'application/xml'
+                        ...vendorHeaders,
+                        'Authorization': `Basic ${fallbackAuth}`
                     },
-                    body: xml
+                    body: jsonBody
                 });
             }
 
@@ -113,29 +112,38 @@ export class MobileDeAdapter implements PortalAdapter {
     }
 
     private convertMobileDate(dateVal: any): string {
-        if (!dateVal) return '2020-01';
+        // Mobile.de Seller API 1.1 requires yyyyMM format (e.g. 202404)
+        if (!dateVal) return '202001';
         const str = dateVal.toString().trim();
         
+        // Handle "MM.YYYY" format
         if (str.includes('.')) {
             const parts = str.split('.');
             let month = parts[0].padStart(2, '0');
             let yearPart = parts[1];
             
-            if (yearPart.length >= 2) {
-                const yearDigits = yearPart.slice(-2);
-                const year = "20" + yearDigits;
-                return `${year}-${month}`;
+            if (yearPart.length === 2) {
+                yearPart = "20" + yearPart;
+            }
+            if (yearPart.length === 4) {
+                return `${yearPart}${month}`;
             }
         }
 
-        if (/^\d{4}-\d{2}$/.test(str)) return str;
-        if (/^\d{4}$/.test(str)) return `${str}-01`;
+        // Handle "YYYY-MM" format
+        if (/^\d{4}-\d{2}$/.test(str)) {
+            return str.replace('-', '');
+        }
 
-        return '2020-01';
+        // Handle "YYYY" format
+        if (/^\d{4}$/.test(str)) {
+            return `${str}01`;
+        }
+
+        return '202001';
     }
 
-    private buildVehicleXml(v: any): string {
-        const escape = (str: string) => (str || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    private buildVehicleJson(v: any): any {
         const firstReg = this.convertMobileDate(v.year);
 
         const makeKey = mapToMobileValue('makes', v.make);
@@ -149,48 +157,31 @@ export class MobileDeAdapter implements PortalAdapter {
             category = 'OffRoad';
         }
 
-        return `<?xml version="1.0" encoding="UTF-8"?>
-<ad xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://services.mobile.de/schema/seller/seller-ad-1.1"
-    xmlns:vehicle="http://services.mobile.de/schema/seller/vehicle-1.0"
-    xmlns:site-specifics="http://services.mobile.de/schema/seller/site-specifics-1.0"
-    xmlns:price="http://services.mobile.de/schema/seller/price-1.0"
-    xsi:schemaLocation="http://services.mobile.de/schema/seller/seller-ad-1.1 http://services.mobile.de/schema/seller/seller-ad-1.1.xsd">
+        // Base JSON structure following Mobile.de Seller API 1.1 Reference
+        const payload: any = {
+            sellerInventoryKey: (v.articleNumber || v.id).toString(),
+            vehicleClass: "Car",
+            category: category,
+            make: makeKey,
+            model: modelKey,
+            modelDescription: `${v.make} ${v.model}`,
+            damageUnrepaired: false,
+            accidentDamaged: false,
+            roadworthy: true,
+            mileage: Math.round(v.mileage || 0),
+            fuel: fuelKey,
+            power: Math.round(v.power || 100),
+            gearbox: gearboxKey,
+            condition: conditionKey,
+            firstRegistration: firstReg,
+            description: v.description || '',
+            price: {
+                consumerPriceGross: parseFloat((v.price || 0).toFixed(2)),
+                type: "FIXED",
+                currency: "EUR"
+            }
+        };
 
-    <seller-inventory-key value="${v.articleNumber || v.id}"/>
-    <description>${escape(v.description || '')}</description>
-
-    <vehicle:vehicle>
-        <vehicle:classification>
-            <vehicle:vehicle-class key="Car"/>
-            <vehicle:category key="${category}"/>
-            <vehicle:make key="${makeKey}"/>
-            <vehicle:model key="${modelKey}"/>
-        </vehicle:classification>
-
-        <vehicle:model-description value="${escape(v.make + ' ' + v.model)}"/>
-        <vehicle:damage-and-unrepaired value="false"/>
-        <vehicle:accident-damaged value="false"/>
-        <vehicle:roadworthy value="true"/>
-
-        <vehicle:specifics>
-            <vehicle:mileage value="${Math.round(v.mileage || 0)}"/>
-            <vehicle:fuel key="${fuelKey}"/>
-            <vehicle:power value="${Math.round(v.power || 100)}"/>
-            <vehicle:gearbox key="${gearboxKey}"/>
-            <vehicle:condition key="${conditionKey}"/>
-        </vehicle:specifics>
-
-        <vehicle:site-specifics>
-            <site-specifics:first-registration value="${firstReg}"/>
-        </vehicle:site-specifics>
-    </vehicle:vehicle>
-
-    <price:price type="FIXED" currency="EUR">
-        <price:gross-prices>
-            <price:consumer-price-amount value="${(v.price || 0).toFixed(2)}"/>
-        </price:gross-prices>
-    </price:price>
-</ad>`;
+        return payload;
     }
 }
