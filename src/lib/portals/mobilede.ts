@@ -2,7 +2,7 @@ import { PortalAdapter, PortalConfig, PortalResponse } from './types';
 import { mapToMobileValue } from './mobile-mapping';
 
 export class MobileDeAdapter implements PortalAdapter {
-    private baseUrl = 'https://services.mobile.de/sellerapi/v1';
+    private baseUrl = 'https://services.mobile.de/seller-api/v1';
 
     async publishVehicle(vehicle: any, settings: PortalConfig): Promise<PortalResponse> {
         return this.sync(vehicle, settings);
@@ -14,8 +14,8 @@ export class MobileDeAdapter implements PortalAdapter {
 
     async deleteVehicle(externalId: string, settings: PortalConfig): Promise<PortalResponse> {
         try {
-            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
-            const url = `${this.baseUrl}/ad/${externalId}`;
+            const auth = Buffer.from(`${(settings.apiKey || '').trim()}:${(settings.apiSecret || '').trim()}`).toString('base64');
+            const url = `${this.baseUrl}/ads/${externalId}`;
 
             const response = await fetch(url, {
                 method: 'DELETE',
@@ -38,12 +38,12 @@ export class MobileDeAdapter implements PortalAdapter {
     private async sync(vehicle: any, settings: PortalConfig, externalId?: string): Promise<PortalResponse> {
         try {
             const xml = this.buildVehicleXml(vehicle);
-            const auth = Buffer.from(`${settings.apiKey}:${settings.apiSecret}`).toString('base64');
+            const auth = Buffer.from(`${(settings.apiKey || '').trim()}:${(settings.apiSecret || '').trim()}`).toString('base64');
 
             const method = externalId ? 'PUT' : 'POST';
             const url = externalId 
-                ? `${this.baseUrl}/ad/${externalId}` 
-                : `${this.baseUrl}/ad`;
+                ? `${this.baseUrl}/ads/${externalId}` 
+                : `${this.baseUrl}/ads`;
 
             console.log(`Syncing to Mobile.de (${method}): ${url}`);
             
@@ -60,9 +60,11 @@ export class MobileDeAdapter implements PortalAdapter {
             const responseText = await response.text();
 
             if (!response.ok) {
+                // FALLBACK: If we get a 404 on PUT, it means the ad was not found.
+                // In this case, try to create it as a new ad (POST).
                 if (response.status === 404 && externalId) {
-                    console.log('Mobile.de ad not found (404), falling back to POST...');
-                    return this.sync(vehicle, settings);
+                    console.log('Mobile.de ad not found (404), falling back to POST (Create)...');
+                    return this.sync(vehicle, settings); // Call sync again without externalId
                 }
 
                 console.error('Mobile.de Sync Error:', response.status, responseText);
@@ -94,9 +96,6 @@ export class MobileDeAdapter implements PortalAdapter {
             let month = parts[0].padStart(2, '0');
             let yearPart = parts[1];
             
-            // User example: "1.201" -> 2001-01
-            // My inference: "12.010" -> 2010-12
-            // The last 2 digits of the second part are the year
             if (yearPart.length >= 2) {
                 const yearDigits = yearPart.slice(-2);
                 const year = "20" + yearDigits;
