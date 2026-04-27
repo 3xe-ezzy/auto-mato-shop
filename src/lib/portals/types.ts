@@ -8,6 +8,7 @@ export interface PortalConfig {
     customerNumber?: string | null;
     apiKey?: string | null;
     apiSecret?: string | null;
+    portalName?: string;
 }
 
 export interface PortalAdapter {

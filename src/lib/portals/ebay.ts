@@ -14,17 +14,17 @@ export class EbayAdapter implements PortalAdapter {
         
         return {
             success: true,
-            externalId: `${settings.portalName.toUpperCase()}-${vehicle.id}`
+            externalId: `${(settings.portalName || 'UNKNOWN').toUpperCase()}-${vehicle.id}`
         };
     }
 
     async updateVehicle(vehicle: any, settings: PortalConfig, externalId: string): Promise<PortalResponse> {
-        console.log(`${settings.portalName} API: Mock update for ID: ${externalId}`);
+        console.log(`${settings.portalName || 'Portal'} API: Mock update for ID: ${externalId}`);
         return { success: true, externalId };
     }
 
     async deleteVehicle(externalId: string, settings: PortalConfig): Promise<PortalResponse> {
-        console.log(`${settings.portalName} API: Mock delete for ID: ${externalId}`);
+        console.log(`${settings.portalName || 'Portal'} API: Mock delete for ID: ${externalId}`);
         return { success: true };
     }
 }
