@@ -188,7 +188,11 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                 alert(`Fehler beim Speichern:\n${errorMsg}`)
                 setIsSubmitting(false)
             }
-        } catch (error) {
+        } catch (error: any) {
+            // Ignore NEXT_REDIRECT errors as they are expected on success
+            if (error.message?.includes('NEXT_REDIRECT') || error.digest?.includes('NEXT_REDIRECT')) {
+                return
+            }
             console.error('Submit error:', error)
             alert('Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.')
             setIsSubmitting(false)
@@ -668,7 +672,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                         </label>
                                         <p className="pl-1">or drag and drop</p>
                                     </div>
-                                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                    <p className="text-xs text-gray-500">PNG, JPG, GIF bis zu 25MB pro Datei</p>
                                 </div>
                             </div>
 

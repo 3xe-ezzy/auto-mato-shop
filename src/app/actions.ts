@@ -132,9 +132,6 @@ export async function createVehicle(formData: FormData) {
                 articleNumber,
                 images: {
                     create: imageOrder.map((tempId: string, index: number) => {
-                        // Find the index of this new image in the uploaded list
-                        // The order of newImageUrls matches the order of 'images' appends in handleSubmit
-                        // which matches the order of UnifiedImage items in the 'images' state.
                         return {
                             url: newImageUrls[index],
                             sortOrder: index + 1
