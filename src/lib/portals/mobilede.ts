@@ -119,49 +119,98 @@ export class MobileDeAdapter implements PortalAdapter {
 
     private async uploadImages(adId: string, images: any[], settings: PortalConfig): Promise<void> {
         if (!images || images.length === 0) {
-            console.log(`No images to upload for ad ${adId}`);
+            console.log(`[Mobile.de] No images to upload for ad ${adId}`);
             return;
         }
 
         const sellerId = '46761516';
         const url = `${this.baseUrl}/${sellerId}/ads/${adId}/images`;
         const primaryUser = settings.apiKey || 'ahmedabdalla';
-        const auth = Buffer.from(`${primaryUser}:${settings.apiSecret}`).toString('base64');
+        const fallbackUser = settings.customerNumber || '46761516';
+        const apiSecret = settings.apiSecret;
+
+        // Determine base URL for relative paths
+        let baseUrl = '';
+        if (process.env.NEXT_PUBLIC_APP_URL) {
+            baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+        } else if (process.env.VERCEL_URL) {
+            baseUrl = `https://${process.env.VERCEL_URL}`;
+        }
 
         try {
             const formData = new FormData();
+            console.log(`[Mobile.de] Preparing to upload ${images.length} images for ad ${adId}`);
             
-            console.log(`Preparing to upload ${images.length} images for ad ${adId}`);
-            
+            let validImagesCount = 0;
             for (let i = 0; i < images.length; i++) {
                 const img = images[i];
+                let imgUrl = img.url;
+                
+                // Convert relative path to absolute URL
+                if (imgUrl.startsWith('/') && baseUrl) {
+                    imgUrl = `${baseUrl}${imgUrl}`;
+                } else if (imgUrl.startsWith('/')) {
+                    console.warn(`[Mobile.de] Relative image path found but no base URL configured: ${imgUrl}`);
+                    // Fallback attempt with a guess if on localhost
+                    imgUrl = `http://localhost:3000${imgUrl}`;
+                }
+
                 try {
-                    const imgRes = await fetch(img.url);
-                    if (!imgRes.ok) throw new Error(`Fetch failed with ${imgRes.status}`);
-                    const blob = await imgRes.blob();
-                    formData.append('image', blob, `image_${i}.jpg`);
+                    console.log(`[Mobile.de] Fetching image ${i+1}/${images.length}: ${imgUrl}`);
+                    const imgRes = await fetch(imgUrl);
+                    if (!imgRes.ok) {
+                        console.error(`[Mobile.de] Image fetch failed (${imgRes.status}) for ${imgUrl}`);
+                        continue;
+                    }
+                    const buffer = await imgRes.arrayBuffer();
+                    
+                    // Determine mime type from URL or default to jpeg
+                    let contentType = 'image/jpeg';
+                    if (imgUrl.toLowerCase().endsWith('.png')) contentType = 'image/png';
+                    else if (imgUrl.toLowerCase().endsWith('.webp')) contentType = 'image/webp';
+
+                    const blob = new Blob([buffer], { type: contentType });
+                    // Field name must be 'image' for each file in the multipart request
+                    formData.append('image', blob, `image_${i}.${contentType.split('/')[1]}`);
+                    validImagesCount++;
                 } catch (err) {
-                    console.error(`Failed to fetch image ${img.url}:`, err);
+                    console.error(`[Mobile.de] Error processing image ${imgUrl}:`, err);
                 }
             }
 
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Basic ${auth}`,
-                    'Accept': 'application/vnd.de.mobile.api+json'
-                },
-                body: formData
-            });
+            if (validImagesCount === 0) {
+                console.log(`[Mobile.de] No valid images downloaded, skipping upload.`);
+                return;
+            }
+
+            const sendRequest = async (user: string) => {
+                const auth = Buffer.from(`${user}:${apiSecret}`).toString('base64');
+                console.log(`[Mobile.de] Sending ${validImagesCount} images to ${url} as user: ${user}`);
+                return fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Basic ${auth}`,
+                        'Accept': 'application/vnd.de.mobile.api+json'
+                    },
+                    body: formData
+                });
+            };
+
+            let response = await sendRequest(primaryUser);
+
+            if ((response.status === 401 || response.status === 404) && primaryUser !== fallbackUser) {
+                console.log(`[Mobile.de] Image upload failed with ${response.status}, retrying with fallback user: ${fallbackUser}`);
+                response = await sendRequest(fallbackUser);
+            }
 
             if (!response.ok) {
                 const text = await response.text();
-                console.error(`Mobile.de Image Upload Error: ${response.status} - ${text}`);
+                console.error(`[Mobile.de] Image Upload Error: ${response.status} - ${text}`);
             } else {
-                console.log(`Successfully uploaded images to Mobile.de ad ${adId}`);
+                console.log(`[Mobile.de] Successfully uploaded ${validImagesCount} images to ad ${adId}`);
             }
         } catch (error) {
-            console.error(`Fatal error during image upload for ad ${adId}:`, error);
+            console.error(`[Mobile.de] Fatal error during image upload for ad ${adId}:`, error);
         }
     }
 
