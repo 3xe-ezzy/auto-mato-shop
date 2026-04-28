@@ -123,15 +123,23 @@ export async function createVehicle(formData: FormData) {
     }
 
     try {
+        const imageOrderRaw = formData.get('imageOrder') as string
+        const imageOrder = imageOrderRaw ? JSON.parse(imageOrderRaw) : []
+        
         const vehicle = await prisma.vehicle.create({
             data: {
                 ...vehicleData,
                 articleNumber,
                 images: {
-                    create: newImageUrls.map((url, index) => ({
-                        url,
-                        sortOrder: index + 1
-                    }))
+                    create: imageOrder.map((tempId: string, index: number) => {
+                        // Find the index of this new image in the uploaded list
+                        // The order of newImageUrls matches the order of 'images' appends in handleSubmit
+                        // which matches the order of UnifiedImage items in the 'images' state.
+                        return {
+                            url: newImageUrls[index],
+                            sortOrder: index + 1
+                        }
+                    })
                 },
                 equipment: equipment ? {
                     create: equipment.split(',').map(e => ({ name: e.trim() })).filter(e => e.name)
@@ -217,19 +225,36 @@ export async function updateVehicle(id: string, formData: FormData) {
             data: vehicleData,
         })
 
-        // Handle image update (Add new ones)
-        if (newImageUrls.length > 0) {
-            // Get current max sort order
-            const currentImages = await prisma.image.findMany({ where: { vehicleId: id } })
-            const maxSortOrder = currentImages.reduce((max, img) => Math.max(max, img.sortOrder), 0)
+        // Handle image order and new uploads
+        const imageOrderRaw = formData.get('imageOrder') as string
+        const imageOrder = imageOrderRaw ? JSON.parse(imageOrderRaw) : []
+        
+        // Match new images with their placeholders in imageOrder
+        let nextNewImageIndex = 0;
+        
+        for (let i = 0; i < imageOrder.length; i++) {
+            const imageId = imageOrder[i];
+            const sortOrder = i + 1;
 
-            await prisma.image.createMany({
-                data: newImageUrls.map((url, index) => ({
-                    url,
-                    vehicleId: id,
-                    sortOrder: maxSortOrder + index + 1
-                }))
-            })
+            if (imageId.startsWith('new-')) {
+                // This is a newly uploaded image
+                if (nextNewImageIndex < newImageUrls.length) {
+                    await prisma.image.create({
+                        data: {
+                            url: newImageUrls[nextNewImageIndex],
+                            vehicleId: id,
+                            sortOrder: sortOrder
+                        }
+                    })
+                    nextNewImageIndex++;
+                }
+            } else {
+                // This is an existing image, update its sort order
+                await prisma.image.update({
+                    where: { id: imageId },
+                    data: { sortOrder: sortOrder }
+                })
+            }
         }
 
         // Handle equipment update

@@ -5,6 +5,22 @@ import { Vehicle, Image, Equipment } from '@prisma/client'
 import { carData } from '@/lib/car-data'
 import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '@/components/LanguageContext'
+import { 
+    DndContext, 
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent
+} from '@dnd-kit/core'
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    rectSortingStrategy
+} from '@dnd-kit/sortable'
+import { SortableImage } from './SortableImage'
 
 type VehicleWithRelations = Vehicle & {
     images: Image[]
@@ -27,36 +43,71 @@ type VehicleWithRelations = Vehicle & {
     syncKleinanzeigen?: boolean
 }
 
+type UnifiedImage = {
+    id: string
+    url: string
+    file?: File
+    isExisting: boolean
+}
+
 export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelations }) {
     const { t } = useLanguage()
     const isEdit = !!vehicle
     const baseAction = isEdit ? updateVehicle.bind(null, vehicle.id) : createVehicle
 
     const [selectedMake, setSelectedMake] = useState<string>(vehicle?.make || '')
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-    const [previews, setPreviews] = useState<string[]>([])
+    const [images, setImages] = useState<UnifiedImage[]>(() => {
+        if (vehicle?.images) {
+            return vehicle.images
+                .sort((a, b) => a.sortOrder - b.sortOrder)
+                .map(img => ({
+                    id: img.id,
+                    url: img.url,
+                    isExisting: true
+                }))
+        }
+        return []
+    })
+    
     const [isDragging, setIsDragging] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    )
 
     // Cleanup previews
     useEffect(() => {
         return () => {
-            previews.forEach(url => URL.revokeObjectURL(url))
+            images.forEach(img => {
+                if (!img.isExisting) {
+                    URL.revokeObjectURL(img.url)
+                }
+            })
         }
-    }, [previews])
+    }, [])
 
     const addFiles = (files: FileList | File[]) => {
         const newFiles = Array.from(files)
-        setSelectedFiles(prev => [...prev, ...newFiles])
-
-        const newUrls = newFiles.map(file => URL.createObjectURL(file))
-        setPreviews(prev => [...prev, ...newUrls])
+        const newImages: UnifiedImage[] = newFiles.map(file => ({
+            id: `new-${Date.now()}-${Math.random()}`,
+            url: URL.createObjectURL(file),
+            file,
+            isExisting: false
+        }))
+        setImages(prev => [...prev, ...newImages])
     }
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             addFiles(e.target.files)
-            // Reset the input value so the same file can be selected again if needed
             e.target.value = ''
         }
     }
@@ -82,24 +133,49 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
             addFiles(e.dataTransfer.files)
         }
     }
+    
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event
 
-    const removeFile = (index: number) => {
-        setSelectedFiles(prev => prev.filter((_, i) => i !== index))
-        setPreviews(prev => {
-            const urlToRemove = prev[index]
-            URL.revokeObjectURL(urlToRemove)
-            return prev.filter((_, i) => i !== index)
-        })
+        if (over && active.id !== over.id) {
+            setImages((items) => {
+                const oldIndex = items.findIndex(item => item.id === active.id)
+                const newIndex = items.findIndex(item => item.id === over.id)
+                return arrayMove(items, oldIndex, newIndex)
+            })
+        }
+    }
+
+    const removeFile = async (id: string) => {
+        const imgToRemove = images.find(img => img.id === id)
+        if (!imgToRemove) return
+
+        if (imgToRemove.isExisting) {
+            if (confirm('Bist du sicher, dass du dieses Bild dauerhaft löschen möchtest?')) {
+                const { deleteImage } = await import('@/app/actions')
+                await deleteImage(id)
+                setImages(prev => prev.filter(img => img.id !== id))
+            }
+        } else {
+            URL.revokeObjectURL(imgToRemove.url)
+            setImages(prev => prev.filter(img => img.id !== id))
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
 
-        // Append selected files manually
-        selectedFiles.forEach(file => {
-            formData.append('images', file)
+        // Append new files in their sorted order
+        images.forEach((img) => {
+            if (img.file) {
+                formData.append('images', img.file)
+            }
         })
+
+        // Also append the IDs of all images in order to handle reordering of existing ones
+        const imageOrder = images.map(img => img.id)
+        formData.append('imageOrder', JSON.stringify(imageOrder))
 
         await baseAction(formData)
     }
@@ -581,56 +657,43 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                 </div>
                             </div>
 
-                            {/* Previews of NEWLY selected files */}
-                            {previews.length > 0 && (
-                                <div className="mt-4">
-                                    <h4 className="text-sm font-medium text-gray-700 mb-2">Selected for Upload:</h4>
-                                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                                        {previews.map((url, index) => (
-                                            <div key={index} className="relative group">
-                                                <img src={url} alt={`Preview ${index}`} className="h-24 w-full object-cover rounded" />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeFile(index)}
-                                                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 m-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                >
-                                                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                                    </svg>
-                                                </button>
+                            {/* Unified Image Grid with DND */}
+                            <div className="mt-6">
+                                <DndContext
+                                    sensors={sensors}
+                                    collisionDetection={closestCenter}
+                                    onDragEnd={handleDragEnd}
+                                >
+                                    <SortableContext
+                                        items={images.map(img => img.id)}
+                                        strategy={rectSortingStrategy}
+                                    >
+                                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                                            {images.map((img, index) => (
+                                                <SortableImage 
+                                                    key={img.id}
+                                                    id={img.id}
+                                                    url={img.url}
+                                                    index={index}
+                                                    onRemove={removeFile}
+                                                    isFirst={index === 0}
+                                                />
+                                            ))}
+                                            
+                                            {/* Add Button (Placeholder) */}
+                                            <div 
+                                                onClick={() => fileInputRef.current?.click()}
+                                                className="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-50 transition-all cursor-pointer group"
+                                            >
+                                                <svg className="h-8 w-8 mb-1 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                                </svg>
+                                                <span className="text-xs font-medium">Hinzufügen</span>
                                             </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Existing Images */}
-                            {vehicle?.images && vehicle.images.length > 0 && (
-                                <div className="mt-4">
-                                    <h4 className="text-sm font-medium text-gray-700 mb-2">Existing Images:</h4>
-                                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                                        {vehicle.images.map((img) => (
-                                            <div key={img.id} className="relative group">
-                                                <img src={img.url} alt="Vehicle" className="h-24 w-full object-cover rounded" />
-                                                <button
-                                                    type="button"
-                                                    onClick={async () => {
-                                                        if (confirm('Are you sure you want to delete this image?')) {
-                                                            const { deleteImage } = await import('@/app/actions')
-                                                            await deleteImage(img.id)
-                                                        }
-                                                    }}
-                                                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 m-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                >
-                                                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+                                        </div>
+                                    </SortableContext>
+                                </DndContext>
+                            </div>
                         </div>
 
                         <div className="sm:col-span-6">
