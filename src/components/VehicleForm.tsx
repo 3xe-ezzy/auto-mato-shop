@@ -35,6 +35,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
     const [selectedMake, setSelectedMake] = useState<string>(vehicle?.make || '')
     const [selectedFiles, setSelectedFiles] = useState<File[]>([])
     const [previews, setPreviews] = useState<string[]>([])
+    const [isDragging, setIsDragging] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     // Cleanup previews
@@ -44,17 +45,41 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
         }
     }, [previews])
 
+    const addFiles = (files: FileList | File[]) => {
+        const newFiles = Array.from(files)
+        setSelectedFiles(prev => [...prev, ...newFiles])
+
+        const newUrls = newFiles.map(file => URL.createObjectURL(file))
+        setPreviews(prev => [...prev, ...newUrls])
+    }
+
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
-            const newFiles = Array.from(e.target.files)
-            setSelectedFiles(prev => [...prev, ...newFiles])
-
-            const newUrls = newFiles.map(file => URL.createObjectURL(file))
-            setPreviews(prev => [...prev, ...newUrls])
-
+            addFiles(e.target.files)
             // Reset the input value so the same file can be selected again if needed
-            // and to ensure the onChange event fires even if the same files are selected
             e.target.value = ''
+        }
+    }
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setIsDragging(true)
+    }
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setIsDragging(false)
+    }
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setIsDragging(false)
+
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            addFiles(e.dataTransfer.files)
         }
     }
 
@@ -507,7 +532,17 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                             <label className="block text-sm font-medium text-gray-700">
                                 {t.vehicle.images}
                             </label>
-                            <div className="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-500 transition-colors cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                            <div 
+                                className={`mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md transition-all cursor-pointer ${
+                                    isDragging 
+                                    ? 'border-blue-500 bg-blue-50 scale-[1.01] shadow-md' 
+                                    : 'border-gray-300 hover:border-indigo-500 hover:bg-gray-50'
+                                }`}
+                                onClick={() => fileInputRef.current?.click()}
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                            >
                                 <div className="space-y-1 text-center">
                                     <svg
                                         className="mx-auto h-12 w-12 text-gray-400"
