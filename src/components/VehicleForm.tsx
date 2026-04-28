@@ -70,6 +70,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
     })
     
     const [isDragging, setIsDragging] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const sensors = useSensors(
@@ -164,20 +165,34 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const formData = new FormData(e.currentTarget)
+        if (isSubmitting) return
+        
+        setIsSubmitting(true)
+        try {
+            const formData = new FormData(e.currentTarget)
 
-        // Append new files in their sorted order
-        images.forEach((img) => {
-            if (img.file) {
-                formData.append('images', img.file)
+            // Append new files in their sorted order
+            images.forEach((img) => {
+                if (img.file) {
+                    formData.append('images', img.file)
+                }
+            })
+
+            // Also append the IDs of all images in order to handle reordering of existing ones
+            const imageOrder = images.map(img => img.id)
+            formData.append('imageOrder', JSON.stringify(imageOrder))
+
+            const result = await baseAction(formData)
+            if (result && (result as any).errors) {
+                const errorMsg = Object.values((result as any).errors).flat().join('\n')
+                alert(`Fehler beim Speichern:\n${errorMsg}`)
+                setIsSubmitting(false)
             }
-        })
-
-        // Also append the IDs of all images in order to handle reordering of existing ones
-        const imageOrder = images.map(img => img.id)
-        formData.append('imageOrder', JSON.stringify(imageOrder))
-
-        await baseAction(formData)
+        } catch (error) {
+            console.error('Submit error:', error)
+            alert('Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.')
+            setIsSubmitting(false)
+        }
     }
 
     const equipmentString = vehicle?.equipment?.map(e => e.name).join(', ') || ''
@@ -750,9 +765,18 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                 <div className="flex justify-end">
                     <button
                         type="submit"
-                        className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        disabled={isSubmitting}
+                        className={`ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
+                            isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                        } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all items-center gap-2`}
                     >
-                        {isEdit ? t.actions.update : t.actions.save}
+                        {isSubmitting && (
+                            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        )}
+                        {isSubmitting ? 'Wird gespeichert...' : (isEdit ? t.actions.update : t.actions.save)}
                     </button>
                 </div>
             </div>
