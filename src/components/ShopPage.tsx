@@ -34,8 +34,8 @@ export default function ShopPage({ vehicles }: { vehicles: VehicleWithImages[] }
     })
 
     const uniqueYears = Array.from(new Set(vehicles.map(v => v.year))).sort((a, b) => b - a)
-    const uniqueTransmissions = Array.from(new Set(vehicles.map(v => v.transmission).filter(Boolean))) as string[]
-    const uniqueFuelTypes = Array.from(new Set(vehicles.map(v => v.fuelType).filter(Boolean))) as string[]
+    const uniqueTransmissions = Array.from(new Set([...vehicles.map(v => v.transmission), 'Manual', 'Automatic'].filter(Boolean))) as string[]
+    const uniqueFuelTypes = Array.from(new Set([...vehicles.map(v => v.fuelType), 'Petrol', 'Diesel', 'Hybrid', 'Electric'].filter(Boolean))) as string[]
     const uniqueMakes = Array.from(new Set(vehicles.map(v => v.make))).sort()
     const uniqueModels = Array.from(new Set(vehicles.filter(v => !filters.make || v.make === filters.make).map(v => v.model))).sort()
 
