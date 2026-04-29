@@ -100,7 +100,13 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
     }, [])
 
     const addFiles = async (files: FileList | File[]) => {
-        const newFiles = Array.from(files)
+        const newFiles = Array.from(files).map(file => {
+            // Normalize .jfif files – they are JPEG but browsers may send wrong MIME type
+            if (file.name.toLowerCase().endsWith('.jfif') || file.type === 'image/jfif' || file.type === 'image/pjpeg') {
+                return new File([file], file.name.replace(/\.jfif$/i, '.jpg'), { type: 'image/jpeg' })
+            }
+            return file
+        })
         
         // Add placeholders
         const placeholders: UnifiedImage[] = newFiles.map(file => ({
@@ -739,14 +745,14 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                                 type="file"
                                                 className="sr-only"
                                                 multiple
-                                                accept="image/*"
+                                                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/jfif,.jfif,.jpg,.jpeg,.png,.gif,.webp"
                                                 ref={fileInputRef}
                                                 onChange={handleFileSelect}
                                             />
                                         </label>
                                         <p className="pl-1">or drag and drop</p>
                                     </div>
-                                    <p className="text-xs text-gray-500">PNG, JPG, GIF bis zu 25MB pro Datei</p>
+                                    <p className="text-xs text-gray-500">JPG, JFIF, PNG, GIF, WEBP bis zu 25MB pro Datei</p>
                                 </div>
                             </div>
 

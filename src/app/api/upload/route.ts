@@ -14,7 +14,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       ) => {
         // Authenticate your users here
         return {
-          allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+          allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jfif', 'image/pjpeg', 'image/heic', 'image/heif'],
           tokenPayload: JSON.stringify({
             // optional, sent to your server on upload completion
           }),
