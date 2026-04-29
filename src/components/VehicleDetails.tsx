@@ -52,7 +52,7 @@ export default function VehicleDetails({ vehicle }: { vehicle: VehicleWithRelati
                                     )}
                                 </p>
                             </div>
-                            <div className="text-2xl font-bold text-green-600">
+                            <div className="text-3xl font-black text-blue-600 bg-blue-50 px-6 py-3 rounded-xl border border-blue-200 shadow-sm">
                                 {vehicle.price.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}
                             </div>
                         </div>
