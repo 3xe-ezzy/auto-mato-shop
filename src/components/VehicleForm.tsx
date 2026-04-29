@@ -99,17 +99,74 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
         }
     }, [])
 
+    const compressImage = async (file: File): Promise<File> => {
+        // Skip non-images
+        if (!file.type.startsWith('image/')) return file;
+        
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const MAX_DIMENSION = 1920;
+
+                    if (width > height && width > MAX_DIMENSION) {
+                        height *= MAX_DIMENSION / width;
+                        width = MAX_DIMENSION;
+                    } else if (height > MAX_DIMENSION) {
+                        width *= MAX_DIMENSION / height;
+                        height = MAX_DIMENSION;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) {
+                        ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob(
+                            (blob) => {
+                                if (blob) {
+                                    resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' }));
+                                } else {
+                                    resolve(file); // Fallback
+                                }
+                            },
+                            'image/jpeg',
+                            0.8 // Quality
+                        );
+                    } else {
+                        resolve(file); // Fallback
+                    }
+                };
+                img.onerror = () => resolve(file); // Fallback on error
+            };
+            reader.onerror = () => resolve(file); // Fallback on error
+        });
+    };
+
     const addFiles = async (files: FileList | File[]) => {
-        const newFiles = Array.from(files).map(file => {
+        const fileArray = Array.from(files);
+        const processedFiles = [];
+        
+        for (const file of fileArray) {
+            let fileToProcess = file;
             // Normalize .jfif files – they are JPEG but browsers may send wrong MIME type
             if (file.name.toLowerCase().endsWith('.jfif') || file.type === 'image/jfif' || file.type === 'image/pjpeg') {
-                return new File([file], file.name.replace(/\.jfif$/i, '.jpg'), { type: 'image/jpeg' })
+                fileToProcess = new File([file], file.name.replace(/\.jfif$/i, '.jpg'), { type: 'image/jpeg' });
             }
-            return file
-        })
+            
+            // Compress the image to ensure it's under 2MB for mobile.de
+            const compressed = await compressImage(fileToProcess);
+            processedFiles.push(compressed);
+        }
         
         // Add placeholders
-        const placeholders: UnifiedImage[] = newFiles.map(file => ({
+        const placeholders: UnifiedImage[] = processedFiles.map(file => ({
             id: `uploading-${Date.now()}-${Math.random()}`,
             url: URL.createObjectURL(file),
             file,
