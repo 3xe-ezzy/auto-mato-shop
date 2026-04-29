@@ -21,6 +21,7 @@ import {
     rectSortingStrategy
 } from '@dnd-kit/sortable'
 import { SortableImage } from './SortableImage'
+import { upload } from '@vercel/blob/client'
 
 type VehicleWithRelations = Vehicle & {
     images: Image[]
@@ -48,6 +49,7 @@ type UnifiedImage = {
     url: string
     file?: File
     isExisting: boolean
+    isUploading?: boolean
 }
 
 export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelations }) {
@@ -95,15 +97,45 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
         }
     }, [])
 
-    const addFiles = (files: FileList | File[]) => {
+    const addFiles = async (files: FileList | File[]) => {
         const newFiles = Array.from(files)
-        const newImages: UnifiedImage[] = newFiles.map(file => ({
-            id: `new-${Date.now()}-${Math.random()}`,
+        
+        // Add placeholders
+        const placeholders: UnifiedImage[] = newFiles.map(file => ({
+            id: `uploading-${Date.now()}-${Math.random()}`,
             url: URL.createObjectURL(file),
             file,
-            isExisting: false
+            isExisting: false,
+            isUploading: true
         }))
-        setImages(prev => [...prev, ...newImages])
+        
+        setImages(prev => [...prev, ...placeholders])
+
+        // Upload each file
+        for (let i = 0; i < placeholders.length; i++) {
+            const placeholder = placeholders[i]
+            const file = placeholder.file!
+
+            try {
+                const newBlob = await upload(file.name, file, {
+                    access: 'public',
+                    handleUploadUrl: '/api/upload',
+                })
+
+                setImages(prev => prev.map(img => 
+                    img.id === placeholder.id 
+                    ? { ...img, url: newBlob.url, isUploading: false } 
+                    : img
+                ))
+                
+                // Cleanup local preview
+                URL.revokeObjectURL(placeholder.url)
+            } catch (error) {
+                console.error('Upload failed:', error)
+                alert(`Fehler beim Hochladen von ${file.name}`)
+                setImages(prev => prev.filter(img => img.id !== placeholder.id))
+            }
+        }
     }
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,15 +203,17 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
         try {
             const formData = new FormData(e.currentTarget)
 
-            // Append new files in their sorted order
-            images.forEach((img) => {
-                if (img.file) {
-                    formData.append('images', img.file)
-                }
-            })
+            // Check if any images are still uploading
+            if (images.some(img => img.isUploading)) {
+                alert('Bitte warte, bis alle Bilder hochgeladen sind.')
+                setIsSubmitting(false)
+                return
+            }
 
-            // Also append the IDs of all images in order to handle reordering of existing ones
-            const imageOrder = images.map(img => img.id)
+            // We no longer need to send 'images' files in the form data
+            // because they are already in the cloud.
+            // But we need to send the final order of URLs.
+            const imageOrder = images.map(img => img.isExisting ? img.id : img.url)
             formData.append('imageOrder', JSON.stringify(imageOrder))
 
             const result = await baseAction(formData)
@@ -696,6 +730,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                                     index={index}
                                                     onRemove={removeFile}
                                                     isFirst={index === 0}
+                                                    isUploading={img.isUploading}
                                                 />
                                             ))}
                                             

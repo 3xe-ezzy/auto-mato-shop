@@ -107,21 +107,6 @@ export async function createVehicle(formData: FormData) {
 
     const articleNumber = `${baseArticleNumber}-${maxSequence + 1}`
 
-    // Handle Multiple Image Uploads
-    const imageFiles = formData.getAll('images') as File[]
-    const newImageUrls: string[] = []
-
-    for (const file of imageFiles) {
-        if (file.size > 0) {
-            try {
-                const url = await uploadImage(file)
-                newImageUrls.push(url)
-            } catch (e) {
-                console.error('Upload failed for file', file.name, e)
-            }
-        }
-    }
-
     try {
         const imageOrderRaw = formData.get('imageOrder') as string
         const imageOrder = imageOrderRaw ? JSON.parse(imageOrderRaw) : []
@@ -131,12 +116,10 @@ export async function createVehicle(formData: FormData) {
                 ...vehicleData,
                 articleNumber,
                 images: {
-                    create: imageOrder.map((tempId: string, index: number) => {
-                        return {
-                            url: newImageUrls[index],
-                            sortOrder: index + 1
-                        }
-                    })
+                    create: imageOrder.map((url: string, index: number) => ({
+                        url,
+                        sortOrder: index + 1
+                    }))
                 },
                 equipment: equipment ? {
                     create: equipment.split(',').map(e => ({ name: e.trim() })).filter(e => e.name)
@@ -200,21 +183,6 @@ export async function updateVehicle(id: string, formData: FormData) {
 
     const { equipment, ...vehicleData } = validatedFields.data
 
-    // Handle Multiple Image Uploads
-    const imageFiles = formData.getAll('images') as File[]
-    const newImageUrls: string[] = []
-
-    for (const file of imageFiles) {
-        if (file.size > 0) {
-            try {
-                const url = await uploadImage(file)
-                newImageUrls.push(url)
-            } catch (e) {
-                console.error('Upload failed for file', file.name, e)
-            }
-        }
-    }
-
     try {
         // Update basic info
         await prisma.vehicle.update({
@@ -222,33 +190,27 @@ export async function updateVehicle(id: string, formData: FormData) {
             data: vehicleData,
         })
 
-        // Handle image order and new uploads
+        // Handle image order
         const imageOrderRaw = formData.get('imageOrder') as string
         const imageOrder = imageOrderRaw ? JSON.parse(imageOrderRaw) : []
         
-        // Match new images with their placeholders in imageOrder
-        let nextNewImageIndex = 0;
-        
         for (let i = 0; i < imageOrder.length; i++) {
-            const imageId = imageOrder[i];
+            const item = imageOrder[i]; // Can be an existing ID or a new URL
             const sortOrder = i + 1;
 
-            if (imageId.startsWith('new-')) {
-                // This is a newly uploaded image
-                if (nextNewImageIndex < newImageUrls.length) {
-                    await prisma.image.create({
-                        data: {
-                            url: newImageUrls[nextNewImageIndex],
-                            vehicleId: id,
-                            sortOrder: sortOrder
-                        }
-                    })
-                    nextNewImageIndex++;
-                }
+            if (item.startsWith('http')) {
+                // This is a new image URL from client-side upload
+                await prisma.image.create({
+                    data: {
+                        url: item,
+                        vehicleId: id,
+                        sortOrder: sortOrder
+                    }
+                })
             } else {
                 // This is an existing image, update its sort order
                 await prisma.image.update({
-                    where: { id: imageId },
+                    where: { id: item },
                     data: { sortOrder: sortOrder }
                 })
             }
