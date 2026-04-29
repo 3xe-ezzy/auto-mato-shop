@@ -22,6 +22,7 @@ import {
 } from '@dnd-kit/sortable'
 import { SortableImage } from './SortableImage'
 import { upload } from '@vercel/blob/client'
+import { ImageEditor } from './ImageEditor'
 
 type VehicleWithRelations = Vehicle & {
     images: Image[]
@@ -73,6 +74,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
     
     const [isDragging, setIsDragging] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [editingImage, setEditingImage] = useState<UnifiedImage | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const sensors = useSensors(
@@ -167,6 +169,44 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
         }
     }
     
+    const editFile = (id: string) => {
+        const img = images.find(i => i.id === id)
+        if (img) setEditingImage(img)
+    }
+
+    const handleSaveEditedImage = async (blob: Blob) => {
+        if (!editingImage) return
+
+        // Create a new File from the blob
+        const file = new File([blob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' })
+        
+        // Mark the current image as uploading to show feedback
+        setImages(prev => prev.map(img => 
+            img.id === editingImage.id ? { ...img, isUploading: true } : img
+        ))
+        setEditingImage(null)
+
+        try {
+            const newBlob = await upload(file.name, file, {
+                access: 'public',
+                handleUploadUrl: '/api/upload',
+            })
+
+            // Replace the old image with the new one
+            setImages(prev => prev.map(img => 
+                img.id === editingImage.id 
+                ? { ...img, url: newBlob.url, isUploading: false, isExisting: false } 
+                : img
+            ))
+        } catch (error) {
+            console.error('Failed to upload edited image:', error)
+            alert('Fehler beim Speichern des bearbeiteten Bildes.')
+            setImages(prev => prev.map(img => 
+                img.id === editingImage.id ? { ...img, isUploading: false } : img
+            ))
+        }
+    }
+
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event
 
@@ -729,6 +769,7 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                                     url={img.url}
                                                     index={index}
                                                     onRemove={removeFile}
+                                                    onEdit={editFile}
                                                     isFirst={index === 0}
                                                     isUploading={img.isUploading}
                                                 />
@@ -819,6 +860,14 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                     </button>
                 </div>
             </div>
+
+            {editingImage && (
+                <ImageEditor 
+                    imageUrl={editingImage.url}
+                    onSave={handleSaveEditedImage}
+                    onCancel={() => setEditingImage(null)}
+                />
+            )}
         </form>
     )
 }

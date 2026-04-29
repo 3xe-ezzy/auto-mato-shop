@@ -9,11 +9,12 @@ interface SortableImageProps {
     url: string
     index: number
     onRemove: (id: string) => void
+    onEdit: (id: string) => void
     isFirst?: boolean
     isUploading?: boolean
 }
 
-export function SortableImage({ id, url, index, onRemove, isFirst, isUploading }: SortableImageProps) {
+export function SortableImage({ id, url, index, onRemove, onEdit, isFirst, isUploading }: SortableImageProps) {
     const {
         attributes,
         listeners,
@@ -75,20 +76,39 @@ export function SortableImage({ id, url, index, onRemove, isFirst, isUploading }
                 </div>
             )}
 
-            {/* Remove Button */}
+            {/* Action Buttons Overlay */}
             {!isUploading && (
-                <button
-                    type="button"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onRemove(id);
-                    }}
-                    className="absolute bottom-2 right-2 bg-red-500/90 hover:bg-red-600 text-white rounded-lg p-1.5 opacity-0 group-hover:opacity-100 transition-all shadow-lg backdrop-blur-sm"
-                >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                <div className="absolute bottom-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                    {/* Edit Button */}
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit(id);
+                        }}
+                        className="bg-blue-600/90 hover:bg-blue-700 text-white rounded-lg p-1.5 shadow-lg backdrop-blur-sm transition-colors"
+                        title="Bild bearbeiten"
+                    >
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                    </button>
+                    
+                    {/* Remove Button */}
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onRemove(id);
+                        }}
+                        className="bg-red-500/90 hover:bg-red-600 text-white rounded-lg p-1.5 shadow-lg backdrop-blur-sm transition-colors"
+                        title="Bild löschen"
+                    >
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
             )}
         </div>
     )
