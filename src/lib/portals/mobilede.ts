@@ -141,9 +141,7 @@ export class MobileDeAdapter implements PortalAdapter {
             const formData = new FormData();
             console.log(`[Mobile.de] Preparing to upload ${images.length} images for ad ${adId}`);
             
-            let validImagesCount = 0;
-            for (let i = 0; i < images.length; i++) {
-                const img = images[i];
+            const fetchPromises = images.map(async (img, i) => {
                 let imgUrl = img.url;
                 
                 // Convert relative path to absolute URL
@@ -151,7 +149,6 @@ export class MobileDeAdapter implements PortalAdapter {
                     imgUrl = `${baseUrl}${imgUrl}`;
                 } else if (imgUrl.startsWith('/')) {
                     console.warn(`[Mobile.de] Relative image path found but no base URL configured: ${imgUrl}`);
-                    // Fallback attempt with a guess if on localhost
                     imgUrl = `http://localhost:3000${imgUrl}`;
                 }
 
@@ -160,21 +157,28 @@ export class MobileDeAdapter implements PortalAdapter {
                     const imgRes = await fetch(imgUrl);
                     if (!imgRes.ok) {
                         console.error(`[Mobile.de] Image fetch failed (${imgRes.status}) for ${imgUrl}`);
-                        continue;
+                        return null;
                     }
                     const buffer = await imgRes.arrayBuffer();
                     
-                    // Determine mime type from URL or default to jpeg
-                    let contentType = 'image/jpeg';
-                    if (imgUrl.toLowerCase().endsWith('.png')) contentType = 'image/png';
-                    else if (imgUrl.toLowerCase().endsWith('.webp')) contentType = 'image/webp';
-
+                    // Force JPEG for mobile.de as per API requirements
+                    const contentType = 'image/jpeg';
                     const blob = new Blob([buffer], { type: contentType });
-                    // Field name must be 'image' for each file in the multipart request
-                    formData.append('image', blob, `image_${i}.${contentType.split('/')[1]}`);
-                    validImagesCount++;
+                    
+                    return { blob, filename: `image_${i}.jpg` };
                 } catch (err) {
                     console.error(`[Mobile.de] Error processing image ${imgUrl}:`, err);
+                    return null;
+                }
+            });
+
+            const results = await Promise.all(fetchPromises);
+            
+            let validImagesCount = 0;
+            for (const result of results) {
+                if (result) {
+                    formData.append('image', result.blob, result.filename);
+                    validImagesCount++;
                 }
             }
 
