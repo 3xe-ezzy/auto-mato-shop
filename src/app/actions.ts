@@ -300,3 +300,19 @@ export async function deleteImage(imageId: string) {
         return { message: 'Database Error: Failed to delete image.' }
     }
 }
+
+export async function toggleVehicleStatus(id: string, currentStatus: string) {
+    try {
+        const newStatus = currentStatus === 'Inactive' ? 'Available' : 'Inactive'
+        await prisma.vehicle.update({
+            where: { id },
+            data: { status: newStatus }
+        })
+        revalidatePath('/admin')
+        revalidatePath('/')
+        return { success: true, newStatus }
+    } catch (error) {
+        console.error('Database Error:', error)
+        return { success: false }
+    }
+}

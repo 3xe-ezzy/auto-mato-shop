@@ -1,15 +1,36 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useLanguage } from '@/components/LanguageContext'
 import Link from 'next/link'
 import { Vehicle, Image, VehicleListing } from '@prisma/client'
 import DeleteVehicleButton from '@/components/DeleteVehicleButton'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import ManualSyncButton from '@/components/ManualSyncButton'
+import { toggleVehicleStatus } from '@/app/actions'
 import { CheckCircle, XCircle, Clock } from 'lucide-react'
 
 type VehicleWithImages = Vehicle & { images: Image[], vin?: string | null, VehicleListing?: VehicleListing[] }
+
+function ToggleStatusButton({ id, status }: { id: string, status: string }) {
+    const [isPending, startTransition] = useTransition()
+    const isInactive = status === 'Inactive'
+    return (
+        <button
+            id={`toggle-status-${id}`}
+            onClick={() => startTransition(() => { toggleVehicleStatus(id, status) })}
+            disabled={isPending}
+            title={isInactive ? 'Aktivieren (sichtbar machen)' : 'Deaktivieren (verstecken)'}
+            className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${
+                isInactive ? 'bg-gray-300' : 'bg-green-500'
+            }`}
+        >
+            <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                isInactive ? 'translate-x-0' : 'translate-x-4'
+            }`} />
+        </button>
+    )
+}
 
 export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImages[] }) {
     const { t } = useLanguage()
@@ -41,7 +62,7 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                 <div>
                     <h1 className="text-2xl font-semibold text-gray-900">{t.messages.adminTitle}</h1>
                     <p className="mt-1 text-sm text-gray-500">
-                        {t.messages.adminSubtitle} <span className="ml-2 font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs border border-blue-200 shadow-sm animate-pulse">Build: v1.1.42 (JFIF Support)</span>
+                        {t.messages.adminSubtitle} <span className="ml-2 font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs border border-blue-200 shadow-sm animate-pulse">Build: v1.1.43 (Activate/Deactivate Toggle)</span>
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -117,7 +138,7 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {paginatedVehicles.map((vehicle) => (
-                                        <tr key={vehicle.id}>
+                                        <tr key={vehicle.id} className={vehicle.status === 'Inactive' ? 'opacity-50 bg-gray-50' : ''}>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <Link href={`/admin/vehicles/${vehicle.id}`} className="block h-16 w-16 flex-shrink-0">
                                                     {vehicle.images[0] ? (
@@ -147,11 +168,20 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${vehicle.status === 'Available' ? 'bg-green-100 text-green-800' :
-                                                    vehicle.status === 'Sold' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                                                <div className="flex items-center gap-2">
+                                                    <ToggleStatusButton id={vehicle.id} status={vehicle.status} />
+                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                                        vehicle.status === 'Available' ? 'bg-green-100 text-green-800' :
+                                                        vehicle.status === 'Sold' ? 'bg-red-100 text-red-800' :
+                                                        vehicle.status === 'Inactive' ? 'bg-gray-100 text-gray-500' :
+                                                        'bg-yellow-100 text-yellow-800'
                                                     }`}>
-                                                    {t.values[vehicle.status.toLowerCase() as keyof typeof t.values] || vehicle.status}
-                                                </span>
+                                                        {vehicle.status === 'Inactive' ? '🔴 Inaktiv' :
+                                                         vehicle.status === 'Available' ? '🟢 Verfügbar' :
+                                                         vehicle.status === 'Sold' ? '⚫ Verkauft' :
+                                                         vehicle.status}
+                                                    </span>
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex flex-col gap-1 items-start">

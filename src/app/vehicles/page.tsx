@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function VehiclesHome() {
   const vehicles = await prisma.vehicle.findMany({
-    where: { status: 'Available' },
+    where: { status: { in: ['Available', 'Reserved', 'Sold'] } },
     include: { 
       images: {
         orderBy: { sortOrder: 'asc' }
