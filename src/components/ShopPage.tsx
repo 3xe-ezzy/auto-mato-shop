@@ -208,7 +208,7 @@ export default function ShopPage({ vehicles }: { vehicles: VehicleWithImages[] }
                                                 <div className="flex items-center justify-center h-full text-gray-400">{t.messages.noImages}</div>
                                             )}
                                             <div className="absolute top-4 left-4 flex flex-col gap-2">
-                                                <div className="bg-green-600 text-white px-3 py-1 text-sm font-bold rounded-full shadow-lg">
+                                                <div className="bg-blue-600 text-white px-3 py-1 text-sm font-bold rounded-full shadow-lg">
                                                     {vehicle.price.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}
                                                 </div>
                                                 {isFeatured && (
