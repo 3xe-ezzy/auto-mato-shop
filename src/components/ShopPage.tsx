@@ -217,6 +217,15 @@ export default function ShopPage({ vehicles }: { vehicles: VehicleWithImages[] }
                                                     </div>
                                                 )}
                                             </div>
+                                            {vehicle.images.length > 0 && (
+                                                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1 text-xs font-bold rounded-full shadow-lg flex items-center gap-1.5">
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    </svg>
+                                                    {vehicle.images.length}
+                                                </div>
+                                            )}
                                         </div>
                                         <div className={`p-6 flex flex-col flex-grow ${isFeatured ? 'space-y-4' : 'space-y-2'}`}>
                                             <h3 className={`font-bold text-blue-600 group-hover:text-blue-700 transition-colors uppercase tracking-tight ${isFeatured ? 'text-2xl' : 'text-lg'}`}>
