@@ -77,7 +77,7 @@ export async function GET() {
                 v.articleNumber || v.id,
                 v.make,
                 v.model,
-                '', // extra model description
+                (v as any).titleMobileDe || '', // extra model description
                 v.price,
                 v.mileage,
                 formatCsvDate(v.year),
@@ -87,7 +87,7 @@ export async function GET() {
                 (v as any).engineCapacity || '',
                 (v as any).emissionClass || '',
                 (v as any).exteriorColor || '',
-                `"${(v.description || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`
+                `"${((v as any).shortDescMobileDe || v.description || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`
             ];
 
             const imageFields = [];

@@ -843,6 +843,45 @@ export default function VehicleForm({ vehicle }: { vehicle?: VehicleWithRelation
                                 />
                             </div>
                         </div>
+
+                        <div className="sm:col-span-6 border-t border-gray-100 mt-4 pt-4">
+                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Exklusive Felder für mobile.de</h4>
+                        </div>
+
+                        <div className="sm:col-span-6">
+                            <label htmlFor="titleMobileDe" className="block text-sm font-medium text-gray-700">
+                                Titel (mobile.de)
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="text"
+                                    id="titleMobileDe"
+                                    name="titleMobileDe"
+                                    defaultValue={(vehicle as any)?.titleMobileDe || ''}
+                                    placeholder="z.B. Mercedes CLA 180d Automatik | 2019 | EURO6 | Schwarz | Sparsam"
+                                    className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-6">
+                            <label htmlFor="shortDescMobileDe" className="block text-sm font-medium text-gray-700">
+                                Kurzbeschreibung (mobile.de)
+                            </label>
+                            <p className="text-xs text-gray-500 mt-1">
+                                Wird an mobile.de gesendet. Wenn leer, wird die normale Fahrzeugbeschreibung verwendet.
+                            </p>
+                            <div className="mt-1">
+                                <textarea
+                                    id="shortDescMobileDe"
+                                    name="shortDescMobileDe"
+                                    rows={3}
+                                    defaultValue={(vehicle as any)?.shortDescMobileDe || ''}
+                                    placeholder="Kurztext für mobile.de eingeben..."
+                                    className="shadow-sm focus:ring-orange-500 focus:border-orange-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border text-black"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

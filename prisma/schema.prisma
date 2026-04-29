@@ -47,6 +47,8 @@ model Vehicle {
   syncMobileDe    Boolean @default(false)
   syncEbay        Boolean @default(false)
   syncKleinanzeigen Boolean @default(false)
+  titleMobileDe   String? @db.Text
+  shortDescMobileDe String? @db.Text
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
