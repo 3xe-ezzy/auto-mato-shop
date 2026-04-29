@@ -10,7 +10,12 @@ export default async function EditVehiclePage({ params }: PageProps) {
     const { id } = await params
     const vehicle = await prisma.vehicle.findUnique({
         where: { id },
-        include: { images: true, equipment: true }
+        include: { 
+            images: {
+                orderBy: { sortOrder: 'asc' }
+            }, 
+            equipment: true 
+        }
     })
 
     if (!vehicle) {

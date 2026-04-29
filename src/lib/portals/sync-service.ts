@@ -9,7 +9,12 @@ import { EbayAdapter } from './ebay';
 export async function syncVehicleToPortals(vehicleId: string) {
     const vehicle = await prisma.vehicle.findUnique({
         where: { id: vehicleId },
-        include: { images: true, equipment: true }
+        include: { 
+            images: {
+                orderBy: { sortOrder: 'asc' }
+            }, 
+            equipment: true 
+        }
     });
 
     if (!vehicle) throw new Error('Vehicle not found');

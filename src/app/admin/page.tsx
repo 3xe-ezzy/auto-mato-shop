@@ -7,7 +7,9 @@ export default async function AdminPage() {
     const vehicles = await prisma.vehicle.findMany({
         orderBy: { createdAt: 'desc' },
         include: { 
-            images: true,
+            images: {
+                orderBy: { sortOrder: 'asc' }
+            },
             VehicleListing: true
         }
     })
