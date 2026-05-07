@@ -62,7 +62,7 @@ export default function AdminDashboard({ vehicles }: { vehicles: VehicleWithImag
                 <div>
                     <h1 className="text-2xl font-semibold text-gray-900">{t.messages.adminTitle}</h1>
                     <p className="mt-1 text-sm text-gray-500">
-                        {t.messages.adminSubtitle} <span className="ml-2 font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs border border-blue-200 shadow-sm animate-pulse">Build: v1.1.51 (Naming & Feed Fix)</span>
+                        {t.messages.adminSubtitle} <span className="ml-2 font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs border border-blue-200 shadow-sm animate-pulse">Build: v1.1.52 (Image Order Fix)</span>
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
