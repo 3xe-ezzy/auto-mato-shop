@@ -174,9 +174,12 @@ export class MobileDeAdapter implements PortalAdapter {
 
             const results = await Promise.all(fetchPromises);
             
+            // Reverse order because mobile.de often treats the last uploaded image as the primary one
+            const reversedResults = [...results].reverse();
+            
             let successCount = 0;
-            for (let i = 0; i < results.length; i++) {
-                const result = results[i];
+            for (let i = 0; i < reversedResults.length; i++) {
+                const result = reversedResults[i];
                 if (!result) continue;
 
                 const formData = new FormData();
