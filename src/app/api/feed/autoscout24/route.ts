@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { getAbsoluteUrl } from '@/lib/url'
 
 export async function GET() {
     const vehicles = await prisma.vehicle.findMany({
@@ -66,7 +67,7 @@ export async function GET() {
         <text lang="de">${escapeXml(v.description || '')}</text>
       </description>
       <images>
-        ${v.images.map((img, index) => `<image url="${escapeXml(img.url)}" order="${index + 1}"/>`).join('\n        ')}
+        ${v.images.map((img, index) => `<image url="${escapeXml(getAbsoluteUrl(img.url))}" order="${index + 1}"/>`).join('\n        ')}
       </images>
     </vehicle>\n`
     })

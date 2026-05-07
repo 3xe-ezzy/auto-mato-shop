@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { getAbsoluteUrl } from '@/lib/url'
 
 export async function GET() {
     const vehicles = await prisma.vehicle.findMany({
@@ -92,7 +93,7 @@ export async function GET() {
 
             const imageFields = [];
             for (let i = 0; i < maxImages; i++) {
-                imageFields.push(v.images[i]?.url || '');
+                imageFields.push(getAbsoluteUrl(v.images[i]?.url) || '');
             }
 
             return [...baseFields, ...imageFields].join(';');

@@ -3,14 +3,14 @@
 import { useState, useTransition } from 'react'
 import { useLanguage } from '@/components/LanguageContext'
 import Link from 'next/link'
-import { Vehicle, Image, VehicleListing } from '@prisma/client'
+import { Vehicle, Image as VehicleImage, VehicleListing } from '@prisma/client'
 import DeleteVehicleButton from '@/components/DeleteVehicleButton'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import ManualSyncButton from '@/components/ManualSyncButton'
 import { toggleVehicleStatus } from '@/app/actions'
 import { CheckCircle, XCircle, Clock } from 'lucide-react'
 
-type VehicleWithImages = Vehicle & { images: Image[], vin?: string | null, VehicleListing?: VehicleListing[] }
+type VehicleWithImages = Vehicle & { images: VehicleImage[], vin?: string | null, VehicleListing?: VehicleListing[] }
 
 function ToggleStatusButton({ id, status }: { id: string, status: string }) {
     const [isPending, startTransition] = useTransition()

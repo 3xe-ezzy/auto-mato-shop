@@ -1,7 +1,7 @@
 'use client'
 
 import { createVehicle, updateVehicle } from '@/app/actions'
-import { Vehicle, Image, Equipment } from '@prisma/client'
+import { Vehicle, Image as VehicleImage, Equipment } from '@prisma/client'
 import { carData } from '@/lib/car-data'
 import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '@/components/LanguageContext'
@@ -25,7 +25,7 @@ import { upload } from '@vercel/blob/client'
 import { ImageEditor } from './ImageEditor'
 
 type VehicleWithRelations = Vehicle & {
-    images: Image[]
+    images: VehicleImage[]
     equipment: Equipment[]
     vin?: string | null
     power?: number | null
