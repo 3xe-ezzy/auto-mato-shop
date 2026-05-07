@@ -187,9 +187,9 @@ export class MobileDeAdapter implements PortalAdapter {
 
                 const sendRequest = async (user: string) => {
                     const auth = Buffer.from(`${user}:${apiSecret}`).toString('base64');
-                    console.log(`[Mobile.de] Sending image ${i + 1}/${results.length} to ${url} as user: ${user}`);
+                    console.log(`[Mobile.de] Sending image ${i + 1}/${reversedResults.length} to ${url} as user: ${user}`);
                     return fetch(url, {
-                        method: 'PUT',
+                        method: 'POST',
                         headers: {
                             'Authorization': `Basic ${auth}`,
                             'Accept': 'application/vnd.de.mobile.api+json'
