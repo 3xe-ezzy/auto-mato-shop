@@ -174,45 +174,43 @@ export class MobileDeAdapter implements PortalAdapter {
 
             const results = await Promise.all(fetchPromises);
             
-            let validImagesCount = 0;
-            for (const result of results) {
-                if (result) {
-                    formData.append('image', result.blob, result.filename);
-                    validImagesCount++;
+            let successCount = 0;
+            for (let i = 0; i < results.length; i++) {
+                const result = results[i];
+                if (!result) continue;
+
+                const formData = new FormData();
+                formData.append('image', result.blob, result.filename);
+
+                const sendRequest = async (user: string) => {
+                    const auth = Buffer.from(`${user}:${apiSecret}`).toString('base64');
+                    console.log(`[Mobile.de] Sending image ${i + 1}/${results.length} to ${url} as user: ${user}`);
+                    return fetch(url, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Basic ${auth}`,
+                            'Accept': 'application/vnd.de.mobile.api+json'
+                        },
+                        body: formData
+                    });
+                };
+
+                let response = await sendRequest(primaryUser);
+
+                if ((response.status === 401 || response.status === 404) && primaryUser !== fallbackUser) {
+                    console.log(`[Mobile.de] Image ${i + 1} upload failed with ${response.status}, retrying with fallback user: ${fallbackUser}`);
+                    response = await sendRequest(fallbackUser);
+                }
+
+                if (response.ok) {
+                    successCount++;
+                } else {
+                    const errorText = await response.text();
+                    console.error(`[Mobile.de] Failed to upload image ${i + 1}: ${response.status} ${errorText}`);
                 }
             }
 
-            if (validImagesCount === 0) {
-                console.log(`[Mobile.de] No valid images downloaded, skipping upload.`);
-                return;
-            }
-
-            const sendRequest = async (user: string) => {
-                const auth = Buffer.from(`${user}:${apiSecret}`).toString('base64');
-                console.log(`[Mobile.de] Sending ${validImagesCount} images to ${url} as user: ${user}`);
-                return fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Basic ${auth}`,
-                        'Accept': 'application/vnd.de.mobile.api+json'
-                    },
-                    body: formData
-                });
-            };
-
-            let response = await sendRequest(primaryUser);
-
-            if ((response.status === 401 || response.status === 404) && primaryUser !== fallbackUser) {
-                console.log(`[Mobile.de] Image upload failed with ${response.status}, retrying with fallback user: ${fallbackUser}`);
-                response = await sendRequest(fallbackUser);
-            }
-
-            if (!response.ok) {
-                const text = await response.text();
-                console.error(`[Mobile.de] Image Upload Error: ${response.status} - ${text}`);
-            } else {
-                console.log(`[Mobile.de] Successfully uploaded ${validImagesCount} images to ad ${adId}`);
-            }
+            console.log(`[Mobile.de] Successfully uploaded ${successCount}/${results.length} images.`);
         } catch (error) {
             console.error(`[Mobile.de] Fatal error during image upload for ad ${adId}:`, error);
         }
