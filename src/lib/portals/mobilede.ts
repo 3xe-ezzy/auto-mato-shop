@@ -138,82 +138,74 @@ export class MobileDeAdapter implements PortalAdapter {
         }
 
         try {
-            const formData = new FormData();
             console.log(`[Mobile.de] Preparing to upload ${images.length} images for ad ${adId}`);
             
-            const fetchPromises = images.map(async (img, i) => {
-                let imgUrl = img.url;
+            // Download all images first
+            const downloadedImages: { buffer: ArrayBuffer; index: number }[] = [];
+            for (let i = 0; i < images.length; i++) {
+                let imgUrl = images[i].url;
                 
-                // Convert relative path to absolute URL
                 if (imgUrl.startsWith('/') && baseUrl) {
                     imgUrl = `${baseUrl}${imgUrl}`;
                 } else if (imgUrl.startsWith('/')) {
-                    console.warn(`[Mobile.de] Relative image path found but no base URL configured: ${imgUrl}`);
+                    console.warn(`[Mobile.de] Relative image path without base URL: ${imgUrl}`);
                     imgUrl = `http://localhost:3000${imgUrl}`;
                 }
 
                 try {
-                    console.log(`[Mobile.de] Fetching image ${i+1}/${images.length}: ${imgUrl}`);
+                    console.log(`[Mobile.de] Fetching image ${i + 1}/${images.length}: ${imgUrl}`);
                     const imgRes = await fetch(imgUrl);
                     if (!imgRes.ok) {
                         console.error(`[Mobile.de] Image fetch failed (${imgRes.status}) for ${imgUrl}`);
-                        return null;
+                        continue;
                     }
                     const buffer = await imgRes.arrayBuffer();
-                    
-                    // Force JPEG for mobile.de as per API requirements
-                    const contentType = 'image/jpeg';
-                    const blob = new Blob([buffer], { type: contentType });
-                    
-                    return { blob, filename: `image_${i}.jpg` };
+                    downloadedImages.push({ buffer, index: i });
                 } catch (err) {
-                    console.error(`[Mobile.de] Error processing image ${imgUrl}:`, err);
-                    return null;
+                    console.error(`[Mobile.de] Error fetching image ${imgUrl}:`, err);
                 }
-            });
+            }
 
-            const results = await Promise.all(fetchPromises);
-            
-            // Reverse order because mobile.de often treats the last uploaded image as the primary one
-            const reversedResults = [...results].reverse();
-            
+            if (downloadedImages.length === 0) {
+                console.log(`[Mobile.de] No valid images downloaded, skipping upload.`);
+                return;
+            }
+
+            // Upload each image as raw JPEG binary (API requires Content-Type: image/jpeg)
             let successCount = 0;
-            for (let i = 0; i < reversedResults.length; i++) {
-                const result = reversedResults[i];
-                if (!result) continue;
-
-                const formData = new FormData();
-                formData.append('image', result.blob, result.filename);
-
+            for (const img of downloadedImages) {
                 const sendRequest = async (user: string) => {
                     const auth = Buffer.from(`${user}:${apiSecret}`).toString('base64');
-                    console.log(`[Mobile.de] Sending image ${i + 1}/${reversedResults.length} to ${url} as user: ${user}`);
+                    console.log(`[Mobile.de] Sending image ${img.index + 1}/${images.length} to ${url} as user: ${user}`);
                     return fetch(url, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Basic ${auth}`,
+                            'Content-Type': 'image/jpeg',
                             'Accept': 'application/vnd.de.mobile.api+json'
                         },
-                        body: formData
+                        body: Buffer.from(img.buffer)
                     });
                 };
 
                 let response = await sendRequest(primaryUser);
 
                 if ((response.status === 401 || response.status === 404) && primaryUser !== fallbackUser) {
-                    console.log(`[Mobile.de] Image ${i + 1} upload failed with ${response.status}, retrying with fallback user: ${fallbackUser}`);
+                    console.log(`[Mobile.de] Image ${img.index + 1} upload failed with ${response.status}, retrying with fallback user: ${fallbackUser}`);
                     response = await sendRequest(fallbackUser);
                 }
 
                 if (response.ok) {
                     successCount++;
+                    const responseText = await response.text();
+                    console.log(`[Mobile.de] Image ${img.index + 1} uploaded successfully. Response: ${responseText.substring(0, 200)}`);
                 } else {
                     const errorText = await response.text();
-                    console.error(`[Mobile.de] Failed to upload image ${i + 1}: ${response.status} ${errorText}`);
+                    console.error(`[Mobile.de] Failed to upload image ${img.index + 1}: ${response.status} ${errorText}`);
                 }
             }
 
-            console.log(`[Mobile.de] Successfully uploaded ${successCount}/${results.length} images.`);
+            console.log(`[Mobile.de] Successfully uploaded ${successCount}/${downloadedImages.length} images.`);
         } catch (error) {
             console.error(`[Mobile.de] Fatal error during image upload for ad ${adId}:`, error);
         }
