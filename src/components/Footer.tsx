@@ -18,8 +18,8 @@ export default function Footer() {
                 </div>
                 <div>
                     <h3 className="text-lg font-bold mb-4">Adresse</h3>
-                    <p>Eschborner Land Str. 137a</p>
-                    <p>60489 Frankfurt</p>
+                    <p>Rödelheimer Landstraße 75</p>
+                    <p>60487 Frankfurt am Main</p>
                     <div className="mt-4 flex flex-col space-y-2">
                         <Link href="/impressum" className="text-gray-400 hover:text-white underline">Impressum</Link>
                         <Link href="/contact" className="text-gray-400 hover:text-white underline">Kontakt</Link>

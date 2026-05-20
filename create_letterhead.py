@@ -53,7 +53,7 @@ for cell in footer_table.rows[0].cells:
 c1 = footer_table.cell(0, 0)
 p1 = c1.paragraphs[0]
 p1.add_run("ANSCHRIFT:\n").bold = True
-p1.add_run("MATO AUTOMOBILE\nAhmed Abdalla Import Export\nEschborner Land Str. 137a\n60489 Frankfurt")
+p1.add_run("MATO AUTOMOBILE\nAhmed Abdalla Import Export\nRödelheimer Landstraße 75\n60487 Frankfurt am Main")
 p1.style.font.size = Pt(8)
 
 # Spalte 2: Kontakt
@@ -73,7 +73,7 @@ p3.style.font.size = Pt(8)
 # --- INHALT ---
 # Absenderzeile klein
 absender = document.add_paragraph()
-absender.add_run("MATO Automobile - Eschborner Land Str. 137a - 60489 Frankfurt").font.size = Pt(7)
+absender.add_run("MATO Automobile - Rödelheimer Landstraße 75 - 60487 Frankfurt am Main").font.size = Pt(7)
 absender.paragraph_format.space_after = Pt(24)
 
 # Adressfeld

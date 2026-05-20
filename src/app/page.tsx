@@ -237,8 +237,8 @@ export default function Home() {
                                         <div className="text-gray-600">
                                             <p className="font-bold text-gray-900">MATO AUTOMOBILE</p>
                                             <p>Ahmed Abdalla</p>
-                                            <p>Eschborner Land Str. 137a</p>
-                                            <p>60489 Frankfurt am Main</p>
+                                            <p>Rödelheimer Landstraße 75</p>
+                                            <p>60487 Frankfurt am Main</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4">

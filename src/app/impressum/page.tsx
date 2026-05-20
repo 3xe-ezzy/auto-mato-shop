@@ -15,8 +15,8 @@ export default function ImpressumPage() {
                         <p>AHMED ABDALLA</p>
                         <p>MATO AUTOMOBILE</p>
                         <p>IMPORT EXPORT</p>
-                        <p>Eschborner Land Str. 137a</p>
-                        <p>60489 Frankfurt</p>
+                        <p>Rödelheimer Landstraße 75</p>
+                        <p>60487 Frankfurt am Main</p>
                     </div>
 
                     <div>

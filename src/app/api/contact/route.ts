@@ -93,8 +93,8 @@ export async function POST(request: Request) {
         <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #ed1c24; font-size: 0.9em; color: #555;">
           <strong>MATO AUTOMOBILE</strong><br/>
           AHMED ABDALLA<br/>
-          Eschborner Land Str. 137a<br/>
-          60489 Frankfurt<br/><br/>
+          Rödelheimer Landstraße 75<br/>
+          60487 Frankfurt am Main<br/><br/>
           <strong>Tel:</strong> +4969 97785893<br/>
           <strong>Fax:</strong> +4969 97785894<br/>
           <strong>Handy:</strong> +49 171 1482343<br/>
